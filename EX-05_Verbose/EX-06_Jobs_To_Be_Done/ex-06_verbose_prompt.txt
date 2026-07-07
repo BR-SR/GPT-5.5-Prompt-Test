@@ -1,0 +1,18 @@
+Experiment ID: EX-06
+Prompt Structure: Jobs To Be Done
+Prompt Part: Full Prompt
+Expected Output HTML File: ex-06-jobs-to-be-done-precision-verbose.html
+Actual Workspace HTML File: br-ex-06-jobs-to-be-done-precision-verbose.html
+
+Source Isolation Requirement:
+Generate this app only from the instructions in this prompt. Do not inspect, read, reference, copy, or rely on workspace files, prior outputs, local assets, external websites, templates, libraries, frameworks, CDNs, imports, or network calls.
+
+Prompt Used:
+Build an AI-powered Sales CRM SPA around these jobs to be done.
+
+When I am a sales manager, I want to see sales KPIs, pipeline health, and forecast confidence so I can understand business performance quickly.
+When I am an account executive, I want to manage customers and opportunities so I can focus on the right accounts and deals.
+When I am a team leader, I want to compare rep performance and review recent activity so I can coach the team.
+When I need decision support, I want AI recommendations that identify risks, next-best actions, and growth opportunities.
+
+Create one complete self-contained HTML document. CSS must be inside <style> tags and JavaScript inside <script> tags. Include dashboard, customer management with sample accounts and search or filtering, opportunity pipeline with stages and values, forecasting with projected revenue and confidence, team leaderboard, activity feed, and AI recommendations panel. Use no external dependencies, frameworks, libraries, CDNs, imports, fonts, remote images, or network calls. Make it responsive, accessible, semantic, keyboard-friendly, visually polished, and interactive enough to feel like a real prototype. Return only the complete HTML document.

@@ -1,0 +1,11 @@
+Experiment ID: EX-03
+Prompt Structure: Role Based
+Prompt Part: Full Prompt
+Expected Output HTML File: ex-03-role-based-precision-verbose.html
+Actual Workspace HTML File: br-ex-03-role-based-precision-verbose.html
+
+Source Isolation Requirement:
+Generate this app only from the instructions in this prompt. Do not inspect, read, reference, copy, or rely on workspace files, prior outputs, local assets, external websites, templates, libraries, frameworks, CDNs, imports, or network calls.
+
+Prompt Used:
+Act as a senior SaaS product designer, frontend engineer, and CRM product strategist. Create a complete AI-powered Sales CRM SPA as one self-contained HTML document. CSS must be embedded inside <style> tags and JavaScript must be embedded inside <script> tags. Do not use external dependencies, libraries, frameworks, CDNs, imports, fonts, remote images, or network calls. Design the app as a polished modern SaaS product for sales managers and account executives. Include a dashboard with KPI cards and simple CSS or JavaScript visualizations; customer management with realistic sample accounts plus search or filtering; an opportunity pipeline with stages, values, owners, and probabilities; revenue forecasting with confidence indicators; a team leaderboard; a recent activity feed; and an AI recommendations panel with prioritized actionable insights. Make the layout responsive, semantic, accessible, keyboard-friendly, and visually cohesive. Add useful light interactivity without relying on external code. Return only the complete HTML document.

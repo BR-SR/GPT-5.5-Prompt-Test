@@ -1,0 +1,10 @@
+Experiment ID: EX-03
+Prompt Structure: Role Based
+Expected Output HTML File: ex-03-role-based.html
+Actual Workspace HTML File: br-ex-03-role-based.html
+
+Source Isolation Requirement:
+Generate this app only from the instructions in this prompt. Do not inspect, read, reference, copy, or rely on workspace files, prior outputs, local assets, external websites, templates, libraries, frameworks, CDNs, imports, or network calls.
+
+Prompt Used:
+Act as a senior SaaS product designer and frontend engineer. Build a modern responsive AI-powered Sales CRM SPA as a single self-contained HTML file. Include dashboard, customer management, opportunity pipeline, forecasting, team leaderboard, activity feed, and AI recommendations. Use embedded CSS and JavaScript only. Do not use external libraries, frameworks, or dependencies. Return only the complete HTML document.

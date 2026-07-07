@@ -1,0 +1,36 @@
+Experiment ID: EX-09
+Prompt Structure: Spec-Based
+Prompt Part: Full Prompt
+Expected Output HTML File: ex-09-spec-based-precision-verbose.html
+Actual Workspace HTML File: br-ex-09-spec-based-precision-verbose.html
+
+Source Isolation Requirement:
+Generate this app only from the instructions in this prompt. Do not inspect, read, reference, copy, or rely on workspace files, prior outputs, local assets, external websites, templates, libraries, frameworks, CDNs, imports, or network calls.
+
+Prompt Used:
+Product specification: AI-Powered Sales CRM SPA.
+
+Deliverable: Generate one complete self-contained HTML document that runs directly in a browser.
+
+Required modules:
+1. Dashboard with revenue KPIs, pipeline health, forecast summary, and visual indicators.
+2. Customer management with realistic sample accounts, account status, owner, potential value, and search or filtering.
+3. Opportunity pipeline with multiple stages, deal cards or rows, amounts, probabilities, owners, and status.
+4. Forecasting with projected revenue, confidence level, period comparison, and simple visual representation.
+5. Team leaderboard with sales representatives, revenue, quota progress, win rate, or ranking.
+6. Activity feed with recent CRM events.
+7. AI recommendations panel with prioritized, actionable next-best actions.
+
+Technical constraints:
+1. Exactly one HTML file.
+2. CSS embedded only inside <style> tags.
+3. JavaScript embedded only inside <script> tags.
+4. No external dependencies, frameworks, libraries, CDNs, imports, remote fonts, remote images, fetch calls, or network calls.
+5. Must be responsive for desktop, tablet, and mobile.
+6. Must use semantic HTML, accessible contrast, keyboard-friendly controls, and visible focus states.
+
+Quality expectations: modern SaaS visual design, clear information architecture, realistic demo data, maintainable code, useful light interactivity, and no runtime console errors.
+
+Acceptance criteria: all required modules are visible and usable; layout does not break at common viewport sizes; no external resources are referenced; the returned output is only the complete HTML document.
+
+Return only the complete HTML document.

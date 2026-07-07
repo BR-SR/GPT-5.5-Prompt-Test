@@ -1,0 +1,19 @@
+Experiment ID: EX-10
+Prompt Structure: Agentic Workflow
+Prompt Part: Full Prompt
+Expected Output HTML File: ex-10-agentic-workflow-precision-verbose.html
+Actual Workspace HTML File: br-ex-10-agentic-workflow-precision-verbose.html
+
+Source Isolation Requirement:
+Generate this app only from the instructions in this prompt. Do not inspect, read, reference, copy, or rely on workspace files, prior outputs, local assets, external websites, templates, libraries, frameworks, CDNs, imports, or network calls.
+
+Prompt Used:
+Work internally as a product designer, frontend architect, and implementation agent. First, silently plan the application structure, CRM demo data, visual hierarchy, responsive layout, accessibility approach, and JavaScript interactions. Do not reveal the plan. Then produce the final application.
+
+Build an AI-powered Sales CRM SPA as one complete self-contained HTML document. CSS must be embedded inside <style> tags and JavaScript must be embedded inside <script> tags. Do not use external dependencies, frameworks, libraries, CDNs, imports, remote fonts, remote images, fetch calls, or network calls.
+
+The application must include: dashboard with KPIs and visual indicators; customer management with realistic sample accounts and search or filtering; opportunity pipeline with stages, owners, values, and probabilities; forecasting with projected revenue and confidence; team leaderboard; recent activity feed; and AI recommendations panel with prioritized actionable insights.
+
+Implementation expectations: modern SaaS appearance, responsive desktop/tablet/mobile layout, semantic HTML, accessible contrast, keyboard-friendly controls, visible focus states, maintainable code, realistic demo data, and useful light interactivity such as filtering, selecting views, or acting on recommendations.
+
+Return only the complete HTML document and no explanation.

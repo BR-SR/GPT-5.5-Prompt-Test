@@ -1,0 +1,10 @@
+Experiment ID: EX-06
+Prompt Structure: Jobs To Be Done
+Expected Output HTML File: ex-06-jobs-to-be-done.html
+Actual Workspace HTML File: br-ex-06-jobs-to-be-done.html
+
+Source Isolation Requirement:
+Generate this app only from the instructions in this prompt. Do not inspect, read, reference, copy, or rely on workspace files, prior outputs, local assets, external websites, templates, libraries, frameworks, CDNs, imports, or network calls.
+
+Prompt Used:
+When I am a sales manager, I want a modern AI-powered Sales CRM SPA so I can monitor revenue, manage customers, track opportunities, forecast sales, compare team performance, review activity, and receive AI recommendations. Build it as one self-contained HTML file with embedded CSS and JavaScript, no external dependencies, and a responsive modern SaaS design. Return only the complete HTML document.

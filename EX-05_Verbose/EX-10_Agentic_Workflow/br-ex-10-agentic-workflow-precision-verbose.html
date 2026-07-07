@@ -1,0 +1,1782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Sales CRM Dashboard</title>
+  <style>
+    :root {
+      --navy-950: #071b34;
+      --navy-900: #0a2442;
+      --navy-800: #0f335e;
+      --blue-700: #145ea8;
+      --blue-600: #1f74c9;
+      --blue-500: #2d86dc;
+      --cyan-500: #28c6df;
+      --cyan-100: #dff8fc;
+      --gray-950: #17212f;
+      --gray-800: #334155;
+      --gray-700: #475569;
+      --gray-600: #64748b;
+      --gray-500: #8291a5;
+      --gray-300: #cbd5e1;
+      --gray-200: #e2e8f0;
+      --gray-100: #f1f5f9;
+      --gray-050: #f8fafc;
+      --white: #ffffff;
+      --green: #16835b;
+      --green-soft: #e8f7f0;
+      --amber: #b7791f;
+      --amber-soft: #fff6dc;
+      --red: #be3444;
+      --red-soft: #fff0f2;
+      --purple: #6d55c7;
+      --purple-soft: #f1edff;
+      --shadow: 0 20px 45px rgba(7, 27, 52, 0.12);
+      --shadow-soft: 0 10px 26px rgba(7, 27, 52, 0.08);
+      --border: 1px solid rgba(148, 163, 184, 0.32);
+      --radius-xl: 24px;
+      --radius-lg: 18px;
+      --radius-md: 12px;
+      --radius-sm: 8px;
+      --focus: 0 0 0 4px rgba(40, 198, 223, 0.28), 0 0 0 1px rgba(20, 94, 168, 0.45);
+      --font: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: var(--font);
+      color: var(--gray-950);
+      background:
+        radial-gradient(circle at top left, rgba(40, 198, 223, 0.16), transparent 32rem),
+        linear-gradient(135deg, #f6f9fc 0%, #eef4fa 48%, #f8fafc 100%);
+      line-height: 1.5;
+    }
+
+    a { color: inherit; }
+
+    button, input, select {
+      font: inherit;
+    }
+
+    button, select {
+      cursor: pointer;
+    }
+
+    button:focus-visible,
+    input:focus-visible,
+    select:focus-visible,
+    a:focus-visible,
+    [tabindex]:focus-visible {
+      outline: none;
+      box-shadow: var(--focus);
+    }
+
+    .skip-link {
+      position: absolute;
+      top: -4rem;
+      left: 1rem;
+      z-index: 100;
+      padding: 0.7rem 1rem;
+      border-radius: var(--radius-sm);
+      background: var(--navy-900);
+      color: var(--white);
+      text-decoration: none;
+    }
+
+    .skip-link:focus { top: 1rem; }
+
+    .app-shell {
+      display: grid;
+      grid-template-columns: 280px minmax(0, 1fr);
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      color: var(--white);
+      background:
+        linear-gradient(180deg, rgba(10, 36, 66, 0.96), rgba(7, 27, 52, 0.99)),
+        radial-gradient(circle at 30% 10%, rgba(40, 198, 223, 0.26), transparent 17rem);
+      padding: 1.35rem;
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      padding: 0.6rem 0.35rem 1.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      margin-bottom: 1.2rem;
+    }
+
+    .brand-mark {
+      width: 44px;
+      height: 44px;
+      border-radius: 13px;
+      display: grid;
+      place-items: center;
+      color: var(--navy-950);
+      font-weight: 900;
+      letter-spacing: -0.08em;
+      background: linear-gradient(135deg, var(--white), var(--cyan-100));
+      box-shadow: 0 12px 28px rgba(40, 198, 223, 0.18);
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 1.04rem;
+      letter-spacing: -0.02em;
+    }
+
+    .brand p {
+      margin: 0.1rem 0 0;
+      color: rgba(255, 255, 255, 0.72);
+      font-size: 0.78rem;
+    }
+
+    .nav-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 0.35rem;
+    }
+
+    .nav-link {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      padding: 0.78rem 0.82rem;
+      color: rgba(255, 255, 255, 0.82);
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 14px;
+      text-align: left;
+      text-decoration: none;
+      transition: background 160ms ease, color 160ms ease, border-color 160ms ease, transform 160ms ease;
+    }
+
+    .nav-link:hover,
+    .nav-link.active {
+      color: var(--white);
+      background: rgba(255, 255, 255, 0.09);
+      border-color: rgba(255, 255, 255, 0.12);
+      transform: translateX(2px);
+    }
+
+    .nav-left {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.62rem;
+      min-width: 0;
+    }
+
+    .nav-icon {
+      width: 1.85rem;
+      height: 1.85rem;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      color: var(--cyan-100);
+      background: rgba(40, 198, 223, 0.12);
+      border: 1px solid rgba(40, 198, 223, 0.12);
+    }
+
+    .nav-count {
+      min-width: 1.65rem;
+      padding: 0.12rem 0.38rem;
+      border-radius: 999px;
+      color: var(--navy-950);
+      background: var(--cyan-100);
+      text-align: center;
+      font-size: 0.76rem;
+      font-weight: 800;
+    }
+
+    .sidebar-card {
+      margin-top: 1.35rem;
+      padding: 1rem;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: var(--radius-lg);
+      background: rgba(255, 255, 255, 0.07);
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.12);
+    }
+
+    .sidebar-card strong {
+      display: block;
+      margin-bottom: 0.25rem;
+      font-size: 0.9rem;
+    }
+
+    .sidebar-card p {
+      margin: 0;
+      color: rgba(255, 255, 255, 0.72);
+      font-size: 0.82rem;
+    }
+
+    .health-meter {
+      height: 0.55rem;
+      margin-top: 0.85rem;
+      overflow: hidden;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.16);
+    }
+
+    .health-meter span {
+      display: block;
+      width: 84%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--cyan-500), #7dd3fc);
+    }
+
+    .main {
+      min-width: 0;
+      padding: 1.25rem;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin: -1.25rem -1.25rem 1.25rem;
+      padding: 1rem 1.25rem;
+      background: rgba(248, 250, 252, 0.88);
+      backdrop-filter: blur(14px);
+      border-bottom: var(--border);
+    }
+
+    .topbar h2 {
+      margin: 0;
+      color: var(--navy-950);
+      font-size: clamp(1.15rem, 2vw, 1.75rem);
+      letter-spacing: -0.04em;
+    }
+
+    .topbar p {
+      margin: 0.12rem 0 0;
+      color: var(--gray-600);
+      font-size: 0.9rem;
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 0.65rem;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      min-height: 2.25rem;
+      padding: 0.42rem 0.72rem;
+      border: var(--border);
+      border-radius: 999px;
+      background: var(--white);
+      color: var(--gray-700);
+      font-size: 0.85rem;
+      font-weight: 700;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .dot {
+      width: 0.55rem;
+      height: 0.55rem;
+      border-radius: 999px;
+      background: var(--cyan-500);
+      box-shadow: 0 0 0 5px rgba(40, 198, 223, 0.15);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+      min-height: 2.35rem;
+      padding: 0.55rem 0.85rem;
+      border-radius: 12px;
+      border: 1px solid rgba(20, 94, 168, 0.2);
+      color: var(--navy-950);
+      background: var(--white);
+      box-shadow: var(--shadow-soft);
+      font-weight: 800;
+      transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
+    }
+
+    .btn:hover { transform: translateY(-1px); box-shadow: var(--shadow); }
+
+    .btn-primary {
+      color: var(--white);
+      background: linear-gradient(135deg, var(--blue-700), var(--blue-500));
+      border-color: transparent;
+    }
+
+    .btn-ghost {
+      background: transparent;
+      box-shadow: none;
+      border-color: rgba(148, 163, 184, 0.42);
+      color: var(--gray-700);
+    }
+
+    .btn-small {
+      min-height: 2rem;
+      padding: 0.42rem 0.62rem;
+      border-radius: 10px;
+      font-size: 0.82rem;
+    }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 360px;
+      gap: 1rem;
+      align-items: start;
+    }
+
+    .section-stack {
+      display: grid;
+      gap: 1rem;
+      min-width: 0;
+    }
+
+    .section-card {
+      border: var(--border);
+      border-radius: var(--radius-xl);
+      background: rgba(255, 255, 255, 0.88);
+      box-shadow: var(--shadow-soft);
+      overflow: hidden;
+    }
+
+    .section-card > header,
+    .panel-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1.1rem 1.15rem;
+      border-bottom: var(--border);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(248, 250, 252, 0.72));
+    }
+
+    .section-card h2,
+    .panel-header h2,
+    .section-card h3 {
+      margin: 0;
+      color: var(--navy-950);
+      letter-spacing: -0.035em;
+    }
+
+    .section-card h2,
+    .panel-header h2 { font-size: 1.15rem; }
+
+    .section-card h3 { font-size: 1rem; }
+
+    .section-card header p,
+    .panel-header p {
+      margin: 0.25rem 0 0;
+      color: var(--gray-600);
+      font-size: 0.88rem;
+    }
+
+    .section-body {
+      padding: 1.15rem;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.9rem;
+    }
+
+    .kpi-card {
+      position: relative;
+      min-height: 146px;
+      padding: 1rem;
+      border: var(--border);
+      border-radius: var(--radius-lg);
+      background:
+        linear-gradient(145deg, rgba(255, 255, 255, 0.98), rgba(241, 245, 249, 0.72)),
+        radial-gradient(circle at top right, rgba(40, 198, 223, 0.18), transparent 8rem);
+      overflow: hidden;
+    }
+
+    .kpi-card::after {
+      content: "";
+      position: absolute;
+      right: -2rem;
+      bottom: -2rem;
+      width: 7rem;
+      height: 7rem;
+      border-radius: 50%;
+      background: rgba(20, 94, 168, 0.06);
+    }
+
+    .kpi-label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      color: var(--gray-600);
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.055em;
+    }
+
+    .kpi-value {
+      margin: 0.72rem 0 0.25rem;
+      color: var(--navy-950);
+      font-size: clamp(1.6rem, 2.6vw, 2.25rem);
+      font-weight: 900;
+      letter-spacing: -0.055em;
+    }
+
+    .trend {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.16rem 0.45rem;
+      border-radius: 999px;
+      font-size: 0.76rem;
+      font-weight: 900;
+    }
+
+    .trend.up { color: var(--green); background: var(--green-soft); }
+    .trend.flat { color: var(--amber); background: var(--amber-soft); }
+    .trend.down { color: var(--red); background: var(--red-soft); }
+
+    .sparkline {
+      display: flex;
+      align-items: end;
+      gap: 0.22rem;
+      height: 2.3rem;
+      margin-top: 0.8rem;
+    }
+
+    .sparkline span {
+      flex: 1;
+      min-width: 4px;
+      border-radius: 999px 999px 3px 3px;
+      background: linear-gradient(180deg, var(--cyan-500), var(--blue-600));
+      opacity: 0.9;
+    }
+
+    .control-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.7rem;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+
+    .field-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.55rem;
+      align-items: center;
+    }
+
+    .input-wrap {
+      position: relative;
+    }
+
+    .input-wrap input {
+      min-width: min(22rem, 100%);
+      width: 100%;
+      min-height: 2.55rem;
+      padding: 0.55rem 0.8rem 0.55rem 2.35rem;
+      border: var(--border);
+      border-radius: 13px;
+      background: var(--white);
+      color: var(--gray-950);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    }
+
+    .input-wrap::before {
+      content: "⌕";
+      position: absolute;
+      left: 0.85rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--gray-500);
+      font-size: 1.1rem;
+      pointer-events: none;
+    }
+
+    .select {
+      min-height: 2.55rem;
+      padding: 0.52rem 2rem 0.52rem 0.75rem;
+      border: var(--border);
+      border-radius: 13px;
+      background: var(--white);
+      color: var(--gray-950);
+      font-weight: 700;
+    }
+
+    .account-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.85rem;
+    }
+
+    .account-card {
+      display: grid;
+      gap: 0.72rem;
+      padding: 1rem;
+      border: var(--border);
+      border-radius: var(--radius-lg);
+      background: var(--white);
+      box-shadow: 0 8px 22px rgba(7, 27, 52, 0.06);
+      transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+    }
+
+    .account-card:hover,
+    .account-card.selected {
+      transform: translateY(-2px);
+      border-color: rgba(40, 198, 223, 0.62);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .account-card.selected { background: linear-gradient(180deg, #ffffff, #f3fbfd); }
+
+    .account-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 0.75rem;
+    }
+
+    .account-name {
+      margin: 0;
+      color: var(--navy-950);
+      font-size: 1rem;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+    }
+
+    .account-meta {
+      margin: 0.15rem 0 0;
+      color: var(--gray-600);
+      font-size: 0.82rem;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.25rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 999px;
+      font-size: 0.74rem;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .tag.strategic { color: var(--blue-700); background: #e7f1fb; }
+    .tag.expansion { color: var(--green); background: var(--green-soft); }
+    .tag.watch { color: var(--amber); background: var(--amber-soft); }
+    .tag.risk { color: var(--red); background: var(--red-soft); }
+    .tag.ai { color: var(--purple); background: var(--purple-soft); }
+
+    .metrics-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.45rem;
+    }
+
+    .mini-metric {
+      padding: 0.55rem;
+      border-radius: 12px;
+      background: var(--gray-050);
+      border: 1px solid rgba(226, 232, 240, 0.9);
+    }
+
+    .mini-metric span {
+      display: block;
+      color: var(--gray-600);
+      font-size: 0.7rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .mini-metric strong {
+      display: block;
+      margin-top: 0.1rem;
+      color: var(--navy-950);
+      font-size: 0.95rem;
+    }
+
+    .progress-track {
+      height: 0.52rem;
+      overflow: hidden;
+      border-radius: 999px;
+      background: var(--gray-200);
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--blue-700), var(--cyan-500));
+    }
+
+    .details-panel {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 0.85rem;
+      margin-top: 1rem;
+      padding: 1rem;
+      border: 1px solid rgba(40, 198, 223, 0.28);
+      border-radius: var(--radius-lg);
+      background: linear-gradient(135deg, rgba(223, 248, 252, 0.68), rgba(255, 255, 255, 0.84));
+    }
+
+    .details-panel h3 { margin-bottom: 0.35rem; }
+
+    .details-panel p { margin: 0.2rem 0; color: var(--gray-700); }
+
+    .insight-list {
+      margin: 0.6rem 0 0;
+      padding-left: 1.1rem;
+      color: var(--gray-700);
+    }
+
+    .insight-list li { margin: 0.25rem 0; }
+
+    .pipeline-board {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(180px, 1fr));
+      gap: 0.85rem;
+      overflow-x: auto;
+      padding-bottom: 0.25rem;
+    }
+
+    .stage-column {
+      min-width: 0;
+      border: 1px solid rgba(203, 213, 225, 0.8);
+      border-radius: var(--radius-lg);
+      background: var(--gray-050);
+      overflow: hidden;
+    }
+
+    .stage-header {
+      padding: 0.82rem;
+      border-bottom: 1px solid rgba(203, 213, 225, 0.8);
+      background: var(--white);
+    }
+
+    .stage-title {
+      display: flex;
+      justify-content: space-between;
+      gap: 0.5rem;
+      color: var(--navy-950);
+      font-weight: 900;
+    }
+
+    .stage-summary {
+      margin-top: 0.2rem;
+      color: var(--gray-600);
+      font-size: 0.78rem;
+    }
+
+    .opportunity-list {
+      list-style: none;
+      display: grid;
+      gap: 0.65rem;
+      margin: 0;
+      padding: 0.75rem;
+    }
+
+    .opportunity-card {
+      padding: 0.82rem;
+      border: 1px solid rgba(226, 232, 240, 0.95);
+      border-radius: 14px;
+      background: var(--white);
+      box-shadow: 0 8px 18px rgba(7, 27, 52, 0.05);
+    }
+
+    .opportunity-card strong {
+      display: block;
+      color: var(--navy-950);
+      letter-spacing: -0.02em;
+    }
+
+    .opportunity-card p {
+      margin: 0.2rem 0 0.55rem;
+      color: var(--gray-600);
+      font-size: 0.82rem;
+    }
+
+    .opp-foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      color: var(--gray-700);
+      font-size: 0.82rem;
+      font-weight: 800;
+    }
+
+    .forecast-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .forecast-card {
+      padding: 1rem;
+      border: var(--border);
+      border-radius: var(--radius-lg);
+      background: var(--white);
+    }
+
+    .scenario-tabs {
+      display: inline-flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      padding: 0.25rem;
+      border: var(--border);
+      border-radius: 999px;
+      background: var(--gray-050);
+    }
+
+    .scenario-tab {
+      border: 0;
+      border-radius: 999px;
+      padding: 0.45rem 0.75rem;
+      color: var(--gray-700);
+      background: transparent;
+      font-weight: 900;
+    }
+
+    .scenario-tab.active {
+      color: var(--white);
+      background: var(--blue-700);
+    }
+
+    .forecast-value {
+      margin: 0.7rem 0 0;
+      color: var(--navy-950);
+      font-size: 2.3rem;
+      font-weight: 950;
+      letter-spacing: -0.06em;
+    }
+
+    .confidence-ring {
+      --pct: 72;
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      margin: 0 auto;
+      background: conic-gradient(var(--cyan-500) calc(var(--pct) * 1%), var(--gray-200) 0);
+    }
+
+    .confidence-ring > div {
+      width: 108px;
+      height: 108px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--white);
+      color: var(--navy-950);
+      font-size: 1.7rem;
+      font-weight: 950;
+      letter-spacing: -0.04em;
+    }
+
+    .bar-chart {
+      display: grid;
+      gap: 0.65rem;
+      margin-top: 1rem;
+    }
+
+    .bar-row {
+      display: grid;
+      grid-template-columns: 5.5rem 1fr 4.2rem;
+      gap: 0.55rem;
+      align-items: center;
+      color: var(--gray-700);
+      font-size: 0.82rem;
+      font-weight: 800;
+    }
+
+    .bar-track {
+      height: 0.72rem;
+      border-radius: 999px;
+      background: var(--gray-200);
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--blue-700), var(--cyan-500));
+    }
+
+    .leaderboard-table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 580px;
+    }
+
+    th, td {
+      padding: 0.85rem 0.75rem;
+      text-align: left;
+      border-bottom: 1px solid rgba(226, 232, 240, 0.85);
+      vertical-align: middle;
+    }
+
+    th {
+      color: var(--gray-600);
+      background: var(--gray-050);
+      font-size: 0.76rem;
+      letter-spacing: 0.055em;
+      text-transform: uppercase;
+    }
+
+    td {
+      color: var(--gray-800);
+      font-size: 0.9rem;
+    }
+
+    tbody tr:hover { background: rgba(223, 248, 252, 0.34); }
+
+    .rank {
+      width: 2rem;
+      height: 2rem;
+      display: inline-grid;
+      place-items: center;
+      border-radius: 10px;
+      color: var(--navy-950);
+      background: var(--cyan-100);
+      font-weight: 950;
+    }
+
+    .side-panel {
+      position: sticky;
+      top: 5.2rem;
+      display: grid;
+      gap: 1rem;
+      min-width: 0;
+    }
+
+    .ai-panel {
+      border: 1px solid rgba(40, 198, 223, 0.36);
+      border-radius: var(--radius-xl);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(239, 248, 251, 0.95)),
+        radial-gradient(circle at top right, rgba(40, 198, 223, 0.18), transparent 14rem);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .ai-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.25rem 0.55rem;
+      border-radius: 999px;
+      color: var(--purple);
+      background: var(--purple-soft);
+      font-size: 0.74rem;
+      font-weight: 950;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .recommendation-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 0.8rem;
+    }
+
+    .recommendation {
+      display: grid;
+      gap: 0.62rem;
+      padding: 0.95rem;
+      border: 1px solid rgba(203, 213, 225, 0.72);
+      border-radius: var(--radius-lg);
+      background: rgba(255, 255, 255, 0.86);
+    }
+
+    .recommendation.done {
+      opacity: 0.72;
+      background: var(--gray-050);
+    }
+
+    .rec-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 0.65rem;
+    }
+
+    .priority {
+      display: inline-flex;
+      min-width: 4.7rem;
+      justify-content: center;
+      padding: 0.2rem 0.5rem;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 950;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .priority.high { color: var(--red); background: var(--red-soft); }
+    .priority.medium { color: var(--amber); background: var(--amber-soft); }
+    .priority.low { color: var(--blue-700); background: #e7f1fb; }
+
+    .recommendation h3 {
+      margin: 0;
+      color: var(--navy-950);
+      font-size: 0.98rem;
+      letter-spacing: -0.03em;
+    }
+
+    .recommendation p {
+      margin: 0;
+      color: var(--gray-700);
+      font-size: 0.86rem;
+    }
+
+    .rec-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+    }
+
+    .activity-feed {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 0.72rem;
+    }
+
+    .activity-item {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 0.65rem;
+      align-items: start;
+    }
+
+    .activity-icon {
+      width: 2rem;
+      height: 2rem;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      color: var(--blue-700);
+      background: #e7f1fb;
+      font-weight: 900;
+    }
+
+    .activity-item p {
+      margin: 0;
+      color: var(--gray-800);
+      font-size: 0.88rem;
+    }
+
+    .activity-item time {
+      display: block;
+      margin-top: 0.12rem;
+      color: var(--gray-600);
+      font-size: 0.76rem;
+      font-weight: 800;
+    }
+
+    .toast-region {
+      position: fixed;
+      right: 1rem;
+      bottom: 1rem;
+      z-index: 50;
+      display: grid;
+      gap: 0.5rem;
+      max-width: min(24rem, calc(100vw - 2rem));
+    }
+
+    .toast {
+      padding: 0.8rem 0.95rem;
+      border: 1px solid rgba(40, 198, 223, 0.32);
+      border-radius: 14px;
+      color: var(--navy-950);
+      background: var(--white);
+      box-shadow: var(--shadow);
+      font-weight: 800;
+    }
+
+    .empty-state {
+      padding: 1.5rem;
+      border: 1px dashed var(--gray-300);
+      border-radius: var(--radius-lg);
+      color: var(--gray-600);
+      background: var(--gray-050);
+      text-align: center;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    @media (max-width: 1220px) {
+      .content-grid { grid-template-columns: 1fr; }
+      .side-panel { position: static; grid-template-columns: 1fr 1fr; }
+      .kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .account-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 900px) {
+      .app-shell { grid-template-columns: 1fr; }
+      .sidebar {
+        position: relative;
+        height: auto;
+        padding: 1rem;
+      }
+      .brand { padding-bottom: 1rem; }
+      .nav-list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .nav-link { min-height: 3.2rem; }
+      .sidebar-card { display: none; }
+      .topbar { position: relative; margin-top: 0; }
+      .main { padding-top: 0; }
+      .content-grid { gap: 0.85rem; }
+      .details-panel,
+      .forecast-grid,
+      .side-panel { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 680px) {
+      .main { padding: 0.75rem; }
+      .topbar {
+        margin-left: -0.75rem;
+        margin-right: -0.75rem;
+        padding: 0.9rem 0.75rem;
+        align-items: flex-start;
+        flex-direction: column;
+      }
+      .topbar-actions { justify-content: flex-start; }
+      .nav-list { grid-template-columns: 1fr 1fr; }
+      .kpi-grid,
+      .account-grid { grid-template-columns: 1fr; }
+      .control-row { align-items: stretch; }
+      .field-group,
+      .input-wrap,
+      .input-wrap input,
+      .select { width: 100%; }
+      .section-card > header,
+      .panel-header { flex-direction: column; }
+      .pipeline-board { grid-template-columns: minmax(240px, 1fr); }
+      .bar-row { grid-template-columns: 4.5rem 1fr 3.5rem; }
+      .metrics-row { grid-template-columns: 1fr; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Primary navigation">
+      <div class="brand" aria-label="Enterprise Sales CRM">
+        <div class="brand-mark" aria-hidden="true">S</div>
+        <div>
+          <h1>SalesIQ Command</h1>
+          <p>AI-powered enterprise CRM</p>
+        </div>
+      </div>
+      <nav>
+        <ul class="nav-list">
+          <li><a class="nav-link active" href="#dashboard"><span class="nav-left"><span class="nav-icon" aria-hidden="true">▦</span><span>Dashboard</span></span><span class="nav-count">4</span></a></li>
+          <li><a class="nav-link" href="#customers"><span class="nav-left"><span class="nav-icon" aria-hidden="true">◎</span><span>Customers</span></span><span class="nav-count" id="navAccountCount">8</span></a></li>
+          <li><a class="nav-link" href="#pipeline"><span class="nav-left"><span class="nav-icon" aria-hidden="true">↗</span><span>Pipeline</span></span><span class="nav-count" id="navPipelineCount">10</span></a></li>
+          <li><a class="nav-link" href="#forecast"><span class="nav-left"><span class="nav-icon" aria-hidden="true">◒</span><span>Forecast</span></span><span class="nav-count">Q3</span></a></li>
+          <li><a class="nav-link" href="#leaderboard"><span class="nav-left"><span class="nav-icon" aria-hidden="true">★</span><span>Team</span></span><span class="nav-count">6</span></a></li>
+          <li><a class="nav-link" href="#ai"><span class="nav-left"><span class="nav-icon" aria-hidden="true">✦</span><span>AI Insights</span></span><span class="nav-count" id="navRecCount">5</span></a></li>
+        </ul>
+      </nav>
+      <div class="sidebar-card" aria-label="CRM health summary">
+        <strong>Portfolio health</strong>
+        <p>84% healthy after renewal-risk signals and next-best-action coverage.</p>
+        <div class="health-meter" aria-hidden="true"><span></span></div>
+      </div>
+    </aside>
+
+    <main class="main" id="main-content">
+      <header class="topbar">
+        <div>
+          <h2>Executive Sales Workspace</h2>
+          <p>Fictional demo data for pipeline planning, customer coverage, and AI-guided selling.</p>
+        </div>
+        <div class="topbar-actions" aria-label="Workspace controls">
+          <span class="pill"><span class="dot" aria-hidden="true"></span> AI signals active</span>
+          <button class="btn btn-ghost" type="button" id="refreshBtn">Refresh demo</button>
+          <button class="btn btn-primary" type="button" id="focusBtn">Focus next action</button>
+        </div>
+      </header>
+
+      <div class="content-grid">
+        <div class="section-stack">
+          <section class="section-card" id="dashboard" aria-labelledby="dashboard-title">
+            <header>
+              <div>
+                <h2 id="dashboard-title">Dashboard KPIs</h2>
+                <p>Live-style commercial indicators, weighted pipeline, and customer momentum.</p>
+              </div>
+              <span class="pill">Quarter: Q3 FY Demo</span>
+            </header>
+            <div class="section-body">
+              <div class="kpi-grid" id="kpiGrid" aria-label="Key performance indicators"></div>
+            </div>
+          </section>
+
+          <section class="section-card" id="customers" aria-labelledby="customers-title">
+            <header>
+              <div>
+                <h2 id="customers-title">Customer Management</h2>
+                <p>Search, filter, and inspect fictional enterprise accounts with AI health scoring.</p>
+              </div>
+              <span class="pill"><span id="accountCount">0</span> accounts shown</span>
+            </header>
+            <div class="section-body">
+              <div class="control-row">
+                <div class="field-group" role="search">
+                  <label class="sr-only" for="accountSearch">Search customers</label>
+                  <div class="input-wrap">
+                    <input id="accountSearch" type="search" placeholder="Search accounts, sectors, owners..." autocomplete="off">
+                  </div>
+                  <label class="sr-only" for="segmentFilter">Filter by segment</label>
+                  <select class="select" id="segmentFilter">
+                    <option value="all">All segments</option>
+                    <option value="Strategic">Strategic</option>
+                    <option value="Expansion">Expansion</option>
+                    <option value="Watch">Watch</option>
+                    <option value="Risk">Risk</option>
+                  </select>
+                </div>
+                <button class="btn btn-ghost" type="button" id="clearFiltersBtn">Clear filters</button>
+              </div>
+              <div class="account-grid" id="accountGrid"></div>
+              <div class="details-panel" id="accountDetails" aria-live="polite"></div>
+            </div>
+          </section>
+
+          <section class="section-card" id="pipeline" aria-labelledby="pipeline-title">
+            <header>
+              <div>
+                <h2 id="pipeline-title">Opportunity Pipeline</h2>
+                <p>Stage-based selling view with owners, values, and close probabilities.</p>
+              </div>
+              <div class="field-group">
+                <label class="sr-only" for="ownerFilter">Filter by owner</label>
+                <select class="select" id="ownerFilter">
+                  <option value="all">All owners</option>
+                </select>
+              </div>
+            </header>
+            <div class="section-body">
+              <div class="pipeline-board" id="pipelineBoard" aria-label="Opportunity pipeline by stage"></div>
+            </div>
+          </section>
+
+          <section class="section-card" id="forecast" aria-labelledby="forecast-title">
+            <header>
+              <div>
+                <h2 id="forecast-title">Forecasting</h2>
+                <p>Projected revenue model using weighted opportunities and confidence ranges.</p>
+              </div>
+              <div class="scenario-tabs" role="tablist" aria-label="Forecast scenario">
+                <button class="scenario-tab" type="button" role="tab" aria-selected="false" data-scenario="conservative">Conservative</button>
+                <button class="scenario-tab active" type="button" role="tab" aria-selected="true" data-scenario="balanced">Balanced</button>
+                <button class="scenario-tab" type="button" role="tab" aria-selected="false" data-scenario="upside">Upside</button>
+              </div>
+            </header>
+            <div class="section-body">
+              <div class="forecast-grid">
+                <article class="forecast-card" aria-labelledby="forecast-projection-title">
+                  <h3 id="forecast-projection-title">Projected Revenue</h3>
+                  <p class="forecast-value" id="forecastValue">$0.0M</p>
+                  <p id="forecastNarrative">Weighted forecast based on selected scenario.</p>
+                  <div class="bar-chart" id="forecastBars" aria-label="Monthly forecast bars"></div>
+                </article>
+                <article class="forecast-card" aria-labelledby="confidence-title">
+                  <h3 id="confidence-title">Forecast Confidence</h3>
+                  <div class="confidence-ring" id="confidenceRing" role="img" aria-label="Forecast confidence 72 percent">
+                    <div><span id="confidenceValue">72%</span></div>
+                  </div>
+                  <ul class="insight-list" id="confidenceDrivers"></ul>
+                </article>
+              </div>
+            </div>
+          </section>
+
+          <section class="section-card" id="leaderboard" aria-labelledby="leaderboard-title">
+            <header>
+              <div>
+                <h2 id="leaderboard-title">Team Leaderboard</h2>
+                <p>Quota progress, weighted pipeline, and high-quality engagement indicators.</p>
+              </div>
+              <span class="pill">Sorted by attainment</span>
+            </header>
+            <div class="section-body leaderboard-table-wrap">
+              <table aria-describedby="leaderboard-title">
+                <thead>
+                  <tr>
+                    <th scope="col">Rank</th>
+                    <th scope="col">Seller</th>
+                    <th scope="col">Role</th>
+                    <th scope="col">Attainment</th>
+                    <th scope="col">Weighted Pipeline</th>
+                    <th scope="col">Actions Completed</th>
+                  </tr>
+                </thead>
+                <tbody id="leaderboardBody"></tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+
+        <aside class="side-panel" aria-label="AI recommendations and recent activity">
+          <section class="ai-panel" id="ai" aria-labelledby="ai-title">
+            <header class="panel-header">
+              <div>
+                <span class="ai-badge">AI Recommendations</span>
+                <h2 id="ai-title">Prioritized Next Best Actions</h2>
+                <p>Actionable guidance generated from fictional CRM signals.</p>
+              </div>
+            </header>
+            <div class="section-body">
+              <ul class="recommendation-list" id="recommendationList"></ul>
+            </div>
+          </section>
+
+          <section class="section-card" id="activity" aria-labelledby="activity-title">
+            <header>
+              <div>
+                <h2 id="activity-title">Recent Activity</h2>
+                <p>Latest demo interactions across accounts and opportunities.</p>
+              </div>
+            </header>
+            <div class="section-body">
+              <ul class="activity-feed" id="activityFeed"></ul>
+            </div>
+          </section>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <div class="toast-region" id="toastRegion" aria-live="polite" aria-label="Status messages"></div>
+
+  <script>
+    (function () {
+      "use strict";
+
+      const formatMoney = (value) => {
+        if (value >= 1000000) return "$" + (value / 1000000).toFixed(1) + "M";
+        if (value >= 1000) return "$" + Math.round(value / 1000) + "K";
+        return "$" + value.toLocaleString();
+      };
+
+      const accounts = [
+        { id: "acc-01", name: "Northstar Pension Services", sector: "Retirement Administration", owner: "Avery Chen", segment: "Strategic", arr: 2400000, health: 92, renewal: "Oct 18", openOpps: 3, lastTouch: "2 days ago", risk: "Low", summary: "Strong executive sponsorship and consistent product adoption across operations teams.", insights: ["Expand workflow automation into participant communications.", "Prepare renewal value story before October steering committee.", "Reference recent adoption lift in quarterly business review."] },
+        { id: "acc-02", name: "Crescent Harbor Capital", sector: "Asset Management", owner: "Jordan Vale", segment: "Expansion", arr: 1680000, health: 86, renewal: "Dec 05", openOpps: 2, lastTouch: "5 days ago", risk: "Low", summary: "New data operations leader is evaluating analytics coverage for portfolio servicing.", insights: ["Bundle analytics pilot with governance workshop.", "Invite operations lead to executive roadmap briefing.", "Map service-level metrics to expansion proposal."] },
+        { id: "acc-03", name: "Evergreen Trust Group", sector: "Wealth Operations", owner: "Morgan Ellis", segment: "Watch", arr: 980000, health: 68, renewal: "Sep 12", openOpps: 1, lastTouch: "11 days ago", risk: "Medium", summary: "Usage is stable but stakeholder engagement has slowed since implementation lead changed.", insights: ["Schedule sponsor re-alignment session this week.", "Share adoption benchmark summary with new lead.", "Review support case trend before pricing conversation."] },
+        { id: "acc-04", name: "Summitline Insurance Exchange", sector: "Insurance Services", owner: "Riley Brooks", segment: "Strategic", arr: 3100000, health: 89, renewal: "Nov 21", openOpps: 4, lastTouch: "1 day ago", risk: "Low", summary: "Multi-product footprint with active modernization program and strong buying committee engagement.", insights: ["Prioritize compliance reporting opportunity for quarter close.", "Coordinate technical validation with enterprise architecture.", "Use board-readiness narrative in executive proposal."] },
+        { id: "acc-05", name: "Bluepeak Securities Network", sector: "Brokerage Operations", owner: "Casey Morgan", segment: "Risk", arr: 760000, health: 51, renewal: "Aug 30", openOpps: 1, lastTouch: "16 days ago", risk: "High", summary: "Renewal is exposed due to delayed integration decisions and low senior sponsor activity.", insights: ["Escalate renewal rescue plan to regional director.", "Offer integration decision workshop within five business days.", "Confirm commercial blockers before legal review."] },
+        { id: "acc-06", name: "Prairie Lake Clearing", sector: "Clearing Services", owner: "Avery Chen", segment: "Expansion", arr: 1320000, health: 80, renewal: "Jan 14", openOpps: 2, lastTouch: "3 days ago", risk: "Medium", summary: "Operations group is receptive to automation but procurement requires quantified efficiency proof.", insights: ["Deliver calculator for exception-processing savings.", "Bring solution consultant into next discovery call.", "Track procurement requirements in shared action plan."] },
+        { id: "acc-07", name: "Orchard Valley Benefits", sector: "Benefits Administration", owner: "Taylor Reed", segment: "Watch", arr: 890000, health: 64, renewal: "Feb 03", openOpps: 1, lastTouch: "8 days ago", risk: "Medium", summary: "Account sentiment improved after service review, but expansion urgency is not yet visible.", insights: ["Run stakeholder map refresh with customer success.", "Test interest in guided digital enrollment package.", "Convert service review outcomes into roadmap actions."] },
+        { id: "acc-08", name: "Silverline Custody Partners", sector: "Custody Services", owner: "Jordan Vale", segment: "Strategic", arr: 2250000, health: 78, renewal: "Mar 17", openOpps: 3, lastTouch: "4 days ago", risk: "Medium", summary: "Executive sponsor requested stronger reporting controls before approving broader rollout.", insights: ["Schedule reporting controls demonstration.", "Attach governance matrix to proposal package.", "Align rollout timeline to customer risk committee calendar."] }
+      ];
+
+      const opportunities = [
+        { id: "opp-01", name: "Participant Communications Upgrade", account: "Northstar Pension Services", owner: "Avery Chen", stage: "Discover", value: 540000, probability: 35, close: "Aug 22" },
+        { id: "opp-02", name: "Portfolio Analytics Pilot", account: "Crescent Harbor Capital", owner: "Jordan Vale", stage: "Discover", value: 420000, probability: 30, close: "Sep 08" },
+        { id: "opp-03", name: "Digital Enrollment Package", account: "Orchard Valley Benefits", owner: "Taylor Reed", stage: "Discover", value: 310000, probability: 28, close: "Oct 03" },
+        { id: "opp-04", name: "Compliance Reporting Suite", account: "Summitline Insurance Exchange", owner: "Riley Brooks", stage: "Validate", value: 1250000, probability: 55, close: "Sep 18" },
+        { id: "opp-05", name: "Clearing Automation Expansion", account: "Prairie Lake Clearing", owner: "Avery Chen", stage: "Validate", value: 780000, probability: 48, close: "Aug 30" },
+        { id: "opp-06", name: "Sponsor Analytics Renewal", account: "Evergreen Trust Group", owner: "Morgan Ellis", stage: "Validate", value: 390000, probability: 45, close: "Sep 12" },
+        { id: "opp-07", name: "Reporting Controls Rollout", account: "Silverline Custody Partners", owner: "Jordan Vale", stage: "Propose", value: 890000, probability: 68, close: "Aug 25" },
+        { id: "opp-08", name: "Enterprise Workflow Modernization", account: "Summitline Insurance Exchange", owner: "Riley Brooks", stage: "Propose", value: 1640000, probability: 62, close: "Oct 11" },
+        { id: "opp-09", name: "Renewal Rescue and Integration", account: "Bluepeak Securities Network", owner: "Casey Morgan", stage: "Commit", value: 760000, probability: 74, close: "Aug 30" },
+        { id: "opp-10", name: "QBR Expansion Bundle", account: "Northstar Pension Services", owner: "Avery Chen", stage: "Commit", value: 680000, probability: 82, close: "Sep 27" }
+      ];
+
+      const team = [
+        { name: "Avery Chen", role: "Strategic Accounts", attainment: 126, weighted: 1430000, actions: 34 },
+        { name: "Riley Brooks", role: "Enterprise Expansion", attainment: 118, weighted: 1710000, actions: 29 },
+        { name: "Jordan Vale", role: "Financial Platforms", attainment: 104, weighted: 850000, actions: 27 },
+        { name: "Morgan Ellis", role: "Renewal Growth", attainment: 91, weighted: 176000, actions: 23 },
+        { name: "Taylor Reed", role: "Benefits Market", attainment: 84, weighted: 87000, actions: 21 },
+        { name: "Casey Morgan", role: "Retention Desk", attainment: 79, weighted: 562000, actions: 19 }
+      ];
+
+      const recommendations = [
+        { id: "rec-01", priority: "High", title: "Protect Bluepeak renewal", text: "Engagement gap and integration uncertainty create near-term renewal risk. Build a rescue plan with executive sponsor, product, and commercial owner.", action: "Create rescue plan" },
+        { id: "rec-02", priority: "High", title: "Accelerate Summitline compliance suite", text: "Buying committee activity is high and validation is complete enough for proposal packaging before the September forecast lock.", action: "Draft proposal" },
+        { id: "rec-03", priority: "Medium", title: "Re-engage Evergreen sponsor", text: "Stakeholder change reduced meeting frequency. A sponsor alignment session can raise confidence on the renewal-linked analytics opportunity.", action: "Schedule session" },
+        { id: "rec-04", priority: "Medium", title: "Quantify Prairie Lake efficiency case", text: "Procurement requires a financial proof point. Use exception-processing data to demonstrate payback within the customer planning horizon.", action: "Build value case" },
+        { id: "rec-05", priority: "Low", title: "Expand Northstar QBR agenda", text: "Adoption is strong. Add workflow automation and communications outcomes to the QBR to uncover adjacent budget.", action: "Update QBR" }
+      ];
+
+      const activities = [
+        { icon: "✓", text: "Avery Chen completed executive brief for Northstar Pension Services.", time: "Today, 9:42 AM" },
+        { icon: "$", text: "Summitline Compliance Reporting Suite moved to Validate with 55% probability.", time: "Yesterday, 4:18 PM" },
+        { icon: "!", text: "AI flagged Bluepeak Securities Network as high-priority renewal risk.", time: "Yesterday, 1:07 PM" },
+        { icon: "↗", text: "Jordan Vale added reporting controls stakeholder to Silverline opportunity map.", time: "Mon, 3:22 PM" },
+        { icon: "◒", text: "Forecast confidence increased after three opportunities gained next-step dates.", time: "Mon, 10:10 AM" }
+      ];
+
+      const forecastScenarios = {
+        conservative: {
+          label: "Conservative",
+          multiplier: 0.82,
+          confidence: 66,
+          narrative: "Assumes procurement friction on two validation-stage opportunities and no upside acceleration.",
+          months: [
+            { label: "Aug", value: 930000 },
+            { label: "Sep", value: 1280000 },
+            { label: "Oct", value: 840000 }
+          ],
+          drivers: ["Commit-stage deals retain executive coverage.", "Two renewals require extra commercial validation.", "Low upside included for discovery-stage opportunities."]
+        },
+        balanced: {
+          label: "Balanced",
+          multiplier: 1,
+          confidence: 72,
+          narrative: "Uses probability-weighted pipeline with current close dates and documented next steps.",
+          months: [
+            { label: "Aug", value: 1180000 },
+            { label: "Sep", value: 1540000 },
+            { label: "Oct", value: 1090000 }
+          ],
+          drivers: ["83% of weighted value has an owner-confirmed next step.", "AI risk review highlights one renewal rescue plan.", "Proposal-stage value concentration is manageable."]
+        },
+        upside: {
+          label: "Upside",
+          multiplier: 1.18,
+          confidence: 58,
+          narrative: "Includes earlier close assumptions for two expansion opportunities and higher attach-rate performance.",
+          months: [
+            { label: "Aug", value: 1420000 },
+            { label: "Sep", value: 1760000 },
+            { label: "Oct", value: 1320000 }
+          ],
+          drivers: ["Summitline modernization could pull forward if architecture validation completes.", "Northstar QBR may unlock adjacent communications budget.", "Confidence is lower because procurement timing remains variable."]
+        }
+      };
+
+      const state = {
+        accountSearch: "",
+        segment: "all",
+        owner: "all",
+        selectedAccountId: accounts[0].id,
+        scenario: "balanced",
+        completedRecommendations: new Set()
+      };
+
+      const el = {
+        kpiGrid: document.getElementById("kpiGrid"),
+        accountGrid: document.getElementById("accountGrid"),
+        accountDetails: document.getElementById("accountDetails"),
+        accountSearch: document.getElementById("accountSearch"),
+        segmentFilter: document.getElementById("segmentFilter"),
+        clearFiltersBtn: document.getElementById("clearFiltersBtn"),
+        accountCount: document.getElementById("accountCount"),
+        navAccountCount: document.getElementById("navAccountCount"),
+        navPipelineCount: document.getElementById("navPipelineCount"),
+        navRecCount: document.getElementById("navRecCount"),
+        ownerFilter: document.getElementById("ownerFilter"),
+        pipelineBoard: document.getElementById("pipelineBoard"),
+        forecastValue: document.getElementById("forecastValue"),
+        forecastNarrative: document.getElementById("forecastNarrative"),
+        confidenceRing: document.getElementById("confidenceRing"),
+        confidenceValue: document.getElementById("confidenceValue"),
+        confidenceDrivers: document.getElementById("confidenceDrivers"),
+        forecastBars: document.getElementById("forecastBars"),
+        leaderboardBody: document.getElementById("leaderboardBody"),
+        recommendationList: document.getElementById("recommendationList"),
+        activityFeed: document.getElementById("activityFeed"),
+        refreshBtn: document.getElementById("refreshBtn"),
+        focusBtn: document.getElementById("focusBtn"),
+        toastRegion: document.getElementById("toastRegion")
+      };
+
+      function getWeightedPipeline() {
+        return opportunities.reduce((total, opp) => total + (opp.value * opp.probability / 100), 0);
+      }
+
+      function getFilteredAccounts() {
+        const query = state.accountSearch.trim().toLowerCase();
+        return accounts.filter((account) => {
+          const matchesSegment = state.segment === "all" || account.segment === state.segment;
+          const haystack = [account.name, account.sector, account.owner, account.segment, account.risk].join(" ").toLowerCase();
+          return matchesSegment && (!query || haystack.includes(query));
+        });
+      }
+
+      function renderKpis() {
+        const totalArr = accounts.reduce((sum, account) => sum + account.arr, 0);
+        const weighted = getWeightedPipeline();
+        const avgHealth = Math.round(accounts.reduce((sum, account) => sum + account.health, 0) / accounts.length);
+        const highPriority = recommendations.filter((rec) => rec.priority === "High" && !state.completedRecommendations.has(rec.id)).length;
+        const kpis = [
+          { label: "Portfolio ARR", value: formatMoney(totalArr), sub: "Across fictional demo accounts", trend: "+8.4%", trendClass: "up", bars: [42, 55, 49, 62, 70, 84, 88] },
+          { label: "Weighted Pipeline", value: formatMoney(weighted), sub: "Probability-adjusted opportunities", trend: "+12.1%", trendClass: "up", bars: [35, 44, 58, 53, 67, 71, 79] },
+          { label: "Avg. Account Health", value: avgHealth + "%", sub: "Based on engagement and adoption", trend: "Stable", trendClass: "flat", bars: [66, 69, 72, 71, 73, 76, 75] },
+          { label: "High Priority Actions", value: String(highPriority), sub: "AI actions requiring attention", trend: highPriority > 0 ? "Act now" : "Clear", trendClass: highPriority > 0 ? "down" : "up", bars: [75, 62, 56, 48, 42, 38, 32] }
+        ];
+
+        el.kpiGrid.innerHTML = kpis.map((kpi) => `
+          <article class="kpi-card">
+            <div class="kpi-label"><span>${kpi.label}</span><span class="trend ${kpi.trendClass}">${kpi.trend}</span></div>
+            <div class="kpi-value">${kpi.value}</div>
+            <p>${kpi.sub}</p>
+            <div class="sparkline" aria-hidden="true">${kpi.bars.map((height) => `<span style="height:${height}%"></span>`).join("")}</div>
+          </article>
+        `).join("");
+      }
+
+      function renderAccounts() {
+        const filtered = getFilteredAccounts();
+        el.accountCount.textContent = filtered.length;
+        el.navAccountCount.textContent = filtered.length;
+
+        if (!filtered.some((account) => account.id === state.selectedAccountId) && filtered.length) {
+          state.selectedAccountId = filtered[0].id;
+        }
+
+        if (!filtered.length) {
+          el.accountGrid.innerHTML = "<div class=\"empty-state\">No accounts match the current filters.</div>";
+          el.accountDetails.innerHTML = "<div><h3>No account selected</h3><p>Clear or adjust filters to view account insights.</p></div>";
+          return;
+        }
+
+        el.accountGrid.innerHTML = filtered.map((account) => `
+          <article class="account-card ${account.id === state.selectedAccountId ? "selected" : ""}" tabindex="0" role="button" data-account-id="${account.id}" aria-label="Select ${account.name}">
+            <div class="account-top">
+              <div>
+                <h3 class="account-name">${account.name}</h3>
+                <p class="account-meta">${account.sector} · Owner: ${account.owner}</p>
+              </div>
+              <span class="tag ${account.segment.toLowerCase()}">${account.segment}</span>
+            </div>
+            <div class="metrics-row">
+              <div class="mini-metric"><span>ARR</span><strong>${formatMoney(account.arr)}</strong></div>
+              <div class="mini-metric"><span>Health</span><strong>${account.health}%</strong></div>
+              <div class="mini-metric"><span>Opps</span><strong>${account.openOpps}</strong></div>
+            </div>
+            <div>
+              <div class="progress-track" aria-label="Health score ${account.health} percent"><div class="progress-fill" style="width:${account.health}%"></div></div>
+            </div>
+            <p class="account-meta">Renewal ${account.renewal} · Last touch ${account.lastTouch} · Risk ${account.risk}</p>
+          </article>
+        `).join("");
+
+        renderAccountDetails();
+      }
+
+      function renderAccountDetails() {
+        const account = accounts.find((item) => item.id === state.selectedAccountId) || accounts[0];
+        const accountOpps = opportunities.filter((opp) => opp.account === account.name);
+        const weighted = accountOpps.reduce((sum, opp) => sum + opp.value * opp.probability / 100, 0);
+        el.accountDetails.innerHTML = `
+          <div>
+            <h3>${account.name}</h3>
+            <p><strong>Account summary:</strong> ${account.summary}</p>
+            <p><strong>Owner:</strong> ${account.owner} · <strong>Segment:</strong> ${account.segment} · <strong>Renewal:</strong> ${account.renewal}</p>
+            <ul class="insight-list">
+              ${account.insights.map((insight) => `<li>${insight}</li>`).join("")}
+            </ul>
+          </div>
+          <div>
+            <h3>Commercial view</h3>
+            <p><strong>Open opportunity value:</strong> ${formatMoney(accountOpps.reduce((sum, opp) => sum + opp.value, 0))}</p>
+            <p><strong>Weighted opportunity value:</strong> ${formatMoney(weighted)}</p>
+            <p><strong>AI health score:</strong> ${account.health}%</p>
+            <button class="btn btn-primary btn-small" type="button" data-plan-account="${account.id}">Generate action brief</button>
+          </div>
+        `;
+      }
+
+      function renderOwnerFilter() {
+        const owners = Array.from(new Set(opportunities.map((opp) => opp.owner))).sort();
+        el.ownerFilter.innerHTML = `<option value="all">All owners</option>${owners.map((owner) => `<option value="${owner}">${owner}</option>`).join("")}`;
+      }
+
+      function renderPipeline() {
+        const stages = ["Discover", "Validate", "Propose", "Commit"];
+        const filteredOpps = opportunities.filter((opp) => state.owner === "all" || opp.owner === state.owner);
+        el.navPipelineCount.textContent = filteredOpps.length;
+        el.pipelineBoard.innerHTML = stages.map((stage) => {
+          const stageOpps = filteredOpps.filter((opp) => opp.stage === stage);
+          const total = stageOpps.reduce((sum, opp) => sum + opp.value, 0);
+          return `
+            <section class="stage-column" aria-labelledby="stage-${stage}">
+              <div class="stage-header">
+                <div class="stage-title"><span id="stage-${stage}">${stage}</span><span>${stageOpps.length}</span></div>
+                <div class="stage-summary">${formatMoney(total)} total value</div>
+              </div>
+              <ul class="opportunity-list">
+                ${stageOpps.length ? stageOpps.map((opp) => `
+                  <li class="opportunity-card">
+                    <strong>${opp.name}</strong>
+                    <p>${opp.account}</p>
+                    <div class="opp-foot"><span>${formatMoney(opp.value)}</span><span>${opp.probability}%</span></div>
+                    <div class="progress-track" aria-label="Close probability ${opp.probability} percent"><div class="progress-fill" style="width:${opp.probability}%"></div></div>
+                    <p>Owner: ${opp.owner} · Close: ${opp.close}</p>
+                  </li>
+                `).join("") : `<li class="empty-state">No opportunities in this stage.</li>`}
+              </ul>
+            </section>
+          `;
+        }).join("");
+      }
+
+      function renderForecast() {
+        const scenario = forecastScenarios[state.scenario];
+        const weightedBase = getWeightedPipeline();
+        const projected = weightedBase * scenario.multiplier;
+        el.forecastValue.textContent = formatMoney(projected);
+        el.forecastNarrative.textContent = scenario.narrative;
+        el.confidenceRing.style.setProperty("--pct", scenario.confidence);
+        el.confidenceValue.textContent = scenario.confidence + "%";
+        el.confidenceRing.setAttribute("aria-label", `Forecast confidence ${scenario.confidence} percent`);
+        el.confidenceDrivers.innerHTML = scenario.drivers.map((driver) => `<li>${driver}</li>`).join("");
+        const max = Math.max(...scenario.months.map((month) => month.value));
+        el.forecastBars.innerHTML = scenario.months.map((month) => `
+          <div class="bar-row">
+            <span>${month.label}</span>
+            <div class="bar-track" aria-label="${month.label} forecast ${formatMoney(month.value)}"><div class="bar-fill" style="width:${Math.round(month.value / max * 100)}%"></div></div>
+            <strong>${formatMoney(month.value)}</strong>
+          </div>
+        `).join("");
+      }
+
+      function renderLeaderboard() {
+        const sorted = team.slice().sort((a, b) => b.attainment - a.attainment);
+        el.leaderboardBody.innerHTML = sorted.map((member, index) => `
+          <tr>
+            <td><span class="rank">${index + 1}</span></td>
+            <td><strong>${member.name}</strong></td>
+            <td>${member.role}</td>
+            <td><span class="trend ${member.attainment >= 100 ? "up" : member.attainment >= 85 ? "flat" : "down"}">${member.attainment}%</span></td>
+            <td>${formatMoney(member.weighted)}</td>
+            <td>${member.actions}</td>
+          </tr>
+        `).join("");
+      }
+
+      function renderRecommendations() {
+        const priorityClass = (priority) => priority.toLowerCase();
+        const visibleCount = recommendations.filter((rec) => !state.completedRecommendations.has(rec.id)).length;
+        el.navRecCount.textContent = visibleCount;
+        el.recommendationList.innerHTML = recommendations.map((rec) => {
+          const done = state.completedRecommendations.has(rec.id);
+          return `
+            <li class="recommendation ${done ? "done" : ""}" data-rec-id="${rec.id}">
+              <div class="rec-top">
+                <div>
+                  <span class="priority ${priorityClass(rec.priority)}">${rec.priority}</span>
+                  <h3>${rec.title}</h3>
+                </div>
+                ${done ? `<span class="tag expansion">Done</span>` : ""}
+              </div>
+              <p>${rec.text}</p>
+              <div class="rec-actions">
+                <button class="btn btn-primary btn-small" type="button" data-rec-action="${rec.id}" ${done ? "disabled" : ""}>${done ? "Completed" : rec.action}</button>
+                <button class="btn btn-ghost btn-small" type="button" data-rec-dismiss="${rec.id}" ${done ? "disabled" : ""}>Mark done</button>
+              </div>
+            </li>
+          `;
+        }).join("");
+      }
+
+      function renderActivity() {
+        el.activityFeed.innerHTML = activities.map((item) => `
+          <li class="activity-item">
+            <span class="activity-icon" aria-hidden="true">${item.icon}</span>
+            <div><p>${item.text}</p><time>${item.time}</time></div>
+          </li>
+        `).join("");
+      }
+
+      function showToast(message) {
+        const toast = document.createElement("div");
+        toast.className = "toast";
+        toast.textContent = message;
+        el.toastRegion.appendChild(toast);
+        window.setTimeout(() => {
+          toast.style.opacity = "0";
+          toast.style.transform = "translateY(8px)";
+          window.setTimeout(() => toast.remove(), 240);
+        }, 2600);
+      }
+
+      function renderAll() {
+        renderKpis();
+        renderAccounts();
+        renderPipeline();
+        renderForecast();
+        renderLeaderboard();
+        renderRecommendations();
+        renderActivity();
+      }
+
+      function wireEvents() {
+        el.accountSearch.addEventListener("input", (event) => {
+          state.accountSearch = event.target.value;
+          renderAccounts();
+        });
+
+        el.segmentFilter.addEventListener("change", (event) => {
+          state.segment = event.target.value;
+          renderAccounts();
+        });
+
+        el.clearFiltersBtn.addEventListener("click", () => {
+          state.accountSearch = "";
+          state.segment = "all";
+          el.accountSearch.value = "";
+          el.segmentFilter.value = "all";
+          renderAccounts();
+          showToast("Customer filters cleared.");
+        });
+
+        el.accountGrid.addEventListener("click", (event) => {
+          const card = event.target.closest("[data-account-id]");
+          if (!card) return;
+          state.selectedAccountId = card.getAttribute("data-account-id");
+          renderAccounts();
+        });
+
+        el.accountGrid.addEventListener("keydown", (event) => {
+          if (event.key !== "Enter" && event.key !== " ") return;
+          const card = event.target.closest("[data-account-id]");
+          if (!card) return;
+          event.preventDefault();
+          state.selectedAccountId = card.getAttribute("data-account-id");
+          renderAccounts();
+        });
+
+        el.accountDetails.addEventListener("click", (event) => {
+          const button = event.target.closest("[data-plan-account]");
+          if (!button) return;
+          const account = accounts.find((item) => item.id === button.getAttribute("data-plan-account"));
+          if (account) showToast(`Action brief queued for ${account.name}.`);
+        });
+
+        el.ownerFilter.addEventListener("change", (event) => {
+          state.owner = event.target.value;
+          renderPipeline();
+          showToast(state.owner === "all" ? "Showing all opportunity owners." : `Filtered pipeline to ${state.owner}.`);
+        });
+
+        document.querySelectorAll(".scenario-tab").forEach((button) => {
+          button.addEventListener("click", () => {
+            state.scenario = button.getAttribute("data-scenario");
+            document.querySelectorAll(".scenario-tab").forEach((tab) => {
+              const isActive = tab === button;
+              tab.classList.toggle("active", isActive);
+              tab.setAttribute("aria-selected", isActive ? "true" : "false");
+            });
+            renderForecast();
+            showToast(`${forecastScenarios[state.scenario].label} forecast selected.`);
+          });
+        });
+
+        el.recommendationList.addEventListener("click", (event) => {
+          const actionButton = event.target.closest("[data-rec-action]");
+          const dismissButton = event.target.closest("[data-rec-dismiss]");
+          const recId = actionButton ? actionButton.getAttribute("data-rec-action") : dismissButton ? dismissButton.getAttribute("data-rec-dismiss") : null;
+          if (!recId) return;
+          const rec = recommendations.find((item) => item.id === recId);
+          if (!rec) return;
+          state.completedRecommendations.add(recId);
+          renderRecommendations();
+          renderKpis();
+          showToast(actionButton ? `${rec.action} started.` : `${rec.title} marked done.`);
+        });
+
+        el.refreshBtn.addEventListener("click", () => {
+          state.completedRecommendations.clear();
+          state.owner = "all";
+          state.segment = "all";
+          state.accountSearch = "";
+          state.scenario = "balanced";
+          el.ownerFilter.value = "all";
+          el.segmentFilter.value = "all";
+          el.accountSearch.value = "";
+          document.querySelectorAll(".scenario-tab").forEach((tab) => {
+            const isActive = tab.getAttribute("data-scenario") === "balanced";
+            tab.classList.toggle("active", isActive);
+            tab.setAttribute("aria-selected", isActive ? "true" : "false");
+          });
+          renderAll();
+          showToast("Demo workspace refreshed.");
+        });
+
+        el.focusBtn.addEventListener("click", () => {
+          const next = recommendations.find((rec) => !state.completedRecommendations.has(rec.id));
+          const target = document.getElementById("ai");
+          if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+          if (next) showToast(`Focus recommendation: ${next.title}`);
+        });
+
+        document.querySelectorAll(".nav-link").forEach((link) => {
+          link.addEventListener("click", () => {
+            document.querySelectorAll(".nav-link").forEach((nav) => nav.classList.remove("active"));
+            link.classList.add("active");
+          });
+        });
+      }
+
+      renderOwnerFilter();
+      renderAll();
+      wireEvents();
+    }());
+  </script>
+</body>
+</html>

@@ -1,0 +1,1629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Sales CRM | Executive Performance Workspace</title>
+  <style>
+    :root {
+      --navy-950: #07182f;
+      --navy-900: #0a1f3d;
+      --navy-800: #11345f;
+      --blue-700: #155fa8;
+      --blue-600: #1d73c9;
+      --blue-500: #2988e6;
+      --cyan-400: #28d3e6;
+      --cyan-100: #d9fbff;
+      --gray-950: #17202c;
+      --gray-700: #445466;
+      --gray-600: #617184;
+      --gray-300: #d7dee8;
+      --gray-200: #e9eef5;
+      --gray-100: #f4f7fb;
+      --white: #ffffff;
+      --green: #15a66a;
+      --amber: #bf7a10;
+      --red: #c94a4a;
+      --shadow: 0 18px 42px rgba(7, 24, 47, 0.14);
+      --shadow-soft: 0 10px 28px rgba(7, 24, 47, 0.09);
+      --radius-xl: 24px;
+      --radius-lg: 18px;
+      --radius-md: 12px;
+      --sidebar: 280px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+      color: var(--gray-950);
+      background:
+        radial-gradient(circle at 8% 4%, rgba(40, 211, 230, 0.14), transparent 30%),
+        radial-gradient(circle at 84% 8%, rgba(29, 115, 201, 0.18), transparent 24%),
+        linear-gradient(135deg, #eef4fb 0%, #f8fbff 44%, #edf3f9 100%);
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .app-shell {
+      display: grid;
+      grid-template-columns: var(--sidebar) minmax(0, 1fr);
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      padding: 24px 18px;
+      color: var(--white);
+      background: linear-gradient(180deg, var(--navy-950), var(--navy-900) 46%, #092447);
+      overflow-y: auto;
+      box-shadow: 10px 0 30px rgba(7, 24, 47, 0.12);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 10px 22px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--blue-600), var(--cyan-400));
+      box-shadow: 0 12px 24px rgba(40, 211, 230, 0.22);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+    }
+
+    .brand small {
+      display: block;
+      margin-top: 3px;
+      color: rgba(255, 255, 255, 0.66);
+      font-size: 0.76rem;
+    }
+
+    .nav-title {
+      margin: 24px 10px 10px;
+      color: rgba(255, 255, 255, 0.48);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .nav-button {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 6px 0;
+      padding: 12px 12px;
+      border: 1px solid transparent;
+      border-radius: 14px;
+      color: rgba(255, 255, 255, 0.76);
+      background: transparent;
+      text-align: left;
+      transition: 0.18s ease;
+    }
+
+    .nav-button:hover,
+    .nav-button.active {
+      color: var(--white);
+      border-color: rgba(40, 211, 230, 0.28);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .nav-icon {
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .side-card {
+      margin-top: 26px;
+      padding: 16px;
+      border: 1px solid rgba(40, 211, 230, 0.25);
+      border-radius: 18px;
+      background: linear-gradient(160deg, rgba(255,255,255,0.10), rgba(255,255,255,0.04));
+    }
+
+    .side-card strong {
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .side-card p {
+      margin: 0 0 12px;
+      color: rgba(255, 255, 255, 0.68);
+      font-size: 0.86rem;
+      line-height: 1.5;
+    }
+
+    .main {
+      min-width: 0;
+      padding: 26px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 22px;
+      padding: 18px 20px;
+      border: 1px solid rgba(215, 222, 232, 0.86);
+      border-radius: var(--radius-xl);
+      background: rgba(255, 255, 255, 0.84);
+      backdrop-filter: blur(16px);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .topbar h1 {
+      margin: 0;
+      color: var(--navy-950);
+      font-size: clamp(1.42rem, 2.2vw, 2.2rem);
+      letter-spacing: -0.045em;
+    }
+
+    .topbar p {
+      margin: 6px 0 0;
+      color: var(--gray-600);
+      line-height: 1.4;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .pill,
+    .primary-btn,
+    .secondary-btn,
+    .ghost-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 40px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--gray-300);
+      white-space: nowrap;
+    }
+
+    .pill {
+      color: var(--navy-800);
+      background: var(--white);
+      font-weight: 700;
+      font-size: 0.88rem;
+    }
+
+    .primary-btn {
+      border: 0;
+      color: var(--white);
+      background: linear-gradient(135deg, var(--blue-700), var(--blue-500));
+      box-shadow: 0 12px 24px rgba(29, 115, 201, 0.24);
+      font-weight: 800;
+    }
+
+    .secondary-btn {
+      color: var(--navy-800);
+      background: var(--white);
+      font-weight: 750;
+    }
+
+    .ghost-btn {
+      color: var(--gray-700);
+      background: transparent;
+      font-weight: 700;
+    }
+
+    .section {
+      display: none;
+      animation: fadeUp 0.28s ease both;
+    }
+
+    .section.active {
+      display: block;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .filter-bar {
+      display: grid;
+      grid-template-columns: 1.2fr repeat(3, minmax(150px, 0.5fr));
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .field {
+      position: relative;
+    }
+
+    .field label {
+      display: block;
+      margin: 0 0 7px;
+      color: var(--gray-600);
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      border: 1px solid var(--gray-300);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.95);
+      color: var(--gray-950);
+      outline: none;
+      transition: border 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    input,
+    select {
+      height: 46px;
+      padding: 0 13px;
+    }
+
+    textarea {
+      min-height: 110px;
+      padding: 13px;
+      resize: vertical;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--blue-500);
+      box-shadow: 0 0 0 4px rgba(41, 136, 230, 0.12);
+    }
+
+    .grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    .kpi-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .content-grid {
+      grid-template-columns: minmax(0, 1.45fr) minmax(320px, 0.85fr);
+      align-items: start;
+    }
+
+    .three-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .two-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .card {
+      border: 1px solid rgba(215, 222, 232, 0.92);
+      border-radius: var(--radius-xl);
+      background: rgba(255, 255, 255, 0.92);
+      box-shadow: var(--shadow-soft);
+      overflow: hidden;
+    }
+
+    .card.pad {
+      padding: 18px;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 18px 18px 0;
+    }
+
+    .card-header h2,
+    .card-header h3,
+    .card h2,
+    .card h3 {
+      margin: 0;
+      color: var(--navy-950);
+      letter-spacing: -0.028em;
+    }
+
+    .card-header p,
+    .muted {
+      color: var(--gray-600);
+    }
+
+    .card-header p {
+      margin: 5px 0 0;
+      line-height: 1.45;
+    }
+
+    .kpi-card {
+      position: relative;
+      min-height: 154px;
+      padding: 18px;
+      overflow: hidden;
+    }
+
+    .kpi-card::after {
+      content: "";
+      position: absolute;
+      right: -28px;
+      top: -34px;
+      width: 118px;
+      height: 118px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(40, 211, 230, 0.24), rgba(41, 136, 230, 0.04) 68%);
+    }
+
+    .kpi-label {
+      color: var(--gray-600);
+      font-size: 0.83rem;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .kpi-value {
+      margin: 14px 0 8px;
+      color: var(--navy-950);
+      font-size: clamp(1.8rem, 3vw, 2.7rem);
+      font-weight: 850;
+      letter-spacing: -0.06em;
+    }
+
+    .delta {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 9px;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 800;
+    }
+
+    .delta.up { color: #0f6b45; background: rgba(21, 166, 106, 0.12); }
+    .delta.flat { color: #7c520b; background: rgba(191, 122, 16, 0.13); }
+    .delta.down { color: #963232; background: rgba(201, 74, 74, 0.12); }
+
+    .chart-wrap {
+      padding: 16px 18px 18px;
+    }
+
+    canvas {
+      width: 100%;
+      height: 310px;
+      display: block;
+    }
+
+    .mini-canvas {
+      height: 190px;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      padding: 12px 18px 18px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 760px;
+    }
+
+    th,
+    td {
+      padding: 13px 12px;
+      border-bottom: 1px solid var(--gray-200);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      color: var(--gray-600);
+      font-size: 0.75rem;
+      font-weight: 850;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: rgba(244, 247, 251, 0.74);
+    }
+
+    tr:hover td {
+      background: rgba(233, 238, 245, 0.32);
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 9px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 850;
+    }
+
+    .status::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: currentColor;
+    }
+
+    .status.green { color: #0f6b45; background: rgba(21, 166, 106, 0.12); }
+    .status.blue { color: var(--blue-700); background: rgba(41, 136, 230, 0.12); }
+    .status.amber { color: #80520a; background: rgba(191, 122, 16, 0.13); }
+    .status.red { color: #963232; background: rgba(201, 74, 74, 0.12); }
+    .status.gray { color: var(--gray-700); background: rgba(97, 113, 132, 0.12); }
+
+    .ai-panel {
+      border: 1px solid rgba(40, 211, 230, 0.32);
+      background:
+        linear-gradient(135deg, rgba(10, 31, 61, 0.97), rgba(17, 52, 95, 0.95)),
+        radial-gradient(circle at 90% 10%, rgba(40, 211, 230, 0.25), transparent 35%);
+      color: var(--white);
+    }
+
+    .ai-panel .card-header h2,
+    .ai-panel .card-header h3,
+    .ai-panel .card-header p,
+    .ai-panel .muted {
+      color: var(--white);
+    }
+
+    .ai-panel .muted,
+    .ai-panel .card-header p {
+      color: rgba(255, 255, 255, 0.68);
+    }
+
+    .insight-list {
+      display: grid;
+      gap: 12px;
+      padding: 16px 18px 18px;
+      margin: 0;
+      list-style-position: inside;
+    }
+
+    .insight-item {
+      padding: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.13);
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.08);
+      line-height: 1.48;
+    }
+
+    .insight-item strong {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--cyan-100);
+    }
+
+    .opportunity-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      padding: 14px;
+      border: 1px solid var(--gray-200);
+      border-radius: 18px;
+      background: var(--white);
+    }
+
+    .opportunity-row + .opportunity-row {
+      margin-top: 12px;
+    }
+
+    .opportunity-row h3 {
+      margin: 0 0 6px;
+      font-size: 1rem;
+    }
+
+    .opportunity-row p {
+      margin: 0;
+      color: var(--gray-600);
+      line-height: 1.45;
+    }
+
+    .score {
+      width: 62px;
+      height: 62px;
+      display: grid;
+      place-items: center;
+      border-radius: 18px;
+      color: var(--navy-950);
+      background: linear-gradient(135deg, rgba(40, 211, 230, 0.2), rgba(41, 136, 230, 0.12));
+      font-weight: 900;
+      font-size: 1.15rem;
+    }
+
+    .progress {
+      position: relative;
+      height: 9px;
+      border-radius: 999px;
+      background: var(--gray-200);
+      overflow: hidden;
+    }
+
+    .progress span {
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: var(--w, 50%);
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--blue-600), var(--cyan-400));
+    }
+
+    .customer-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 14px;
+      padding: 16px 18px 18px;
+    }
+
+    .customer-card {
+      border: 1px solid var(--gray-200);
+      border-radius: 20px;
+      padding: 16px;
+      background: var(--white);
+    }
+
+    .customer-card h3 {
+      margin: 0 0 4px;
+    }
+
+    .customer-card p {
+      margin: 0 0 12px;
+      color: var(--gray-600);
+      line-height: 1.45;
+    }
+
+    .meta-list {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+      padding-left: 20px;
+      color: var(--gray-700);
+    }
+
+    .activity-item {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 12px;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--gray-200);
+      align-items: start;
+    }
+
+    .activity-dot {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      color: var(--blue-700);
+      background: rgba(41, 136, 230, 0.11);
+      font-weight: 850;
+    }
+
+    .activity-item h3 {
+      margin: 0 0 4px;
+      font-size: 1rem;
+    }
+
+    .activity-item p {
+      margin: 0;
+      color: var(--gray-600);
+      line-height: 1.45;
+    }
+
+    .scenario-box {
+      display: grid;
+      gap: 14px;
+      padding: 18px;
+    }
+
+    input[type="range"] {
+      height: auto;
+      padding: 0;
+      accent-color: var(--blue-600);
+    }
+
+    .range-line {
+      display: grid;
+      gap: 8px;
+    }
+
+    .range-line header {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--gray-700);
+      font-weight: 800;
+    }
+
+    .forecast-result {
+      padding: 18px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, var(--navy-900), var(--navy-800));
+      color: var(--white);
+    }
+
+    .forecast-result strong {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--cyan-100);
+      font-size: 0.82rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .forecast-result span {
+      font-size: 2rem;
+      font-weight: 900;
+      letter-spacing: -0.05em;
+    }
+
+    .mobile-menu {
+      display: none;
+      margin-bottom: 14px;
+      width: 100%;
+    }
+
+    .toast {
+      position: fixed;
+      right: 22px;
+      bottom: 22px;
+      z-index: 50;
+      max-width: 360px;
+      padding: 14px 16px;
+      border-radius: 16px;
+      color: var(--white);
+      background: rgba(7, 24, 47, 0.96);
+      box-shadow: var(--shadow);
+      transform: translateY(24px);
+      opacity: 0;
+      pointer-events: none;
+      transition: 0.24s ease;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .empty-state {
+      padding: 30px;
+      text-align: center;
+      color: var(--gray-600);
+    }
+
+    .nowrap {
+      white-space: nowrap;
+    }
+
+    @media (max-width: 1180px) {
+      .kpi-grid,
+      .three-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .content-grid {
+        grid-template-columns: 1fr;
+      }
+      .filter-bar {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 860px) {
+      .app-shell {
+        display: block;
+      }
+      .sidebar {
+        display: none;
+      }
+      .mobile-menu {
+        display: block;
+      }
+      .main {
+        padding: 16px;
+      }
+      .topbar {
+        align-items: stretch;
+        flex-direction: column;
+      }
+      .top-actions {
+        justify-content: flex-start;
+      }
+      .kpi-grid,
+      .three-grid,
+      .two-grid,
+      .filter-bar {
+        grid-template-columns: 1fr;
+      }
+      canvas {
+        height: 260px;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .activity-item,
+      .opportunity-row {
+        grid-template-columns: 1fr;
+      }
+      .top-actions > * {
+        width: 100%;
+      }
+      .pill,
+      .primary-btn,
+      .secondary-btn,
+      .ghost-btn {
+        white-space: normal;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Primary navigation">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">AI</div>
+        <div>
+          <strong>Sales Command CRM</strong>
+          <small>Enterprise revenue workspace</small>
+        </div>
+      </div>
+      <p class="nav-title">Workspace</p>
+      <button class="nav-button active" data-section="dashboard"><span class="nav-icon">01</span>Performance</button>
+      <button class="nav-button" data-section="customers"><span class="nav-icon">02</span>Customers</button>
+      <button class="nav-button" data-section="opportunities"><span class="nav-icon">03</span>Opportunities</button>
+      <button class="nav-button" data-section="forecast"><span class="nav-icon">04</span>Forecast</button>
+      <button class="nav-button" data-section="team"><span class="nav-icon">05</span>Team Results</button>
+      <button class="nav-button" data-section="activity"><span class="nav-icon">06</span>Activity</button>
+      <button class="nav-button" data-section="ai"><span class="nav-icon">07</span>AI Coach</button>
+      <div class="side-card">
+        <strong>Quarter signal</strong>
+        <p>AI confidence is strongest in retention expansion and mid-market cross-sell. Two enterprise opportunities need executive attention this week.</p>
+        <button class="primary-btn" id="sideAction" type="button">Run priority review</button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <select class="mobile-menu" id="mobileMenu" aria-label="Choose section">
+        <option value="dashboard">Performance</option>
+        <option value="customers">Customers</option>
+        <option value="opportunities">Opportunities</option>
+        <option value="forecast">Forecast</option>
+        <option value="team">Team Results</option>
+        <option value="activity">Activity</option>
+        <option value="ai">AI Coach</option>
+      </select>
+
+      <header class="topbar">
+        <div>
+          <h1>AI-powered sales performance cockpit</h1>
+          <p>Fictional CRM workspace for revenue insight, customer prioritization, forecasting, and next-best-action execution.</p>
+        </div>
+        <div class="top-actions">
+          <span class="pill" id="healthPill">Pipeline health 82%</span>
+          <button class="secondary-btn" id="refreshBtn" type="button">Refresh demo data</button>
+          <button class="primary-btn" id="recommendBtn" type="button">Generate AI actions</button>
+        </div>
+      </header>
+
+      <section class="filter-bar" aria-label="Global filters">
+        <div class="field">
+          <label for="searchInput">Search CRM</label>
+          <input id="searchInput" type="search" placeholder="Search customers, reps, stages, actions" />
+        </div>
+        <div class="field">
+          <label for="segmentFilter">Segment</label>
+          <select id="segmentFilter">
+            <option value="all">All segments</option>
+            <option value="Enterprise">Enterprise</option>
+            <option value="Mid-Market">Mid-Market</option>
+            <option value="Strategic">Strategic</option>
+            <option value="Growth">Growth</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="regionFilter">Region</label>
+          <select id="regionFilter">
+            <option value="all">All regions</option>
+            <option value="North">North</option>
+            <option value="East">East</option>
+            <option value="Central">Central</option>
+            <option value="West">West</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="stageFilter">Stage</label>
+          <select id="stageFilter">
+            <option value="all">All stages</option>
+            <option value="Discovery">Discovery</option>
+            <option value="Solution Fit">Solution Fit</option>
+            <option value="Proposal">Proposal</option>
+            <option value="Negotiation">Negotiation</option>
+            <option value="Commit">Commit</option>
+          </select>
+        </div>
+      </section>
+
+      <section class="section active" id="dashboard">
+        <div class="grid kpi-grid" id="kpiGrid"></div>
+        <div class="grid content-grid" style="margin-top:16px;">
+          <article class="card">
+            <div class="card-header">
+              <div>
+                <h2>Revenue trajectory</h2>
+                <p>Weighted pipeline, booked revenue, and target pacing by month.</p>
+              </div>
+              <button class="ghost-btn" type="button" data-section-jump="forecast">Open forecast</button>
+            </div>
+            <div class="chart-wrap"><canvas id="revenueChart" aria-label="Revenue trajectory chart"></canvas></div>
+          </article>
+          <article class="card ai-panel">
+            <div class="card-header">
+              <div>
+                <h2>AI executive brief</h2>
+                <p>Focused actions based on current demo CRM signals.</p>
+              </div>
+            </div>
+            <ol class="insight-list" id="executiveBrief"></ol>
+          </article>
+        </div>
+        <div class="grid two-grid" style="margin-top:16px;">
+          <article class="card">
+            <div class="card-header">
+              <div>
+                <h2>Priority opportunities</h2>
+                <p>Highest value pursuits ranked by AI urgency score.</p>
+              </div>
+            </div>
+            <div class="chart-wrap" id="priorityList"></div>
+          </article>
+          <article class="card">
+            <div class="card-header">
+              <div>
+                <h2>Stage distribution</h2>
+                <p>Current open pipeline by sales stage.</p>
+              </div>
+            </div>
+            <div class="chart-wrap"><canvas class="mini-canvas" id="stageChart" aria-label="Stage distribution chart"></canvas></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="customers">
+        <article class="card">
+          <div class="card-header">
+            <div>
+              <h2>Customer intelligence</h2>
+              <p>Account health, expansion potential, risk indicators, and AI-guided engagement focus.</p>
+            </div>
+            <button class="primary-btn" id="customerPlanBtn" type="button">Create account plan</button>
+          </div>
+          <div class="customer-grid" id="customerGrid"></div>
+        </article>
+      </section>
+
+      <section class="section" id="opportunities">
+        <article class="card">
+          <div class="card-header">
+            <div>
+              <h2>Opportunity command center</h2>
+              <p>Prioritize, sort, and act on pipeline with forecast risk and next best actions.</p>
+            </div>
+            <button class="secondary-btn" id="sortRiskBtn" type="button">Sort by risk</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Opportunity</th>
+                  <th>Customer</th>
+                  <th>Segment</th>
+                  <th>Stage</th>
+                  <th>Value</th>
+                  <th>Close</th>
+                  <th>AI Score</th>
+                  <th>Next Action</th>
+                </tr>
+              </thead>
+              <tbody id="opportunityTable"></tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+
+      <section class="section" id="forecast">
+        <div class="grid content-grid">
+          <article class="card">
+            <div class="card-header">
+              <div>
+                <h2>Forecast model</h2>
+                <p>AI-weighted revenue forecast with conservative, expected, and stretch views.</p>
+              </div>
+            </div>
+            <div class="chart-wrap"><canvas id="forecastChart" aria-label="Forecast model chart"></canvas></div>
+          </article>
+          <article class="card">
+            <div class="card-header">
+              <div>
+                <h2>Scenario planner</h2>
+                <p>Adjust win rate, discount pressure, and sales velocity assumptions.</p>
+              </div>
+            </div>
+            <div class="scenario-box">
+              <div class="range-line">
+                <header><span>Win-rate lift</span><span id="winLiftVal">4%</span></header>
+                <input id="winLift" type="range" min="-8" max="12" value="4" />
+              </div>
+              <div class="range-line">
+                <header><span>Discount pressure</span><span id="discountVal">3%</span></header>
+                <input id="discount" type="range" min="0" max="14" value="3" />
+              </div>
+              <div class="range-line">
+                <header><span>Velocity gain</span><span id="velocityVal">6%</span></header>
+                <input id="velocity" type="range" min="-10" max="18" value="6" />
+              </div>
+              <div class="forecast-result">
+                <strong>Adjusted quarterly forecast</strong>
+                <span id="scenarioOutput">$0.0M</span>
+                <p id="scenarioText">Model recalculates from filtered pipeline.</p>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="team">
+        <div class="grid two-grid">
+          <article class="card">
+            <div class="card-header">
+              <div>
+                <h2>Team comparison</h2>
+                <p>Booked revenue, pipeline creation, win rate, and activity quality by seller group.</p>
+              </div>
+            </div>
+            <div class="chart-wrap"><canvas id="teamChart" aria-label="Team comparison chart"></canvas></div>
+          </article>
+          <article class="card">
+            <div class="card-header">
+              <div>
+                <h2>Performance leaderboard</h2>
+                <p>Fictional seller groups ranked by overall revenue effectiveness.</p>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr><th>Seller Group</th><th>Booked</th><th>Win Rate</th><th>Quality</th><th>Focus</th></tr>
+                </thead>
+                <tbody id="teamTable"></tbody>
+              </table>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="activity">
+        <div class="grid content-grid">
+          <article class="card">
+            <div class="card-header">
+              <div>
+                <h2>Activity stream</h2>
+                <p>Recent CRM moments summarized into outcome-focused action signals.</p>
+              </div>
+            </div>
+            <div id="activityStream"></div>
+          </article>
+          <article class="card pad">
+            <h2>Log activity</h2>
+            <p class="muted">Create a local demo note for CRM planning. This does not leave the page.</p>
+            <div class="field" style="margin-top:14px;">
+              <label for="activityType">Type</label>
+              <select id="activityType">
+                <option>Executive call</option>
+                <option>Pricing review</option>
+                <option>Solution workshop</option>
+                <option>Renewal check-in</option>
+              </select>
+            </div>
+            <div class="field" style="margin-top:12px;">
+              <label for="activityNote">Note</label>
+              <textarea id="activityNote" placeholder="Example: Customer requested a value recap before proposal sign-off."></textarea>
+            </div>
+            <button class="primary-btn" id="logActivityBtn" type="button" style="margin-top:12px;">Add demo activity</button>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="ai">
+        <div class="grid content-grid">
+          <article class="card ai-panel">
+            <div class="card-header">
+              <div>
+                <h2>AI recommendation engine</h2>
+                <p>Outcome-based guidance for deal strategy, customer risk, and forecast confidence.</p>
+              </div>
+            </div>
+            <ol class="insight-list" id="aiRecommendations"></ol>
+          </article>
+          <article class="card">
+            <div class="card-header">
+              <div>
+                <h2>Coach prompt builder</h2>
+                <p>Choose a pursuit and generate a concise talk track.</p>
+              </div>
+            </div>
+            <div class="scenario-box">
+              <div class="field">
+                <label for="coachDeal">Opportunity</label>
+                <select id="coachDeal"></select>
+              </div>
+              <div class="field">
+                <label for="coachGoal">Outcome</label>
+                <select id="coachGoal">
+                  <option>Secure executive alignment</option>
+                  <option>Improve forecast confidence</option>
+                  <option>Protect renewal value</option>
+                  <option>Accelerate proposal decision</option>
+                </select>
+              </div>
+              <button class="primary-btn" id="buildCoachBtn" type="button">Build talk track</button>
+              <div class="forecast-result">
+                <strong>AI-generated talk track</strong>
+                <p id="coachOutput">Select an opportunity and generate a concise next conversation plan.</p>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const crmData = {
+      opportunities: [
+        { id: 1, name: "Managed data operations expansion", customer: "Northstar Advisory Group", segment: "Enterprise", region: "East", stage: "Negotiation", value: 4200000, probability: 0.68, close: "Jul 18", score: 91, risk: 22, owner: "Seller Group Orion", action: "Schedule CFO value review", health: "green" },
+        { id: 2, name: "Digital servicing modernization", customer: "Blue Harbor Financial", segment: "Strategic", region: "North", stage: "Proposal", value: 3600000, probability: 0.54, close: "Aug 06", score: 84, risk: 34, owner: "Seller Group Nova", action: "Send security response summary", health: "blue" },
+        { id: 3, name: "Advisor analytics bundle", customer: "Cedarstone Wealth Network", segment: "Mid-Market", region: "West", stage: "Commit", value: 1800000, probability: 0.82, close: "Jul 12", score: 88, risk: 18, owner: "Seller Group Delta", action: "Confirm implementation timeline", health: "green" },
+        { id: 4, name: "Retirement plan communications suite", customer: "Horizon Benefit Partners", segment: "Growth", region: "Central", stage: "Solution Fit", value: 1250000, probability: 0.42, close: "Sep 10", score: 73, risk: 41, owner: "Seller Group Atlas", action: "Map stakeholder approval path", health: "amber" },
+        { id: 5, name: "Compliance workflow upgrade", customer: "Meridian Trust Services", segment: "Enterprise", region: "West", stage: "Discovery", value: 2400000, probability: 0.31, close: "Sep 22", score: 66, risk: 52, owner: "Seller Group Orion", action: "Quantify regulatory operating cost", health: "amber" },
+        { id: 6, name: "Capital markets reporting platform", customer: "Summit Ridge Markets", segment: "Strategic", region: "East", stage: "Negotiation", value: 5100000, probability: 0.61, close: "Aug 28", score: 79, risk: 47, owner: "Seller Group Nova", action: "Invite executive sponsor to pricing call", health: "red" },
+        { id: 7, name: "CRM data enrichment package", customer: "Riverbend Insurance Collective", segment: "Mid-Market", region: "Central", stage: "Proposal", value: 980000, probability: 0.58, close: "Jul 29", score: 81, risk: 29, owner: "Seller Group Delta", action: "Share adoption benchmark", health: "blue" },
+        { id: 8, name: "Client onboarding automation", customer: "Pinnacle Asset Services", segment: "Growth", region: "North", stage: "Solution Fit", value: 1450000, probability: 0.45, close: "Aug 19", score: 76, risk: 36, owner: "Seller Group Atlas", action: "Run operations workflow demo", health: "blue" }
+      ],
+      customers: [
+        { name: "Northstar Advisory Group", segment: "Enterprise", region: "East", health: 92, expansion: 4.2, retention: "Stable", note: "Strong executive engagement; buying committee aligned around operating efficiency." },
+        { name: "Blue Harbor Financial", segment: "Strategic", region: "North", health: 84, expansion: 3.6, retention: "Stable", note: "Security and integration proof points remain the key decision gates." },
+        { name: "Cedarstone Wealth Network", segment: "Mid-Market", region: "West", health: 89, expansion: 1.8, retention: "Positive", note: "Analytics adoption case is clear; delivery schedule is the final dependency." },
+        { name: "Horizon Benefit Partners", segment: "Growth", region: "Central", health: 71, expansion: 1.25, retention: "Watch", note: "Approval chain is fragmented; needs crisp value story for operations leaders." },
+        { name: "Meridian Trust Services", segment: "Enterprise", region: "West", health: 68, expansion: 2.4, retention: "Watch", note: "Discovery indicates budget concern; quantify compliance cost avoidance." },
+        { name: "Summit Ridge Markets", segment: "Strategic", region: "East", health: 63, expansion: 5.1, retention: "At Risk", note: "Large opportunity with pricing friction and sponsor gap; executive assist recommended." }
+      ],
+      teams: [
+        { group: "Seller Group Orion", booked: 8.7, pipeline: 14.2, winRate: 36, quality: 91, focus: "Enterprise expansion" },
+        { group: "Seller Group Nova", booked: 7.9, pipeline: 16.5, winRate: 31, quality: 84, focus: "Strategic deal control" },
+        { group: "Seller Group Delta", booked: 5.4, pipeline: 8.3, winRate: 42, quality: 89, focus: "Mid-market velocity" },
+        { group: "Seller Group Atlas", booked: 4.6, pipeline: 7.1, winRate: 29, quality: 78, focus: "Stakeholder mapping" }
+      ],
+      activities: [
+        { type: "Call", title: "Executive value review completed", account: "Northstar Advisory Group", time: "Today", detail: "Decision team asked for implementation sequencing and measurable operating outcomes." },
+        { type: "AI", title: "Risk alert raised", account: "Summit Ridge Markets", time: "Today", detail: "Pricing concern increased risk score; executive sponsor has not joined last two meetings." },
+        { type: "Task", title: "Proposal benchmark requested", account: "Riverbend Insurance Collective", time: "Yesterday", detail: "Customer wants peer adoption metrics before procurement review." },
+        { type: "Meet", title: "Solution workshop scheduled", account: "Pinnacle Asset Services", time: "Yesterday", detail: "Operations leaders will evaluate onboarding automation workflow." },
+        { type: "Note", title: "Compliance cost drivers captured", account: "Meridian Trust Services", time: "2 days ago", detail: "Stakeholders cited manual review volume and audit readiness as highest pain points." }
+      ]
+    };
+
+    const state = {
+      currentSection: "dashboard",
+      sortByRisk: false,
+      addedActivities: []
+    };
+
+    const formatMoney = value => {
+      if (value >= 1000000) return "$" + (value / 1000000).toFixed(value % 1000000 === 0 ? 0 : 1) + "M";
+      return "$" + Math.round(value / 1000) + "K";
+    };
+
+    const getFilters = () => ({
+      search: document.getElementById("searchInput").value.trim().toLowerCase(),
+      segment: document.getElementById("segmentFilter").value,
+      region: document.getElementById("regionFilter").value,
+      stage: document.getElementById("stageFilter").value
+    });
+
+    function filteredOpportunities() {
+      const filters = getFilters();
+      return crmData.opportunities.filter(op => {
+        const haystack = [op.name, op.customer, op.segment, op.region, op.stage, op.owner, op.action].join(" ").toLowerCase();
+        return (!filters.search || haystack.includes(filters.search)) &&
+          (filters.segment === "all" || op.segment === filters.segment) &&
+          (filters.region === "all" || op.region === filters.region) &&
+          (filters.stage === "all" || op.stage === filters.stage);
+      });
+    }
+
+    function filteredCustomers() {
+      const filters = getFilters();
+      return crmData.customers.filter(customer => {
+        const haystack = [customer.name, customer.segment, customer.region, customer.retention, customer.note].join(" ").toLowerCase();
+        const stageMatch = filters.stage === "all" || crmData.opportunities.some(op => op.customer === customer.name && op.stage === filters.stage);
+        return (!filters.search || haystack.includes(filters.search)) &&
+          (filters.segment === "all" || customer.segment === filters.segment) &&
+          (filters.region === "all" || customer.region === filters.region) && stageMatch;
+      });
+    }
+
+    function kpiValues(ops) {
+      const pipeline = ops.reduce((sum, op) => sum + op.value, 0);
+      const weighted = ops.reduce((sum, op) => sum + op.value * op.probability, 0);
+      const avgScore = ops.length ? Math.round(ops.reduce((sum, op) => sum + op.score, 0) / ops.length) : 0;
+      const highRisk = ops.filter(op => op.risk >= 40).length;
+      return [
+        { label: "Open Pipeline", value: formatMoney(pipeline), delta: "+12% QoQ", tone: "up" },
+        { label: "Weighted Forecast", value: formatMoney(weighted), delta: "+8% vs plan", tone: "up" },
+        { label: "AI Deal Score", value: avgScore + "%", delta: avgScore >= 80 ? "Strong" : "Needs focus", tone: avgScore >= 80 ? "up" : "flat" },
+        { label: "Risk Alerts", value: highRisk, delta: highRisk <= 2 ? "Controlled" : "Escalate", tone: highRisk <= 2 ? "flat" : "down" }
+      ];
+    }
+
+    function renderKpis() {
+      const ops = filteredOpportunities();
+      document.getElementById("kpiGrid").innerHTML = kpiValues(ops).map(kpi => `
+        <article class="card kpi-card">
+          <div class="kpi-label">${kpi.label}</div>
+          <div class="kpi-value">${kpi.value}</div>
+          <span class="delta ${kpi.tone}">${kpi.tone === "up" ? "▲" : kpi.tone === "down" ? "▼" : "●"} ${kpi.delta}</span>
+        </article>
+      `).join("");
+      const health = ops.length ? Math.round(ops.reduce((sum, op) => sum + op.score - op.risk * 0.25, 0) / ops.length) : 0;
+      document.getElementById("healthPill").textContent = "Pipeline health " + Math.max(0, Math.min(99, health)) + "%";
+    }
+
+    function renderBrief() {
+      const ops = filteredOpportunities();
+      const top = [...ops].sort((a, b) => b.value * b.probability - a.value * a.probability)[0];
+      const risk = [...ops].sort((a, b) => b.risk - a.risk)[0];
+      const commit = ops.filter(op => ["Commit", "Negotiation"].includes(op.stage)).reduce((sum, op) => sum + op.value * op.probability, 0);
+      const items = ops.length ? [
+        { title: "Protect the forecast", text: `${formatMoney(commit)} is concentrated in commit and negotiation stages. Keep legal, pricing, and sponsor alignment visible.` },
+        { title: "Prioritize the largest weighted deal", text: `${top.customer} carries the strongest weighted value. Next action: ${top.action.toLowerCase()}.` },
+        { title: "Escalate risk before it ages", text: `${risk.customer} has the highest risk signal. Add executive coverage and resolve the leading blocker.` },
+        { title: "Coach for velocity", text: "Mid-cycle opportunities respond best to stakeholder mapping, proof points, and quantified implementation outcomes." }
+      ] : [{ title: "No matching records", text: "Adjust filters to view AI executive guidance." }];
+      document.getElementById("executiveBrief").innerHTML = items.map(item => `<li class="insight-item"><strong>${item.title}</strong>${item.text}</li>`).join("");
+    }
+
+    function renderPriorities() {
+      const ops = [...filteredOpportunities()].sort((a, b) => b.score - a.score).slice(0, 4);
+      const container = document.getElementById("priorityList");
+      if (!ops.length) {
+        container.innerHTML = `<div class="empty-state">No priority opportunities match the current filters.</div>`;
+        return;
+      }
+      container.innerHTML = ops.map(op => `
+        <div class="opportunity-row">
+          <div>
+            <h3>${op.name}</h3>
+            <p><strong>${op.customer}</strong> · ${op.stage} · ${formatMoney(op.value)} · ${op.close}</p>
+            <p>${op.action}</p>
+            <div class="progress" style="--w:${op.score}%; margin-top:12px;"><span></span></div>
+          </div>
+          <div class="score">${op.score}</div>
+        </div>
+      `).join("");
+    }
+
+    function renderCustomers() {
+      const customers = filteredCustomers();
+      const container = document.getElementById("customerGrid");
+      if (!customers.length) {
+        container.innerHTML = `<div class="empty-state">No customer records match the current filters.</div>`;
+        return;
+      }
+      container.innerHTML = customers.map(customer => {
+        const tone = customer.health >= 85 ? "green" : customer.health >= 72 ? "amber" : "red";
+        return `
+          <article class="customer-card">
+            <span class="status ${tone}">${customer.retention}</span>
+            <h3 style="margin-top:12px;">${customer.name}</h3>
+            <p>${customer.note}</p>
+            <div class="progress" style="--w:${customer.health}%;"><span></span></div>
+            <ul class="meta-list" style="margin-top:12px;">
+              <li><strong>Segment:</strong> ${customer.segment}</li>
+              <li><strong>Region:</strong> ${customer.region}</li>
+              <li><strong>Health:</strong> ${customer.health}%</li>
+              <li><strong>Expansion potential:</strong> $${customer.expansion.toFixed(1)}M</li>
+            </ul>
+          </article>
+        `;
+      }).join("");
+    }
+
+    function renderOpportunities() {
+      let ops = filteredOpportunities();
+      if (state.sortByRisk) ops = [...ops].sort((a, b) => b.risk - a.risk);
+      else ops = [...ops].sort((a, b) => b.score - a.score);
+      const tbody = document.getElementById("opportunityTable");
+      if (!ops.length) {
+        tbody.innerHTML = `<tr><td colspan="8" class="empty-state">No opportunities match the current filters.</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = ops.map(op => `
+        <tr>
+          <td><strong>${op.name}</strong><br><span class="muted">${op.owner}</span></td>
+          <td>${op.customer}<br><span class="muted">${op.region}</span></td>
+          <td>${op.segment}</td>
+          <td><span class="status ${op.health}">${op.stage}</span></td>
+          <td class="nowrap"><strong>${formatMoney(op.value)}</strong><br><span class="muted">${Math.round(op.probability * 100)}% weighted</span></td>
+          <td class="nowrap">${op.close}</td>
+          <td><strong>${op.score}</strong><br><span class="muted">Risk ${op.risk}</span></td>
+          <td>${op.action}</td>
+        </tr>
+      `).join("");
+    }
+
+    function renderTeam() {
+      const rows = [...crmData.teams].sort((a, b) => b.booked - a.booked);
+      document.getElementById("teamTable").innerHTML = rows.map(team => `
+        <tr>
+          <td><strong>${team.group}</strong><br><span class="muted">${team.focus}</span></td>
+          <td>$${team.booked.toFixed(1)}M</td>
+          <td>${team.winRate}%</td>
+          <td><span class="status ${team.quality >= 88 ? "green" : team.quality >= 80 ? "blue" : "amber"}">${team.quality}</span></td>
+          <td>${team.focus}</td>
+        </tr>
+      `).join("");
+    }
+
+    function renderActivities() {
+      const activities = [...state.addedActivities, ...crmData.activities];
+      document.getElementById("activityStream").innerHTML = activities.map(item => `
+        <article class="activity-item">
+          <div class="activity-dot">${item.type.slice(0, 2)}</div>
+          <div>
+            <h3>${item.title}</h3>
+            <p><strong>${item.account}</strong> · ${item.detail}</p>
+          </div>
+          <span class="muted nowrap">${item.time}</span>
+        </article>
+      `).join("");
+    }
+
+    function renderAI() {
+      const ops = filteredOpportunities();
+      const risky = [...ops].sort((a, b) => b.risk - a.risk)[0];
+      const highScore = [...ops].sort((a, b) => b.score - a.score)[0];
+      const early = ops.filter(op => ["Discovery", "Solution Fit"].includes(op.stage));
+      const items = ops.length ? [
+        { title: "Win plan", text: `${highScore.customer}: convert AI score ${highScore.score} into action by completing '${highScore.action}'.` },
+        { title: "Risk play", text: `${risky.customer}: risk ${risky.risk}. Move beyond product fit and secure a named economic sponsor.` },
+        { title: "Pipeline creation", text: `${early.length} early-stage pursuits need mutual action plans and measurable business cases this week.` },
+        { title: "Forecast hygiene", text: "Update close dates when no customer meeting exists in the next ten business days." },
+        { title: "Customer expansion", text: "Prioritize accounts with health above 84% and expansion above $1.5M for cross-sell messaging." }
+      ] : [{ title: "No recommendations", text: "AI recommendations will appear when filters include matching CRM records." }];
+      document.getElementById("aiRecommendations").innerHTML = items.map(item => `<li class="insight-item"><strong>${item.title}</strong>${item.text}</li>`).join("");
+      const select = document.getElementById("coachDeal");
+      select.innerHTML = filteredOpportunities().map(op => `<option value="${op.id}">${op.customer} · ${op.name}</option>`).join("") || `<option value="">No matching opportunities</option>`;
+    }
+
+    function drawChart(canvasId, config) {
+      const canvas = document.getElementById(canvasId);
+      if (!canvas) return;
+      const ctx = canvas.getContext("2d");
+      const ratio = window.devicePixelRatio || 1;
+      const width = canvas.clientWidth;
+      const height = canvas.clientHeight;
+      canvas.width = width * ratio;
+      canvas.height = height * ratio;
+      ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+      ctx.clearRect(0, 0, width, height);
+
+      const padding = { top: 26, right: 26, bottom: 40, left: 48 };
+      const chartW = width - padding.left - padding.right;
+      const chartH = height - padding.top - padding.bottom;
+      const allValues = config.series.flatMap(s => s.values);
+      const max = Math.max(...allValues, 1) * 1.15;
+      const min = Math.min(0, ...allValues);
+
+      ctx.strokeStyle = "#e9eef5";
+      ctx.lineWidth = 1;
+      ctx.fillStyle = "#617184";
+      ctx.font = "12px Segoe UI, Arial";
+      for (let i = 0; i <= 4; i++) {
+        const y = padding.top + (chartH / 4) * i;
+        ctx.beginPath();
+        ctx.moveTo(padding.left, y);
+        ctx.lineTo(width - padding.right, y);
+        ctx.stroke();
+        const label = max - ((max - min) / 4) * i;
+        ctx.fillText(config.money ? "$" + label.toFixed(0) + "M" : Math.round(label), 8, y + 4);
+      }
+
+      const xStep = chartW / Math.max(config.labels.length - 1, 1);
+      config.labels.forEach((label, idx) => {
+        const x = padding.left + idx * xStep;
+        ctx.fillStyle = "#617184";
+        ctx.fillText(label, x - 12, height - 14);
+      });
+
+      config.series.forEach((series, seriesIndex) => {
+        const points = series.values.map((value, idx) => ({
+          x: padding.left + idx * xStep,
+          y: padding.top + chartH - ((value - min) / (max - min)) * chartH
+        }));
+
+        if (config.type === "bar") {
+          const barW = Math.min(46, xStep / (config.series.length + 1));
+          points.forEach((point, idx) => {
+            const barH = padding.top + chartH - point.y;
+            const x = point.x - barW / 2 + (seriesIndex - (config.series.length - 1) / 2) * barW;
+            const gradient = ctx.createLinearGradient(0, point.y, 0, padding.top + chartH);
+            gradient.addColorStop(0, series.color);
+            gradient.addColorStop(1, "rgba(40, 211, 230, 0.22)");
+            ctx.fillStyle = gradient;
+            roundRect(ctx, x, point.y, barW * 0.86, barH, 8);
+            ctx.fill();
+          });
+        } else {
+          ctx.beginPath();
+          points.forEach((point, idx) => idx ? ctx.lineTo(point.x, point.y) : ctx.moveTo(point.x, point.y));
+          ctx.strokeStyle = series.color;
+          ctx.lineWidth = 3;
+          ctx.stroke();
+          points.forEach(point => {
+            ctx.beginPath();
+            ctx.arc(point.x, point.y, 4, 0, Math.PI * 2);
+            ctx.fillStyle = "#ffffff";
+            ctx.fill();
+            ctx.strokeStyle = series.color;
+            ctx.lineWidth = 2;
+            ctx.stroke();
+          });
+        }
+      });
+
+      let legendX = padding.left;
+      config.series.forEach(series => {
+        ctx.fillStyle = series.color;
+        roundRect(ctx, legendX, 8, 10, 10, 3);
+        ctx.fill();
+        ctx.fillStyle = "#445466";
+        ctx.font = "12px Segoe UI, Arial";
+        ctx.fillText(series.name, legendX + 16, 18);
+        legendX += ctx.measureText(series.name).width + 44;
+      });
+    }
+
+    function roundRect(ctx, x, y, w, h, r) {
+      const radius = Math.min(r, Math.abs(w) / 2, Math.abs(h) / 2);
+      ctx.beginPath();
+      ctx.moveTo(x + radius, y);
+      ctx.arcTo(x + w, y, x + w, y + h, radius);
+      ctx.arcTo(x + w, y + h, x, y + h, radius);
+      ctx.arcTo(x, y + h, x, y, radius);
+      ctx.arcTo(x, y, x + w, y, radius);
+      ctx.closePath();
+    }
+
+    function drawStageChart() {
+      const ops = filteredOpportunities();
+      const stages = ["Discovery", "Solution Fit", "Proposal", "Negotiation", "Commit"];
+      const values = stages.map(stage => ops.filter(op => op.stage === stage).reduce((sum, op) => sum + op.value / 1000000, 0));
+      drawChart("stageChart", {
+        type: "bar",
+        labels: ["Disc", "Fit", "Prop", "Neg", "Commit"],
+        money: true,
+        series: [{ name: "Pipeline", color: "#1d73c9", values }]
+      });
+    }
+
+    function renderCharts() {
+      const ops = filteredOpportunities();
+      const weighted = ops.reduce((sum, op) => sum + op.value * op.probability, 0) / 1000000;
+      const pipeline = ops.reduce((sum, op) => sum + op.value, 0) / 1000000;
+      drawChart("revenueChart", {
+        labels: ["Apr", "May", "Jun", "Jul", "Aug", "Sep"],
+        money: true,
+        series: [
+          { name: "Booked", color: "#155fa8", values: [4.8, 6.1, 7.4, Math.max(5.2, weighted * 0.5), Math.max(5.7, weighted * 0.62), Math.max(6.4, weighted * 0.76)] },
+          { name: "Weighted", color: "#28d3e6", values: [5.6, 6.9, 8.2, weighted * 0.72, weighted * 0.88, weighted] },
+          { name: "Target", color: "#617184", values: [5.5, 6.5, 7.5, 8.5, 9.5, 10.5] }
+        ]
+      });
+      drawStageChart();
+      drawChart("forecastChart", {
+        labels: ["Jul", "Aug", "Sep", "Q4"],
+        money: true,
+        series: [
+          { name: "Conservative", color: "#617184", values: [weighted * 0.32, weighted * 0.58, weighted * 0.78, weighted * 0.9] },
+          { name: "Expected", color: "#1d73c9", values: [weighted * 0.4, weighted * 0.72, weighted, weighted * 1.14] },
+          { name: "Stretch", color: "#28d3e6", values: [weighted * 0.52, weighted * 0.92, pipeline * 0.78, pipeline * 0.9] }
+        ]
+      });
+      drawChart("teamChart", {
+        type: "bar",
+        labels: ["Orion", "Nova", "Delta", "Atlas"],
+        money: false,
+        series: [
+          { name: "Booked $M", color: "#155fa8", values: crmData.teams.map(t => t.booked) },
+          { name: "Pipeline $M", color: "#28d3e6", values: crmData.teams.map(t => t.pipeline) }
+        ]
+      });
+    }
+
+    function updateScenario() {
+      const ops = filteredOpportunities();
+      const base = ops.reduce((sum, op) => sum + op.value * op.probability, 0);
+      const winLift = Number(document.getElementById("winLift").value);
+      const discount = Number(document.getElementById("discount").value);
+      const velocity = Number(document.getElementById("velocity").value);
+      document.getElementById("winLiftVal").textContent = winLift + "%";
+      document.getElementById("discountVal").textContent = discount + "%";
+      document.getElementById("velocityVal").textContent = velocity + "%";
+      const adjusted = base * (1 + winLift / 100) * (1 - discount / 100) * (1 + velocity / 200);
+      document.getElementById("scenarioOutput").textContent = formatMoney(adjusted);
+      document.getElementById("scenarioText").textContent = ops.length ? `${ops.length} filtered opportunities included in this scenario.` : "No filtered opportunities included in this scenario.";
+    }
+
+    function renderAll() {
+      renderKpis();
+      renderBrief();
+      renderPriorities();
+      renderCustomers();
+      renderOpportunities();
+      renderTeam();
+      renderActivities();
+      renderAI();
+      updateScenario();
+      renderCharts();
+    }
+
+    function showSection(id) {
+      state.currentSection = id;
+      document.querySelectorAll(".section").forEach(section => section.classList.toggle("active", section.id === id));
+      document.querySelectorAll(".nav-button").forEach(button => button.classList.toggle("active", button.dataset.section === id));
+      document.getElementById("mobileMenu").value = id;
+      setTimeout(renderCharts, 40);
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.classList.add("show");
+      clearTimeout(showToast.timer);
+      showToast.timer = setTimeout(() => toast.classList.remove("show"), 2800);
+    }
+
+    document.querySelectorAll(".nav-button").forEach(button => {
+      button.addEventListener("click", () => showSection(button.dataset.section));
+    });
+
+    document.querySelectorAll("[data-section-jump]").forEach(button => {
+      button.addEventListener("click", () => showSection(button.dataset.sectionJump));
+    });
+
+    document.getElementById("mobileMenu").addEventListener("change", event => showSection(event.target.value));
+
+    ["searchInput", "segmentFilter", "regionFilter", "stageFilter"].forEach(id => {
+      document.getElementById(id).addEventListener("input", renderAll);
+      document.getElementById(id).addEventListener("change", renderAll);
+    });
+
+    ["winLift", "discount", "velocity"].forEach(id => document.getElementById(id).addEventListener("input", updateScenario));
+
+    document.getElementById("sortRiskBtn").addEventListener("click", () => {
+      state.sortByRisk = !state.sortByRisk;
+      document.getElementById("sortRiskBtn").textContent = state.sortByRisk ? "Sort by AI score" : "Sort by risk";
+      renderOpportunities();
+      showToast(state.sortByRisk ? "Opportunity table sorted by highest risk." : "Opportunity table sorted by AI score.");
+    });
+
+    document.getElementById("refreshBtn").addEventListener("click", () => {
+      crmData.opportunities.forEach(op => {
+        op.score = Math.max(58, Math.min(96, op.score + Math.round((Math.random() - 0.48) * 6)));
+        op.risk = Math.max(12, Math.min(60, op.risk + Math.round((Math.random() - 0.5) * 5)));
+      });
+      renderAll();
+      showToast("Demo CRM signals refreshed locally.");
+    });
+
+    document.getElementById("recommendBtn").addEventListener("click", () => {
+      showSection("ai");
+      renderAI();
+      showToast("AI actions generated from current filters.");
+    });
+
+    document.getElementById("sideAction").addEventListener("click", () => {
+      showSection("opportunities");
+      state.sortByRisk = true;
+      document.getElementById("sortRiskBtn").textContent = "Sort by AI score";
+      renderOpportunities();
+      showToast("Priority review opened with risk-first sorting.");
+    });
+
+    document.getElementById("customerPlanBtn").addEventListener("click", () => {
+      const customers = filteredCustomers();
+      if (!customers.length) return showToast("No matching customer available for an account plan.");
+      const top = [...customers].sort((a, b) => b.expansion - a.expansion)[0];
+      showToast(`Account plan focus: ${top.name} · executive value proof and expansion path.`);
+    });
+
+    document.getElementById("logActivityBtn").addEventListener("click", () => {
+      const note = document.getElementById("activityNote").value.trim();
+      const type = document.getElementById("activityType").value;
+      if (!note) return showToast("Add a demo note before logging activity.");
+      state.addedActivities.unshift({
+        type: type.split(" ")[0],
+        title: type + " logged",
+        account: "Demo CRM workspace",
+        time: "Just now",
+        detail: note.replace(/[<>]/g, "")
+      });
+      document.getElementById("activityNote").value = "";
+      renderActivities();
+      showToast("Demo activity added locally.");
+    });
+
+    document.getElementById("buildCoachBtn").addEventListener("click", () => {
+      const id = Number(document.getElementById("coachDeal").value);
+      const op = crmData.opportunities.find(item => item.id === id);
+      const goal = document.getElementById("coachGoal").value;
+      const output = document.getElementById("coachOutput");
+      if (!op) {
+        output.textContent = "No matching opportunity is available for a talk track.";
+        return;
+      }
+      output.textContent = `${goal}: open with the business outcome behind ${op.name}, confirm the decision path for ${op.customer}, address risk score ${op.risk}, and close by assigning '${op.action}' with an owner and date.`;
+      showToast("Talk track generated locally.");
+    });
+
+    window.addEventListener("resize", () => {
+      clearTimeout(window.resizeTimer);
+      window.resizeTimer = setTimeout(renderCharts, 120);
+    });
+
+    renderAll();
+  </script>
+</body>
+</html>

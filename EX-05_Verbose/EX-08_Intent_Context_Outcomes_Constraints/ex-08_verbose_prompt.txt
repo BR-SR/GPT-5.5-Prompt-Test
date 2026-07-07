@@ -1,0 +1,19 @@
+Experiment ID: EX-08
+Prompt Structure: Intent → Context → Outcomes → Constraints
+Prompt Part: Full Prompt
+Expected Output HTML File: ex-08-intent-context-outcomes-constraints-precision-verbose.html
+Actual Workspace HTML File: br-ex-08-intent-context-outcomes-constraints-precision-verbose.html
+
+Source Isolation Requirement:
+Generate this app only from the instructions in this prompt. Do not inspect, read, reference, copy, or rely on workspace files, prior outputs, local assets, external websites, templates, libraries, frameworks, CDNs, imports, or network calls.
+
+Prompt Used:
+Intent: Build a polished AI-powered Sales CRM SPA that feels like a modern SaaS product and can run directly in a browser.
+
+Context: The primary users are sales managers, account executives, and team leaders. They need to understand revenue performance, inspect customer accounts, track opportunities, forecast sales, review team activity, and receive AI-assisted next-best actions.
+
+Outcomes: The application must include a dashboard with sales KPIs and visual indicators; customer management with realistic sample accounts and search or filtering; an opportunity pipeline with stages, owners, deal values, and probabilities; forecasting with projected revenue and confidence indicators; a team leaderboard; a recent activity feed; and an AI recommendations panel with prioritized actionable insights. Include light interactivity so the prototype feels usable.
+
+Constraints: Return one complete self-contained HTML document only. CSS must be inside <style> tags. JavaScript must be inside <script> tags. Do not use external dependencies, frameworks, libraries, fonts, CDNs, imports, remote images, fetch calls, or network calls. The layout must be responsive across desktop, tablet, and mobile. Use semantic HTML, accessible contrast, keyboard-friendly controls, visible focus states, clear hierarchy, and a professional SaaS visual style.
+
+Return only the complete HTML document.

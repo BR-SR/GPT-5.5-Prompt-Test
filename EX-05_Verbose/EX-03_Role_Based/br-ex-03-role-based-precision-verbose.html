@@ -1,0 +1,1386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI Sales CRM Dashboard</title>
+  <style>
+    :root {
+      --navy-950: #071426;
+      --navy-900: #0b1b33;
+      --navy-800: #102744;
+      --blue-700: #175fa8;
+      --blue-600: #2177c7;
+      --blue-500: #2d8edf;
+      --cyan-400: #35d1e8;
+      --cyan-100: #d9fbff;
+      --gray-950: #111827;
+      --gray-700: #374151;
+      --gray-600: #4b5563;
+      --gray-500: #6b7280;
+      --gray-300: #d1d5db;
+      --gray-200: #e5e7eb;
+      --gray-100: #f3f6f9;
+      --white: #ffffff;
+      --green: #0f9f6e;
+      --amber: #b7791f;
+      --red: #c2413b;
+      --shadow: 0 18px 45px rgba(11, 27, 51, 0.12);
+      --shadow-soft: 0 10px 24px rgba(11, 27, 51, 0.08);
+      --radius-lg: 22px;
+      --radius-md: 16px;
+      --radius-sm: 10px;
+      --max: 1480px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--gray-950);
+      background:
+        radial-gradient(circle at top left, rgba(53, 209, 232, 0.15), transparent 28rem),
+        linear-gradient(135deg, #f8fbfd 0%, #eef4f9 48%, #f7fafc 100%);
+      line-height: 1.5;
+    }
+
+    a { color: inherit; }
+
+    button, input, select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .skip-link {
+      position: absolute;
+      top: -48px;
+      left: 16px;
+      z-index: 99;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      color: var(--white);
+      background: var(--navy-900);
+      transition: top 0.2s ease;
+    }
+
+    .skip-link:focus { top: 16px; }
+
+    :focus-visible {
+      outline: 3px solid var(--cyan-400);
+      outline-offset: 3px;
+    }
+
+    .app-shell {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 280px minmax(0, 1fr);
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      padding: 24px 20px;
+      color: var(--white);
+      background:
+        linear-gradient(180deg, rgba(53, 209, 232, 0.08), transparent 38%),
+        linear-gradient(180deg, var(--navy-950), var(--navy-900));
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
+      overflow-y: auto;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 30px;
+    }
+
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--blue-600), var(--cyan-400));
+      box-shadow: 0 10px 28px rgba(53, 209, 232, 0.22);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+    }
+
+    .brand strong {
+      display: block;
+      font-size: 1.05rem;
+      letter-spacing: 0.02em;
+    }
+
+    .brand span {
+      display: block;
+      color: rgba(255, 255, 255, 0.68);
+      font-size: 0.78rem;
+      margin-top: 2px;
+    }
+
+    .nav-title {
+      color: rgba(255, 255, 255, 0.52);
+      text-transform: uppercase;
+      letter-spacing: 0.11em;
+      font-size: 0.72rem;
+      font-weight: 700;
+      margin: 22px 8px 10px;
+    }
+
+    .nav-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      gap: 6px;
+    }
+
+    .nav-button {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border: 0;
+      border-radius: 14px;
+      padding: 12px 12px;
+      color: rgba(255, 255, 255, 0.78);
+      background: transparent;
+      text-align: left;
+      transition: background 0.18s ease, color 0.18s ease, transform 0.18s ease;
+    }
+
+    .nav-button:hover,
+    .nav-button[aria-current="page"] {
+      color: var(--white);
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateX(2px);
+    }
+
+    .nav-icon {
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      border-radius: 10px;
+      color: var(--cyan-100);
+      background: rgba(53, 209, 232, 0.13);
+    }
+
+    .sidebar-card {
+      margin-top: 26px;
+      padding: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .sidebar-card strong { display: block; margin-bottom: 4px; }
+    .sidebar-card p { margin: 0 0 12px; color: rgba(255,255,255,0.68); font-size: 0.88rem; }
+
+    .main {
+      min-width: 0;
+      padding: 24px;
+    }
+
+    .topbar {
+      max-width: var(--max);
+      margin: 0 auto 24px;
+      display: flex;
+      gap: 18px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .mobile-menu {
+      display: none;
+      border: 1px solid var(--gray-200);
+      border-radius: 12px;
+      background: var(--white);
+      padding: 10px 12px;
+      color: var(--navy-900);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .hero-title p {
+      margin: 0;
+      color: var(--gray-600);
+      font-size: 0.95rem;
+    }
+
+    h1, h2, h3 {
+      margin: 0;
+      line-height: 1.15;
+      color: var(--navy-900);
+    }
+
+    h1 { font-size: clamp(1.75rem, 3vw, 2.65rem); letter-spacing: -0.04em; }
+    h2 { font-size: 1.35rem; letter-spacing: -0.02em; }
+    h3 { font-size: 1rem; }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--gray-200);
+      border-radius: 999px;
+      padding: 9px 13px;
+      color: var(--gray-700);
+      background: rgba(255, 255, 255, 0.82);
+      box-shadow: 0 6px 20px rgba(11, 27, 51, 0.05);
+      font-size: 0.9rem;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 0 4px rgba(15, 159, 110, 0.12);
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: 0;
+      border-radius: 12px;
+      padding: 10px 14px;
+      color: var(--white);
+      background: linear-gradient(135deg, var(--blue-700), var(--blue-500));
+      box-shadow: 0 10px 24px rgba(33, 119, 199, 0.22);
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .button.secondary {
+      color: var(--navy-900);
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .content {
+      max-width: var(--max);
+      margin: 0 auto;
+      display: grid;
+      gap: 22px;
+    }
+
+    .section-panel {
+      display: none;
+      animation: reveal 0.22s ease-out;
+    }
+
+    .section-panel.active { display: block; }
+
+    @keyframes reveal {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .grid {
+      display: grid;
+      gap: 18px;
+    }
+
+    .grid.kpis { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .grid.two { grid-template-columns: minmax(0, 1.35fr) minmax(330px, 0.65fr); }
+    .grid.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+    .card {
+      border: 1px solid rgba(209, 213, 219, 0.9);
+      border-radius: var(--radius-lg);
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: var(--shadow-soft);
+      overflow: hidden;
+    }
+
+    .card-body { padding: 20px; }
+
+    .card-header {
+      display: flex;
+      align-items: start;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 20px 20px 0;
+    }
+
+    .card-header p {
+      margin: 6px 0 0;
+      color: var(--gray-600);
+      font-size: 0.92rem;
+    }
+
+    .kpi-card {
+      position: relative;
+      min-height: 158px;
+      padding: 20px;
+      overflow: hidden;
+    }
+
+    .kpi-card::after {
+      content: "";
+      position: absolute;
+      width: 160px;
+      height: 160px;
+      right: -66px;
+      top: -74px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(53, 209, 232, 0.25), rgba(45, 142, 223, 0.08), transparent 68%);
+    }
+
+    .kpi-label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      color: var(--gray-600);
+      font-weight: 700;
+      font-size: 0.86rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .kpi-value {
+      margin: 16px 0 6px;
+      font-size: clamp(1.65rem, 3vw, 2.35rem);
+      font-weight: 800;
+      letter-spacing: -0.05em;
+      color: var(--navy-900);
+    }
+
+    .trend {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--green);
+      background: rgba(15, 159, 110, 0.09);
+      border-radius: 999px;
+      padding: 5px 9px;
+      font-size: 0.84rem;
+      font-weight: 700;
+    }
+
+    .trend.warn { color: var(--amber); background: rgba(183, 121, 31, 0.11); }
+    .trend.down { color: var(--red); background: rgba(194, 65, 59, 0.1); }
+
+    .sparkline {
+      display: flex;
+      align-items: end;
+      gap: 5px;
+      height: 36px;
+      margin-top: 14px;
+    }
+
+    .sparkline span {
+      flex: 1;
+      min-width: 5px;
+      border-radius: 99px 99px 0 0;
+      background: linear-gradient(180deg, var(--cyan-400), var(--blue-600));
+      opacity: 0.86;
+    }
+
+    .canvas-wrap {
+      height: 300px;
+      padding: 10px 16px 18px;
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .pipeline {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(180px, 1fr));
+      gap: 14px;
+      overflow-x: auto;
+      padding: 2px 0 8px;
+    }
+
+    .stage {
+      min-width: 180px;
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-md);
+      background: linear-gradient(180deg, #ffffff, #f8fbfd);
+      padding: 12px;
+    }
+
+    .stage h3 {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      margin-bottom: 10px;
+    }
+
+    .stage-total {
+      color: var(--blue-700);
+      background: rgba(33, 119, 199, 0.09);
+      border-radius: 999px;
+      padding: 3px 8px;
+      font-size: 0.75rem;
+    }
+
+    .deal-card {
+      display: grid;
+      gap: 8px;
+      border: 1px solid rgba(209, 213, 219, 0.8);
+      border-radius: 14px;
+      background: var(--white);
+      padding: 12px;
+      margin-top: 10px;
+      box-shadow: 0 7px 18px rgba(11, 27, 51, 0.06);
+    }
+
+    .deal-card strong { color: var(--navy-900); font-size: 0.94rem; }
+    .deal-card small { color: var(--gray-600); }
+
+    .progress {
+      height: 8px;
+      border-radius: 999px;
+      background: var(--gray-200);
+      overflow: hidden;
+    }
+
+    .progress span {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--blue-600), var(--cyan-400));
+    }
+
+    .filters {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: end;
+      margin-bottom: 16px;
+    }
+
+    .field {
+      display: grid;
+      gap: 6px;
+      flex: 1 1 210px;
+    }
+
+    label {
+      color: var(--gray-700);
+      font-weight: 700;
+      font-size: 0.87rem;
+    }
+
+    input, select {
+      width: 100%;
+      border: 1px solid var(--gray-300);
+      border-radius: 12px;
+      padding: 11px 12px;
+      color: var(--gray-950);
+      background: var(--white);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.92rem;
+    }
+
+    caption {
+      text-align: left;
+      padding: 0 0 12px;
+      color: var(--gray-600);
+    }
+
+    th, td {
+      padding: 13px 12px;
+      border-bottom: 1px solid var(--gray-200);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      color: var(--gray-700);
+      background: #f8fbfd;
+      font-size: 0.78rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    tbody tr:hover { background: rgba(53, 209, 232, 0.05); }
+
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding: 0;
+      margin: 0;
+      list-style: none;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 4px 8px;
+      color: var(--blue-700);
+      background: rgba(33, 119, 199, 0.09);
+      font-size: 0.76rem;
+      font-weight: 700;
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+      border-radius: 999px;
+      padding: 5px 9px;
+      font-weight: 800;
+      font-size: 0.78rem;
+    }
+
+    .status.green { color: #08774f; background: rgba(15, 159, 110, 0.11); }
+    .status.amber { color: #8a5b16; background: rgba(183, 121, 31, 0.12); }
+    .status.red { color: #9b2d28; background: rgba(194, 65, 59, 0.1); }
+    .status.blue { color: var(--blue-700); background: rgba(33, 119, 199, 0.1); }
+
+    .insight-list,
+    .activity-list,
+    .leaderboard,
+    .forecast-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 12px;
+    }
+
+    .insight,
+    .activity,
+    .leader,
+    .forecast-item {
+      display: grid;
+      gap: 8px;
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      background: linear-gradient(180deg, #ffffff, #fbfdff);
+    }
+
+    .insight {
+      grid-template-columns: auto minmax(0, 1fr);
+      align-items: start;
+    }
+
+    .priority {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      color: var(--white);
+      background: linear-gradient(135deg, var(--navy-900), var(--blue-600));
+      font-weight: 800;
+    }
+
+    .insight p,
+    .activity p,
+    .forecast-item p {
+      margin: 0;
+      color: var(--gray-600);
+      font-size: 0.9rem;
+    }
+
+    .insight-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+
+    .mini-button {
+      border: 1px solid var(--gray-200);
+      border-radius: 10px;
+      padding: 7px 9px;
+      color: var(--navy-900);
+      background: var(--white);
+      font-weight: 700;
+      font-size: 0.82rem;
+    }
+
+    .mini-button.primary {
+      color: var(--white);
+      border-color: transparent;
+      background: var(--blue-700);
+    }
+
+    .leader {
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      align-items: center;
+    }
+
+    .rank {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      color: var(--navy-900);
+      background: var(--cyan-100);
+      font-weight: 800;
+    }
+
+    .leader strong,
+    .leader span { display: block; }
+    .leader span { color: var(--gray-600); font-size: 0.86rem; }
+
+    .score {
+      color: var(--blue-700);
+      font-weight: 800;
+    }
+
+    .forecast-controls {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 14px;
+      align-items: center;
+      margin: 0 0 16px;
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      background: #fbfdff;
+    }
+
+    input[type="range"] {
+      padding: 0;
+      accent-color: var(--blue-600);
+    }
+
+    .forecast-number {
+      font-size: 1.5rem;
+      color: var(--navy-900);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      white-space: nowrap;
+    }
+
+    .confidence-meter {
+      display: grid;
+      gap: 5px;
+    }
+
+    .activity {
+      grid-template-columns: auto minmax(0, 1fr);
+      align-items: start;
+    }
+
+    .time-badge {
+      color: var(--blue-700);
+      background: rgba(33, 119, 199, 0.09);
+      border-radius: 10px;
+      padding: 6px 8px;
+      font-weight: 800;
+      font-size: 0.75rem;
+      white-space: nowrap;
+    }
+
+    .empty-state {
+      display: none;
+      border: 1px dashed var(--gray-300);
+      border-radius: var(--radius-md);
+      padding: 22px;
+      color: var(--gray-600);
+      background: #fbfdff;
+      text-align: center;
+    }
+
+    .summary-band {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 16px;
+    }
+
+    .summary-tile {
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      background: #fbfdff;
+    }
+
+    .summary-tile span {
+      display: block;
+      color: var(--gray-600);
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .summary-tile strong {
+      display: block;
+      margin-top: 6px;
+      color: var(--navy-900);
+      font-size: 1.25rem;
+    }
+
+    .notice {
+      border-left: 4px solid var(--cyan-400);
+      border-radius: 14px;
+      padding: 14px 16px;
+      background: rgba(53, 209, 232, 0.09);
+      color: var(--gray-700);
+    }
+
+    .mobile-overlay {
+      display: none;
+    }
+
+    @media (max-width: 1180px) {
+      .grid.kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .grid.two { grid-template-columns: 1fr; }
+      .grid.three { grid-template-columns: 1fr; }
+      .summary-band { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 880px) {
+      .app-shell { grid-template-columns: 1fr; }
+      .sidebar {
+        position: fixed;
+        z-index: 50;
+        width: min(86vw, 320px);
+        transform: translateX(-104%);
+        transition: transform 0.22s ease;
+      }
+      .sidebar.open { transform: translateX(0); }
+      .mobile-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        z-index: 40;
+        background: rgba(7, 20, 38, 0.55);
+      }
+      .mobile-overlay.show { display: block; }
+      .mobile-menu { display: inline-flex; }
+      .main { padding: 18px; }
+      .topbar { align-items: flex-start; }
+      .top-actions { justify-content: flex-start; }
+    }
+
+    @media (max-width: 640px) {
+      .topbar { flex-direction: column; }
+      .grid.kpis, .summary-band { grid-template-columns: 1fr; }
+      .card-header { flex-direction: column; }
+      .forecast-controls { grid-template-columns: 1fr; }
+      table, thead, tbody, th, td, tr { display: block; }
+      thead { position: absolute; left: -9999px; }
+      tr { border-bottom: 1px solid var(--gray-200); padding: 10px 0; }
+      td { border: 0; padding: 8px 12px; }
+      td::before {
+        content: attr(data-label);
+        display: block;
+        color: var(--gray-600);
+        font-size: 0.74rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        font-weight: 800;
+        margin-bottom: 2px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <div class="mobile-overlay" id="mobileOverlay" aria-hidden="true"></div>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar" aria-label="Primary navigation">
+      <div class="brand" aria-label="Fictional CRM product identity">
+        <div class="brand-mark" aria-hidden="true">A</div>
+        <div>
+          <strong>Atlas Revenue AI</strong>
+          <span>Enterprise Sales CRM</span>
+        </div>
+      </div>
+
+      <p class="nav-title">Workspace</p>
+      <nav aria-label="CRM sections">
+        <ul class="nav-list">
+          <li><button class="nav-button" type="button" data-target="dashboard" aria-current="page"><span class="nav-icon" aria-hidden="true">◆</span><span>Executive Dashboard</span></button></li>
+          <li><button class="nav-button" type="button" data-target="customers"><span class="nav-icon" aria-hidden="true">◎</span><span>Customer Management</span></button></li>
+          <li><button class="nav-button" type="button" data-target="pipeline"><span class="nav-icon" aria-hidden="true">▤</span><span>Opportunity Pipeline</span></button></li>
+          <li><button class="nav-button" type="button" data-target="forecast"><span class="nav-icon" aria-hidden="true">▲</span><span>Revenue Forecast</span></button></li>
+          <li><button class="nav-button" type="button" data-target="team"><span class="nav-icon" aria-hidden="true">●</span><span>Team Performance</span></button></li>
+        </ul>
+      </nav>
+
+      <p class="nav-title">AI Assist</p>
+      <div class="sidebar-card">
+        <strong>Signal Quality</strong>
+        <p>AI model is using demo CRM signals only: pipeline motion, activity cadence, renewal timing, and forecast variance.</p>
+        <div class="progress" aria-label="AI signal quality 88 percent"><span style="width:88%"></span></div>
+      </div>
+    </aside>
+
+    <main class="main" id="main-content" tabindex="-1">
+      <header class="topbar">
+        <div class="hero-title">
+          <button class="mobile-menu" id="menuButton" type="button" aria-expanded="false" aria-controls="sidebar">☰ Menu</button>
+          <h1>AI-Powered Sales Command Center</h1>
+          <p>Fictional enterprise CRM demo for sales managers, account executives, and revenue operations leaders.</p>
+        </div>
+        <div class="top-actions" aria-label="Dashboard controls">
+          <span class="pill"><span class="dot" aria-hidden="true"></span>Live demo signals</span>
+          <button class="button secondary" type="button" id="refreshInsights">Refresh AI insights</button>
+          <button class="button" type="button" id="focusPipeline">Review pipeline</button>
+        </div>
+      </header>
+
+      <div class="content">
+        <section class="section-panel active" id="dashboard" aria-labelledby="dashboard-title">
+          <div class="grid kpis" aria-label="Key sales indicators">
+            <article class="card kpi-card">
+              <div class="kpi-label"><span>Weighted Pipeline</span><span class="status blue">Q3</span></div>
+              <div class="kpi-value" id="weightedPipeline">$18.4M</div>
+              <span class="trend">▲ 12.8% vs last quarter</span>
+              <div class="sparkline" aria-hidden="true"><span style="height:42%"></span><span style="height:51%"></span><span style="height:46%"></span><span style="height:68%"></span><span style="height:61%"></span><span style="height:80%"></span></div>
+            </article>
+            <article class="card kpi-card">
+              <div class="kpi-label"><span>Commit Forecast</span><span class="status green">Strong</span></div>
+              <div class="kpi-value">$7.9M</div>
+              <span class="trend">▲ 6.4% coverage gain</span>
+              <div class="sparkline" aria-hidden="true"><span style="height:38%"></span><span style="height:44%"></span><span style="height:57%"></span><span style="height:59%"></span><span style="height:76%"></span><span style="height:72%"></span></div>
+            </article>
+            <article class="card kpi-card">
+              <div class="kpi-label"><span>At-Risk Revenue</span><span class="status amber">Watch</span></div>
+              <div class="kpi-value">$2.1M</div>
+              <span class="trend warn">● 3 renewals need action</span>
+              <div class="sparkline" aria-hidden="true"><span style="height:72%"></span><span style="height:58%"></span><span style="height:63%"></span><span style="height:49%"></span><span style="height:43%"></span><span style="height:37%"></span></div>
+            </article>
+            <article class="card kpi-card">
+              <div class="kpi-label"><span>Win Rate</span><span class="status green">Improving</span></div>
+              <div class="kpi-value">34.6%</div>
+              <span class="trend">▲ 4.1 pts in 90 days</span>
+              <div class="sparkline" aria-hidden="true"><span style="height:35%"></span><span style="height:40%"></span><span style="height:48%"></span><span style="height:45%"></span><span style="height:62%"></span><span style="height:69%"></span></div>
+            </article>
+          </div>
+
+          <div class="grid two" style="margin-top:18px;">
+            <article class="card" aria-labelledby="revenue-chart-title">
+              <div class="card-header">
+                <div>
+                  <h2 id="revenue-chart-title">Revenue Trend and Coverage</h2>
+                  <p>Closed won revenue, weighted pipeline, and target coverage for the current fiscal quarter.</p>
+                </div>
+                <span class="status blue">AI variance: low</span>
+              </div>
+              <div class="canvas-wrap"><canvas id="revenueChart" aria-label="Revenue trend chart" role="img"></canvas></div>
+            </article>
+
+            <article class="card" aria-labelledby="ai-title">
+              <div class="card-header">
+                <div>
+                  <h2 id="ai-title">AI Recommendations</h2>
+                  <p>Prioritized actions ranked by revenue impact and urgency.</p>
+                </div>
+                <span class="status green">Updated</span>
+              </div>
+              <div class="card-body">
+                <ul class="insight-list" id="insightList"></ul>
+              </div>
+            </article>
+          </div>
+
+          <div class="grid two" style="margin-top:18px;">
+            <article class="card" aria-labelledby="activity-title">
+              <div class="card-header">
+                <div>
+                  <h2 id="activity-title">Recent Activity Feed</h2>
+                  <p>Customer touches, executive meetings, forecast updates, and next best actions.</p>
+                </div>
+              </div>
+              <div class="card-body">
+                <ul class="activity-list" id="activityList"></ul>
+              </div>
+            </article>
+            <article class="card" aria-labelledby="mix-title">
+              <div class="card-header">
+                <div>
+                  <h2 id="mix-title">Pipeline Mix</h2>
+                  <p>Weighted value by stage with conservative revenue quality scoring.</p>
+                </div>
+              </div>
+              <div class="card-body">
+                <div id="stageMix" aria-label="Pipeline mix by stage"></div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="section-panel" id="customers" aria-labelledby="customers-title">
+          <article class="card">
+            <div class="card-header">
+              <div>
+                <h2 id="customers-title">Customer Management</h2>
+                <p>Search and filter fictional enterprise accounts by segment, relationship health, renewal window, and owner.</p>
+              </div>
+              <span class="status blue" id="customerCount">0 accounts</span>
+            </div>
+            <div class="card-body">
+              <div class="filters" role="search" aria-label="Customer filters">
+                <div class="field">
+                  <label for="customerSearch">Search accounts</label>
+                  <input id="customerSearch" type="search" placeholder="Search name, owner, or industry" autocomplete="off">
+                </div>
+                <div class="field">
+                  <label for="segmentFilter">Segment</label>
+                  <select id="segmentFilter">
+                    <option value="all">All segments</option>
+                    <option value="Strategic">Strategic</option>
+                    <option value="Enterprise">Enterprise</option>
+                    <option value="Growth">Growth</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="healthFilter">Health</label>
+                  <select id="healthFilter">
+                    <option value="all">All health levels</option>
+                    <option value="Healthy">Healthy</option>
+                    <option value="Monitor">Monitor</option>
+                    <option value="At Risk">At Risk</option>
+                  </select>
+                </div>
+              </div>
+              <div class="empty-state" id="customerEmpty">No accounts match the selected filters.</div>
+              <div style="overflow-x:auto;">
+                <table>
+                  <caption>Fictional customer account portfolio</caption>
+                  <thead>
+                    <tr>
+                      <th scope="col">Account</th>
+                      <th scope="col">Segment</th>
+                      <th scope="col">Owner</th>
+                      <th scope="col">ARR</th>
+                      <th scope="col">Health</th>
+                      <th scope="col">Renewal</th>
+                      <th scope="col">AI Note</th>
+                    </tr>
+                  </thead>
+                  <tbody id="customerTable"></tbody>
+                </table>
+              </div>
+            </div>
+          </article>
+        </section>
+
+        <section class="section-panel" id="pipeline" aria-labelledby="pipeline-title">
+          <article class="card">
+            <div class="card-header">
+              <div>
+                <h2 id="pipeline-title">Opportunity Pipeline</h2>
+                <p>Stage-based pipeline with deal value, owner, close timing, probability, and AI risk cues.</p>
+              </div>
+              <button class="button secondary" type="button" id="sortPipeline">Sort by value</button>
+            </div>
+            <div class="card-body">
+              <div class="pipeline" id="pipelineBoard" aria-label="Opportunity pipeline board"></div>
+            </div>
+          </article>
+        </section>
+
+        <section class="section-panel" id="forecast" aria-labelledby="forecast-title">
+          <article class="card">
+            <div class="card-header">
+              <div>
+                <h2 id="forecast-title">Revenue Forecasting</h2>
+                <p>Scenario modeling uses fictional CRM data with confidence indicators, commit coverage, and upside bands.</p>
+              </div>
+              <span class="status green">Forecast health 82%</span>
+            </div>
+            <div class="card-body">
+              <div class="forecast-controls">
+                <div class="field">
+                  <label for="scenarioSlider">Scenario optimism</label>
+                  <input id="scenarioSlider" type="range" min="80" max="120" value="100" step="5" aria-describedby="scenarioHelp">
+                  <p id="scenarioHelp" style="margin:4px 0 0;color:var(--gray-600);font-size:0.88rem;">Adjust deal conversion confidence from conservative to optimistic.</p>
+                </div>
+                <div class="forecast-number" id="scenarioTotal">$9.8M</div>
+              </div>
+              <div class="summary-band" aria-label="Forecast summary metrics">
+                <div class="summary-tile"><span>Commit</span><strong id="commitValue">$7.9M</strong></div>
+                <div class="summary-tile"><span>Best Case</span><strong id="bestCaseValue">$11.6M</strong></div>
+                <div class="summary-tile"><span>Gap to Target</span><strong id="gapValue">$1.4M</strong></div>
+                <div class="summary-tile"><span>Confidence</span><strong id="confidenceValue">82%</strong></div>
+              </div>
+              <div style="margin-top:18px;">
+                <ul class="forecast-list" id="forecastList"></ul>
+              </div>
+            </div>
+          </article>
+        </section>
+
+        <section class="section-panel" id="team" aria-labelledby="team-title">
+          <div class="grid two">
+            <article class="card">
+              <div class="card-header">
+                <div>
+                  <h2 id="team-title">Team Leaderboard</h2>
+                  <p>Ranked by closed revenue, pipeline creation, activity quality, and forecast discipline.</p>
+                </div>
+              </div>
+              <div class="card-body">
+                <ul class="leaderboard" id="leaderboard"></ul>
+              </div>
+            </article>
+            <article class="card" aria-labelledby="coaching-title">
+              <div class="card-header">
+                <div>
+                  <h2 id="coaching-title">Manager Coaching Queue</h2>
+                  <p>Recommended coaching moments based on demo pipeline hygiene and activity patterns.</p>
+                </div>
+              </div>
+              <div class="card-body">
+                <ul class="insight-list" id="coachingList"></ul>
+              </div>
+            </article>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const customers = [
+      { name: 'Northstar Capital Services', industry: 'Wealth Platforms', segment: 'Strategic', owner: 'Mira Patel', arr: 1850000, health: 'Healthy', renewal: 'Nov 2026', note: 'Expansion interest in advisor workflow analytics.' },
+      { name: 'Aster Ridge Trust', industry: 'Institutional Trust', segment: 'Enterprise', owner: 'Jordan Lee', arr: 920000, health: 'Monitor', renewal: 'Sep 2026', note: 'Executive sponsor changed; schedule alignment session.' },
+      { name: 'Blue Harbor Funds', industry: 'Asset Management', segment: 'Strategic', owner: 'Elena Ruiz', arr: 2140000, health: 'Healthy', renewal: 'Jan 2027', note: 'Strong adoption and new compliance reporting use case.' },
+      { name: 'Cobalt River Insurance', industry: 'Insurance', segment: 'Enterprise', owner: 'Theo Brooks', arr: 760000, health: 'At Risk', renewal: 'Aug 2026', note: 'Low usage in two business units; propose remediation plan.' },
+      { name: 'Summit Grove Bank', industry: 'Commercial Banking', segment: 'Strategic', owner: 'Mira Patel', arr: 1650000, health: 'Healthy', renewal: 'Dec 2026', note: 'Procurement requested multi-year pricing scenario.' },
+      { name: 'Pinecrest Advisory Group', industry: 'Advisory', segment: 'Growth', owner: 'Nadia Chen', arr: 310000, health: 'Monitor', renewal: 'Oct 2026', note: 'Needs ROI proof point before analytics add-on.' },
+      { name: 'Everline Securities', industry: 'Brokerage', segment: 'Enterprise', owner: 'Jordan Lee', arr: 880000, health: 'Healthy', renewal: 'Feb 2027', note: 'Pipeline for managed services attach is accelerating.' },
+      { name: 'Quartz Valley Retirement', industry: 'Retirement Services', segment: 'Growth', owner: 'Elena Ruiz', arr: 420000, health: 'At Risk', renewal: 'Jul 2026', note: 'Open support escalations could delay renewal.' }
+    ];
+
+    const opportunities = [
+      { account: 'Northstar Capital Services', name: 'Advisor Insights Expansion', stage: 'Discovery', value: 1200000, owner: 'Mira Patel', probability: 25, close: 'Oct 2026', risk: 'Needs quantified business case' },
+      { account: 'Aster Ridge Trust', name: 'Enterprise Renewal Upgrade', stage: 'Qualified', value: 860000, owner: 'Jordan Lee', probability: 40, close: 'Sep 2026', risk: 'New sponsor onboarding' },
+      { account: 'Blue Harbor Funds', name: 'Compliance Reporting Suite', stage: 'Solution', value: 1550000, owner: 'Elena Ruiz', probability: 55, close: 'Nov 2026', risk: 'Legal review dependency' },
+      { account: 'Summit Grove Bank', name: 'Multi-Year Platform Agreement', stage: 'Proposal', value: 2420000, owner: 'Mira Patel', probability: 70, close: 'Dec 2026', risk: 'Procurement negotiation' },
+      { account: 'Everline Securities', name: 'Managed Services Attach', stage: 'Proposal', value: 980000, owner: 'Jordan Lee', probability: 68, close: 'Oct 2026', risk: 'Security questionnaire' },
+      { account: 'Cobalt River Insurance', name: 'Retention Recovery Package', stage: 'Negotiation', value: 650000, owner: 'Theo Brooks', probability: 50, close: 'Aug 2026', risk: 'Adoption gap' },
+      { account: 'Pinecrest Advisory Group', name: 'Analytics Pilot Conversion', stage: 'Solution', value: 390000, owner: 'Nadia Chen', probability: 52, close: 'Sep 2026', risk: 'ROI proof needed' },
+      { account: 'Quartz Valley Retirement', name: 'Workflow Stabilization Renewal', stage: 'Negotiation', value: 410000, owner: 'Elena Ruiz', probability: 45, close: 'Jul 2026', risk: 'Support escalation' },
+      { account: 'Harborstone Clearing', name: 'Data Operations Modernization', stage: 'Qualified', value: 1320000, owner: 'Theo Brooks', probability: 38, close: 'Jan 2027', risk: 'Budget timing' },
+      { account: 'Lumen Peak Markets', name: 'Client Portal Transformation', stage: 'Discovery', value: 720000, owner: 'Nadia Chen', probability: 28, close: 'Dec 2026', risk: 'Decision committee unclear' }
+    ];
+
+    const activities = [
+      { time: '09:10', title: 'Executive meeting completed', detail: 'Summit Grove Bank confirmed target architecture review and requested a multi-year proposal.' },
+      { time: '10:25', title: 'AI risk alert', detail: 'Cobalt River Insurance activity dropped 31% in the last two weeks; renewal risk elevated.' },
+      { time: '11:45', title: 'Champion engagement', detail: 'Blue Harbor Funds compliance lead shared a success metric for audit cycle reduction.' },
+      { time: '13:20', title: 'Forecast updated', detail: 'Everline Securities moved to proposal with 68% probability after procurement alignment.' },
+      { time: '15:05', title: 'Next step scheduled', detail: 'Aster Ridge Trust sponsor transition workshop placed on the account plan.' }
+    ];
+
+    const insights = [
+      { priority: 1, title: 'Protect $650K renewal at Cobalt River Insurance', detail: 'Usage and support sentiment indicate a near-term retention risk. Assign an adoption specialist and secure a sponsor call within five business days.', action: 'Create recovery plan' },
+      { priority: 2, title: 'Accelerate Summit Grove Bank procurement', detail: 'Deal probability improves if pricing options are packaged before the steering committee. Send executive-ready terms this week.', action: 'Draft pricing brief' },
+      { priority: 3, title: 'Convert Blue Harbor compliance momentum', detail: 'The account has strong proof points. Ask for a joint success plan and identify two adjacent teams for expansion.', action: 'Build expansion map' }
+    ];
+
+    const forecastRows = [
+      { label: 'Committed revenue', value: 7900000, confidence: 88, status: 'green', note: 'High activity cadence and confirmed executive sponsors.' },
+      { label: 'Probable upside', value: 1900000, confidence: 64, status: 'amber', note: 'Requires procurement progress on two proposal-stage opportunities.' },
+      { label: 'Risk-adjusted renewals', value: 2100000, confidence: 58, status: 'amber', note: 'Retention outcomes depend on adoption recovery plans.' },
+      { label: 'Stretch expansion', value: 1300000, confidence: 36, status: 'red', note: 'Decision committees are not fully mapped.' }
+    ];
+
+    const team = [
+      { name: 'Mira Patel', role: 'Strategic Accounts', closed: 3200000, created: 5400000, quality: 96, score: 94 },
+      { name: 'Elena Ruiz', role: 'Financial Services', closed: 2700000, created: 4100000, quality: 91, score: 89 },
+      { name: 'Jordan Lee', role: 'Enterprise Accounts', closed: 2100000, created: 3650000, quality: 84, score: 82 },
+      { name: 'Theo Brooks', role: 'Retention and Growth', closed: 1280000, created: 2700000, quality: 74, score: 76 },
+      { name: 'Nadia Chen', role: 'Growth Accounts', closed: 980000, created: 2200000, quality: 79, score: 73 }
+    ];
+
+    const coaching = [
+      { priority: 'A', title: 'Coach Theo on renewal recovery sequencing', detail: 'Review Cobalt River and Quartz Valley objection patterns, then prepare a sponsor re-engagement script.' },
+      { priority: 'B', title: 'Help Nadia clarify decision committees', detail: 'Two discovery opportunities lack economic buyer mapping. Use mutual action plan templates in next one-on-one.' },
+      { priority: 'C', title: 'Scale Mira procurement playbook', detail: 'Mira is advancing multi-year deals quickly. Convert the approach into a reusable team checklist.' }
+    ];
+
+    const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0, notation: 'compact' });
+    const fullFmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
+
+    function money(value) { return fmt.format(value); }
+    function healthClass(health) { return health === 'Healthy' ? 'green' : health === 'Monitor' ? 'amber' : 'red'; }
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>'"]/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[char]));
+    }
+
+    function setActiveSection(target) {
+      document.querySelectorAll('.section-panel').forEach(section => section.classList.toggle('active', section.id === target));
+      document.querySelectorAll('.nav-button').forEach(button => {
+        if (button.dataset.target === target) button.setAttribute('aria-current', 'page');
+        else button.removeAttribute('aria-current');
+      });
+      if (window.innerWidth <= 880) closeMobileNav();
+      document.getElementById(target).scrollIntoView({ block: 'start' });
+    }
+
+    function closeMobileNav() {
+      document.getElementById('sidebar').classList.remove('open');
+      document.getElementById('mobileOverlay').classList.remove('show');
+      document.getElementById('menuButton').setAttribute('aria-expanded', 'false');
+    }
+
+    function renderCustomers() {
+      const search = document.getElementById('customerSearch').value.trim().toLowerCase();
+      const segment = document.getElementById('segmentFilter').value;
+      const health = document.getElementById('healthFilter').value;
+      const rows = customers.filter(account => {
+        const haystack = [account.name, account.industry, account.owner, account.note].join(' ').toLowerCase();
+        return (!search || haystack.includes(search)) && (segment === 'all' || account.segment === segment) && (health === 'all' || account.health === health);
+      });
+
+      document.getElementById('customerCount').textContent = rows.length + (rows.length === 1 ? ' account' : ' accounts');
+      document.getElementById('customerEmpty').style.display = rows.length ? 'none' : 'block';
+      document.getElementById('customerTable').innerHTML = rows.map(account => `
+        <tr>
+          <td data-label="Account"><strong>${escapeHtml(account.name)}</strong><br><span style="color:var(--gray-600)">${escapeHtml(account.industry)}</span></td>
+          <td data-label="Segment">${escapeHtml(account.segment)}</td>
+          <td data-label="Owner">${escapeHtml(account.owner)}</td>
+          <td data-label="ARR">${fullFmt.format(account.arr)}</td>
+          <td data-label="Health"><span class="status ${healthClass(account.health)}">${escapeHtml(account.health)}</span></td>
+          <td data-label="Renewal">${escapeHtml(account.renewal)}</td>
+          <td data-label="AI Note">${escapeHtml(account.note)}</td>
+        </tr>`).join('');
+    }
+
+    function renderPipeline(sortByValue = false) {
+      const stages = ['Discovery', 'Qualified', 'Solution', 'Proposal', 'Negotiation'];
+      const source = [...opportunities].sort((a, b) => sortByValue ? b.value - a.value : stages.indexOf(a.stage) - stages.indexOf(b.stage));
+      document.getElementById('pipelineBoard').innerHTML = stages.map(stage => {
+        const deals = source.filter(deal => deal.stage === stage);
+        const total = deals.reduce((sum, deal) => sum + deal.value, 0);
+        return `<section class="stage" aria-labelledby="stage-${stage}">
+          <h3 id="stage-${stage}"><span>${stage}</span><span class="stage-total">${money(total)}</span></h3>
+          ${deals.map(deal => `<article class="deal-card" tabindex="0" aria-label="${escapeHtml(deal.name)} opportunity">
+            <strong>${escapeHtml(deal.name)}</strong>
+            <small>${escapeHtml(deal.account)} · ${escapeHtml(deal.owner)}</small>
+            <div style="display:flex;justify-content:space-between;gap:8px;"><span>${fullFmt.format(deal.value)}</span><span>${deal.probability}%</span></div>
+            <div class="progress" aria-label="Probability ${deal.probability} percent"><span style="width:${deal.probability}%"></span></div>
+            <small>Close: ${escapeHtml(deal.close)} · Risk: ${escapeHtml(deal.risk)}</small>
+          </article>`).join('')}
+        </section>`;
+      }).join('');
+    }
+
+    function renderInsights() {
+      document.getElementById('insightList').innerHTML = insights.map(item => `
+        <li class="insight">
+          <span class="priority" aria-label="Priority ${item.priority}">${item.priority}</span>
+          <div>
+            <strong>${escapeHtml(item.title)}</strong>
+            <p>${escapeHtml(item.detail)}</p>
+            <div class="insight-actions">
+              <button class="mini-button primary" type="button">${escapeHtml(item.action)}</button>
+              <button class="mini-button" type="button">Add to plan</button>
+            </div>
+          </div>
+        </li>`).join('');
+    }
+
+    function rotateInsights() {
+      insights.push(insights.shift());
+      renderInsights();
+      document.getElementById('refreshInsights').textContent = 'Insights refreshed';
+      setTimeout(() => { document.getElementById('refreshInsights').textContent = 'Refresh AI insights'; }, 1300);
+    }
+
+    function renderActivity() {
+      document.getElementById('activityList').innerHTML = activities.map(item => `
+        <li class="activity">
+          <span class="time-badge">${escapeHtml(item.time)}</span>
+          <div><strong>${escapeHtml(item.title)}</strong><p>${escapeHtml(item.detail)}</p></div>
+        </li>`).join('');
+    }
+
+    function renderStageMix() {
+      const stages = ['Discovery', 'Qualified', 'Solution', 'Proposal', 'Negotiation'];
+      const max = Math.max(...stages.map(stage => opportunities.filter(deal => deal.stage === stage).reduce((sum, deal) => sum + deal.value * deal.probability / 100, 0)));
+      document.getElementById('stageMix').innerHTML = stages.map(stage => {
+        const weighted = opportunities.filter(deal => deal.stage === stage).reduce((sum, deal) => sum + deal.value * deal.probability / 100, 0);
+        const pct = max ? Math.max(8, Math.round(weighted / max * 100)) : 0;
+        return `<div style="margin-bottom:14px;">
+          <div style="display:flex;justify-content:space-between;gap:10px;margin-bottom:6px;"><strong>${stage}</strong><span>${money(weighted)}</span></div>
+          <div class="progress" aria-label="${stage} weighted value ${money(weighted)}"><span style="width:${pct}%"></span></div>
+        </div>`;
+      }).join('');
+    }
+
+    function renderForecast(multiplier = 1) {
+      const total = forecastRows.reduce((sum, row) => sum + row.value * row.confidence / 100, 0) * multiplier;
+      const commit = 7900000 * multiplier;
+      const bestCase = 11600000 * multiplier;
+      const target = 11200000;
+      const confidence = Math.max(56, Math.min(91, Math.round(82 - Math.abs(1 - multiplier) * 36)));
+      document.getElementById('scenarioTotal').textContent = money(total);
+      document.getElementById('commitValue').textContent = money(commit);
+      document.getElementById('bestCaseValue').textContent = money(bestCase);
+      document.getElementById('gapValue').textContent = money(Math.max(0, target - total));
+      document.getElementById('confidenceValue').textContent = confidence + '%';
+      document.getElementById('forecastList').innerHTML = forecastRows.map(row => `
+        <li class="forecast-item">
+          <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;">
+            <strong>${escapeHtml(row.label)}</strong>
+            <span class="status ${row.status}">${money(row.value * multiplier)} · ${row.confidence}%</span>
+          </div>
+          <div class="confidence-meter">
+            <div class="progress" aria-label="${escapeHtml(row.label)} confidence ${row.confidence} percent"><span style="width:${row.confidence}%"></span></div>
+          </div>
+          <p>${escapeHtml(row.note)}</p>
+        </li>`).join('');
+    }
+
+    function renderLeaderboard() {
+      document.getElementById('leaderboard').innerHTML = team.map((person, index) => `
+        <li class="leader">
+          <span class="rank">${index + 1}</span>
+          <div>
+            <strong>${escapeHtml(person.name)}</strong>
+            <span>${escapeHtml(person.role)} · Closed ${money(person.closed)} · Created ${money(person.created)}</span>
+            <div class="progress" aria-label="Performance quality ${person.quality} percent" style="margin-top:8px;"><span style="width:${person.quality}%"></span></div>
+          </div>
+          <span class="score">${person.score}</span>
+        </li>`).join('');
+
+      document.getElementById('coachingList').innerHTML = coaching.map(item => `
+        <li class="insight">
+          <span class="priority" aria-label="Coaching priority ${escapeHtml(item.priority)}">${escapeHtml(item.priority)}</span>
+          <div><strong>${escapeHtml(item.title)}</strong><p>${escapeHtml(item.detail)}</p></div>
+        </li>`).join('');
+    }
+
+    function drawRevenueChart() {
+      const canvas = document.getElementById('revenueChart');
+      const context = canvas.getContext('2d');
+      const box = canvas.getBoundingClientRect();
+      const scale = window.devicePixelRatio || 1;
+      canvas.width = Math.floor(box.width * scale);
+      canvas.height = Math.floor(box.height * scale);
+      context.setTransform(scale, 0, 0, scale, 0, 0);
+      const width = box.width;
+      const height = box.height;
+      const padding = { top: 24, right: 24, bottom: 42, left: 48 };
+      const labels = ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'];
+      const closed = [2.3, 3.1, 4.2, 5.6, 6.9, 7.9];
+      const weighted = [8.4, 9.7, 11.3, 13.2, 16.1, 18.4];
+      const target = [3, 4.8, 6.6, 8.4, 10.2, 12];
+      const max = 20;
+      context.clearRect(0, 0, width, height);
+      context.font = '12px Arial, Helvetica, sans-serif';
+      context.lineWidth = 1;
+      context.strokeStyle = '#e5e7eb';
+      context.fillStyle = '#6b7280';
+      for (let i = 0; i <= 4; i++) {
+        const y = padding.top + (height - padding.top - padding.bottom) * i / 4;
+        context.beginPath();
+        context.moveTo(padding.left, y);
+        context.lineTo(width - padding.right, y);
+        context.stroke();
+        context.fillText('$' + Math.round(max - max * i / 4) + 'M', 8, y + 4);
+      }
+      labels.forEach((label, i) => {
+        const x = padding.left + (width - padding.left - padding.right) * i / (labels.length - 1);
+        context.fillText(label, x - 10, height - 14);
+      });
+      function yPoint(value) { return padding.top + (height - padding.top - padding.bottom) * (1 - value / max); }
+      function xPoint(i) { return padding.left + (width - padding.left - padding.right) * i / (labels.length - 1); }
+      function line(values, color, dash) {
+        context.save();
+        context.strokeStyle = color;
+        context.lineWidth = 3;
+        if (dash) context.setLineDash([7, 7]);
+        context.beginPath();
+        values.forEach((value, i) => {
+          const x = xPoint(i), y = yPoint(value);
+          if (i === 0) context.moveTo(x, y); else context.lineTo(x, y);
+        });
+        context.stroke();
+        context.restore();
+      }
+      line(target, '#94a3b8', true);
+      line(weighted, '#2177c7', false);
+      line(closed, '#35d1e8', false);
+      [weighted, closed].forEach((series, seriesIndex) => {
+        context.fillStyle = seriesIndex ? '#35d1e8' : '#2177c7';
+        series.forEach((value, i) => {
+          context.beginPath();
+          context.arc(xPoint(i), yPoint(value), 4, 0, Math.PI * 2);
+          context.fill();
+        });
+      });
+      const legend = [ ['Weighted pipeline', '#2177c7'], ['Closed won', '#35d1e8'], ['Target', '#94a3b8'] ];
+      legend.forEach((item, i) => {
+        const x = padding.left + i * 136;
+        context.fillStyle = item[1];
+        context.fillRect(x, 8, 18, 4);
+        context.fillStyle = '#374151';
+        context.fillText(item[0], x + 24, 13);
+      });
+    }
+
+    document.querySelectorAll('.nav-button').forEach(button => button.addEventListener('click', () => setActiveSection(button.dataset.target)));
+    document.getElementById('focusPipeline').addEventListener('click', () => setActiveSection('pipeline'));
+    document.getElementById('refreshInsights').addEventListener('click', rotateInsights);
+    document.getElementById('customerSearch').addEventListener('input', renderCustomers);
+    document.getElementById('segmentFilter').addEventListener('change', renderCustomers);
+    document.getElementById('healthFilter').addEventListener('change', renderCustomers);
+    document.getElementById('sortPipeline').addEventListener('click', event => {
+      const sorted = event.currentTarget.dataset.sorted !== 'true';
+      event.currentTarget.dataset.sorted = sorted ? 'true' : 'false';
+      event.currentTarget.textContent = sorted ? 'Restore stage order' : 'Sort by value';
+      renderPipeline(sorted);
+    });
+    document.getElementById('scenarioSlider').addEventListener('input', event => renderForecast(Number(event.target.value) / 100));
+    document.getElementById('menuButton').addEventListener('click', event => {
+      const sidebar = document.getElementById('sidebar');
+      const isOpen = !sidebar.classList.contains('open');
+      sidebar.classList.toggle('open', isOpen);
+      document.getElementById('mobileOverlay').classList.toggle('show', isOpen);
+      event.currentTarget.setAttribute('aria-expanded', String(isOpen));
+    });
+    document.getElementById('mobileOverlay').addEventListener('click', closeMobileNav);
+    window.addEventListener('resize', drawRevenueChart);
+
+    renderCustomers();
+    renderPipeline();
+    renderInsights();
+    renderActivity();
+    renderStageMix();
+    renderForecast();
+    renderLeaderboard();
+    drawRevenueChart();
+  </script>
+</body>
+</html>

@@ -1,0 +1,1779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI Sales CRM Prototype</title>
+  <style>
+    :root {
+      --navy-950: #061326;
+      --navy-900: #09203d;
+      --navy-850: #0b2a4d;
+      --blue-700: #155ea8;
+      --blue-600: #2178c7;
+      --blue-500: #2c90df;
+      --cyan-400: #32d3e6;
+      --cyan-100: #e7fbff;
+      --gray-950: #111827;
+      --gray-800: #263244;
+      --gray-700: #354256;
+      --gray-600: #536173;
+      --gray-500: #718093;
+      --gray-300: #c9d2de;
+      --gray-200: #e6ebf1;
+      --gray-100: #f3f6f9;
+      --gray-50: #f8fafc;
+      --white: #ffffff;
+      --green-600: #178660;
+      --green-100: #e6f6ef;
+      --amber-600: #b7791f;
+      --amber-100: #fff4d8;
+      --red-600: #c2413a;
+      --red-100: #fdeceb;
+      --shadow-sm: 0 8px 20px rgba(6, 19, 38, 0.08);
+      --shadow-md: 0 18px 45px rgba(6, 19, 38, 0.14);
+      --radius-lg: 22px;
+      --radius-md: 16px;
+      --radius-sm: 10px;
+      --focus: 0 0 0 4px rgba(50, 211, 230, 0.28);
+      --max-width: 1480px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      color: var(--gray-950);
+      background:
+        radial-gradient(circle at top left, rgba(50, 211, 230, 0.18), transparent 32rem),
+        linear-gradient(180deg, #eef5fb 0%, var(--gray-50) 44%, #ffffff 100%);
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.5;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    button,
+    a,
+    input,
+    select {
+      outline: none;
+    }
+
+    button:focus-visible,
+    a:focus-visible,
+    input:focus-visible,
+    select:focus-visible,
+    [tabindex]:focus-visible {
+      box-shadow: var(--focus);
+    }
+
+    .app-shell {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 288px minmax(0, 1fr);
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      padding: 24px 18px;
+      color: var(--white);
+      background:
+        linear-gradient(180deg, rgba(9, 32, 61, 0.98), rgba(6, 19, 38, 0.98)),
+        linear-gradient(135deg, rgba(50, 211, 230, 0.12), transparent);
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
+      overflow-y: auto;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 4px 8px 24px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .brand-mark {
+      width: 44px;
+      height: 44px;
+      display: inline-grid;
+      place-items: center;
+      border-radius: 14px;
+      color: var(--navy-950);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      background: linear-gradient(135deg, var(--white), var(--cyan-400));
+      box-shadow: 0 10px 28px rgba(50, 211, 230, 0.22);
+    }
+
+    .brand-title {
+      margin: 0;
+      font-size: 1.04rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-subtitle {
+      margin: 2px 0 0;
+      color: rgba(255, 255, 255, 0.72);
+      font-size: 0.83rem;
+    }
+
+    .mobile-bar {
+      display: none;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      padding: 12px 16px;
+      color: var(--white);
+      background: var(--navy-900);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .mobile-bar-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .menu-toggle {
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--white);
+      border-radius: 12px;
+      padding: 10px 12px;
+      cursor: pointer;
+    }
+
+    .nav-section-title {
+      margin: 24px 10px 10px;
+      color: rgba(255, 255, 255, 0.58);
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    .nav-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 6px;
+    }
+
+    .nav-button {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      border: 1px solid transparent;
+      border-radius: 14px;
+      padding: 12px 12px;
+      color: rgba(255, 255, 255, 0.82);
+      background: transparent;
+      cursor: pointer;
+      text-align: left;
+      transition: background 160ms ease, border-color 160ms ease, color 160ms ease, transform 160ms ease;
+    }
+
+    .nav-button:hover,
+    .nav-button[aria-current="page"] {
+      color: var(--white);
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(50, 211, 230, 0.26);
+      transform: translateX(2px);
+    }
+
+    .nav-button span:first-child {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+    }
+
+    .nav-icon {
+      width: 28px;
+      height: 28px;
+      display: inline-grid;
+      place-items: center;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--cyan-400);
+      font-size: 0.9rem;
+      flex: 0 0 auto;
+    }
+
+    .nav-count {
+      min-width: 26px;
+      padding: 2px 8px;
+      color: var(--cyan-100);
+      background: rgba(50, 211, 230, 0.14);
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    .sidebar-card {
+      margin-top: 26px;
+      padding: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.13);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.07);
+    }
+
+    .sidebar-card h2 {
+      margin: 0 0 8px;
+      font-size: 0.95rem;
+    }
+
+    .sidebar-card p {
+      margin: 0 0 14px;
+      color: rgba(255, 255, 255, 0.74);
+      font-size: 0.87rem;
+    }
+
+    .confidence-mini {
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.14);
+      overflow: hidden;
+    }
+
+    .confidence-mini span {
+      display: block;
+      width: 82%;
+      height: 100%;
+      background: linear-gradient(90deg, var(--blue-500), var(--cyan-400));
+      border-radius: inherit;
+    }
+
+    .main {
+      min-width: 0;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 20px clamp(18px, 3vw, 38px);
+      background: rgba(248, 250, 252, 0.86);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(201, 210, 222, 0.72);
+    }
+
+    .page-kicker {
+      margin: 0 0 3px;
+      color: var(--blue-700);
+      font-size: 0.78rem;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .page-title {
+      margin: 0;
+      color: var(--navy-950);
+      font-size: clamp(1.45rem, 3vw, 2.4rem);
+      line-height: 1.08;
+      letter-spacing: -0.045em;
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .select-wrap,
+    .search-wrap {
+      position: relative;
+    }
+
+    .select,
+    .search-input,
+    .text-input {
+      min-height: 42px;
+      border: 1px solid var(--gray-300);
+      border-radius: 13px;
+      color: var(--gray-950);
+      background: var(--white);
+      box-shadow: 0 4px 14px rgba(6, 19, 38, 0.04);
+    }
+
+    .select {
+      padding: 0 38px 0 12px;
+      cursor: pointer;
+    }
+
+    .search-input,
+    .text-input {
+      width: 100%;
+      padding: 0 12px;
+    }
+
+    .button {
+      min-height: 42px;
+      border: 1px solid transparent;
+      border-radius: 13px;
+      padding: 0 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease, border-color 160ms ease;
+    }
+
+    .button:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .button-primary {
+      color: var(--white);
+      background: linear-gradient(135deg, var(--blue-700), var(--blue-500));
+    }
+
+    .button-secondary {
+      color: var(--blue-700);
+      background: var(--white);
+      border-color: var(--gray-300);
+    }
+
+    .button-ghost {
+      color: var(--gray-700);
+      background: transparent;
+      border-color: var(--gray-300);
+    }
+
+    .content {
+      width: min(100%, var(--max-width));
+      margin: 0 auto;
+      padding: 28px clamp(18px, 3vw, 38px) 46px;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: minmax(0, 1.3fr) minmax(280px, 0.7fr);
+      gap: 24px;
+      padding: clamp(24px, 4vw, 34px);
+      color: var(--white);
+      background:
+        radial-gradient(circle at 82% 8%, rgba(50, 211, 230, 0.34), transparent 16rem),
+        linear-gradient(135deg, var(--navy-950), var(--navy-850) 54%, #0d4271);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+    }
+
+    .hero h2 {
+      margin: 0;
+      font-size: clamp(1.8rem, 4vw, 3.1rem);
+      line-height: 1.03;
+      letter-spacing: -0.055em;
+    }
+
+    .hero p {
+      max-width: 720px;
+      margin: 14px 0 0;
+      color: rgba(255, 255, 255, 0.78);
+      font-size: 1rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 24px;
+    }
+
+    .hero .button-secondary {
+      color: var(--white);
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.24);
+    }
+
+    .hero-insight {
+      align-self: stretch;
+      display: grid;
+      gap: 14px;
+    }
+
+    .insight-box {
+      padding: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.09);
+    }
+
+    .insight-box strong {
+      display: block;
+      font-size: 1.65rem;
+      line-height: 1;
+      letter-spacing: -0.04em;
+    }
+
+    .insight-box span {
+      display: block;
+      margin-top: 6px;
+      color: rgba(255, 255, 255, 0.72);
+      font-size: 0.88rem;
+    }
+
+    .section {
+      margin-top: 28px;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 16px;
+    }
+
+    .section-heading h2 {
+      margin: 0;
+      color: var(--navy-950);
+      font-size: clamp(1.35rem, 2.6vw, 1.9rem);
+      letter-spacing: -0.035em;
+    }
+
+    .section-heading p {
+      margin: 4px 0 0;
+      color: var(--gray-600);
+    }
+
+    .grid {
+      display: grid;
+      gap: 18px;
+    }
+
+    .kpi-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .two-column {
+      grid-template-columns: minmax(0, 1.3fr) minmax(320px, 0.7fr);
+    }
+
+    .three-column {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid rgba(201, 210, 222, 0.78);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .card-pad {
+      padding: 20px;
+    }
+
+    .kpi-card {
+      position: relative;
+      overflow: hidden;
+      min-height: 150px;
+      padding: 20px;
+    }
+
+    .kpi-card::after {
+      content: "";
+      position: absolute;
+      right: -34px;
+      top: -34px;
+      width: 112px;
+      height: 112px;
+      border-radius: 50%;
+      background: rgba(50, 211, 230, 0.15);
+    }
+
+    .kpi-label {
+      margin: 0;
+      color: var(--gray-600);
+      font-size: 0.86rem;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+    }
+
+    .kpi-value {
+      margin: 12px 0 0;
+      color: var(--navy-950);
+      font-size: clamp(1.65rem, 3vw, 2.25rem);
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -0.06em;
+    }
+
+    .kpi-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: 18px;
+      color: var(--gray-600);
+      font-size: 0.86rem;
+    }
+
+    .trend {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .trend-up {
+      color: var(--green-600);
+      background: var(--green-100);
+    }
+
+    .trend-flat {
+      color: var(--amber-600);
+      background: var(--amber-100);
+    }
+
+    .trend-down {
+      color: var(--red-600);
+      background: var(--red-100);
+    }
+
+    .toolbar {
+      display: grid;
+      grid-template-columns: minmax(220px, 1fr) repeat(2, minmax(150px, 200px));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .account-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .account-card {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 16px;
+      padding: 16px;
+      border: 1px solid var(--gray-200);
+      border-radius: 16px;
+      background: var(--white);
+      transition: border-color 160ms ease, transform 160ms ease, box-shadow 160ms ease;
+    }
+
+    .account-card:hover {
+      border-color: rgba(44, 144, 223, 0.46);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .account-card h3 {
+      margin: 0;
+      color: var(--navy-950);
+      font-size: 1rem;
+    }
+
+    .account-card p {
+      margin: 6px 0 0;
+      color: var(--gray-600);
+      font-size: 0.9rem;
+    }
+
+    .account-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 26px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      color: var(--gray-700);
+      background: var(--gray-100);
+      border: 1px solid var(--gray-200);
+      font-size: 0.78rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .pill-blue {
+      color: var(--blue-700);
+      background: #eaf4ff;
+      border-color: #cfe7fb;
+    }
+
+    .pill-green {
+      color: var(--green-600);
+      background: var(--green-100);
+      border-color: #c8eadb;
+    }
+
+    .pill-amber {
+      color: var(--amber-600);
+      background: var(--amber-100);
+      border-color: #f5dfaa;
+    }
+
+    .pill-red {
+      color: var(--red-600);
+      background: var(--red-100);
+      border-color: #f4c8c4;
+    }
+
+    .account-score {
+      min-width: 112px;
+      text-align: right;
+    }
+
+    .account-score strong {
+      display: block;
+      color: var(--navy-950);
+      font-size: 1.35rem;
+      line-height: 1;
+    }
+
+    .account-score span {
+      display: block;
+      margin-top: 6px;
+      color: var(--gray-600);
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .pipeline-board {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(230px, 1fr));
+      gap: 14px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+
+    .stage {
+      min-width: 230px;
+      padding: 14px;
+      border-radius: 18px;
+      background: #f7f9fc;
+      border: 1px solid var(--gray-200);
+    }
+
+    .stage-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .stage-header h3 {
+      margin: 0;
+      color: var(--navy-950);
+      font-size: 0.96rem;
+    }
+
+    .stage-header span {
+      color: var(--gray-600);
+      font-size: 0.82rem;
+      font-weight: 800;
+    }
+
+    .deal-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 10px;
+    }
+
+    .deal-card {
+      padding: 13px;
+      border-radius: 14px;
+      border: 1px solid var(--gray-200);
+      background: var(--white);
+    }
+
+    .deal-card strong {
+      display: block;
+      color: var(--navy-950);
+      font-size: 0.92rem;
+    }
+
+    .deal-card span {
+      display: block;
+      margin-top: 4px;
+      color: var(--gray-600);
+      font-size: 0.82rem;
+    }
+
+    .deal-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .value {
+      color: var(--blue-700);
+      font-size: 1rem;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+    }
+
+    .forecast-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+      gap: 18px;
+    }
+
+    .forecast-hero {
+      display: grid;
+      gap: 14px;
+    }
+
+    .forecast-number {
+      margin: 0;
+      color: var(--navy-950);
+      font-size: clamp(2.2rem, 5vw, 4rem);
+      font-weight: 900;
+      line-height: 0.95;
+      letter-spacing: -0.065em;
+    }
+
+    .forecast-subtext {
+      margin: 0;
+      color: var(--gray-600);
+    }
+
+    .confidence-ring {
+      --score: 82;
+      width: 150px;
+      height: 150px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: conic-gradient(var(--cyan-400) calc(var(--score) * 1%), #e3eaf1 0);
+      margin: 6px auto;
+      position: relative;
+    }
+
+    .confidence-ring::before {
+      content: "";
+      position: absolute;
+      inset: 14px;
+      border-radius: 50%;
+      background: var(--white);
+    }
+
+    .confidence-ring strong {
+      position: relative;
+      color: var(--navy-950);
+      font-size: 1.9rem;
+      letter-spacing: -0.04em;
+    }
+
+    .bar-chart {
+      display: grid;
+      gap: 13px;
+    }
+
+    .bar-row {
+      display: grid;
+      grid-template-columns: 90px minmax(0, 1fr) 70px;
+      align-items: center;
+      gap: 12px;
+      color: var(--gray-700);
+      font-size: 0.9rem;
+      font-weight: 800;
+    }
+
+    .bar-track {
+      height: 14px;
+      border-radius: 999px;
+      background: var(--gray-100);
+      overflow: hidden;
+      border: 1px solid var(--gray-200);
+    }
+
+    .bar-fill {
+      height: 100%;
+      width: var(--width);
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--blue-600), var(--cyan-400));
+    }
+
+    .leaderboard-list,
+    .activity-list,
+    .recommendation-list {
+      margin: 0;
+      padding-left: 1.2rem;
+    }
+
+    .leaderboard-list li,
+    .activity-list li,
+    .recommendation-list li {
+      margin-bottom: 12px;
+      padding-left: 4px;
+    }
+
+    .leader-row {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .avatar {
+      width: 40px;
+      height: 40px;
+      display: inline-grid;
+      place-items: center;
+      border-radius: 14px;
+      color: var(--white);
+      background: linear-gradient(135deg, var(--navy-850), var(--blue-500));
+      font-size: 0.82rem;
+      font-weight: 900;
+    }
+
+    .leader-row strong,
+    .activity-item strong,
+    .recommendation-list strong {
+      color: var(--navy-950);
+    }
+
+    .leader-row span,
+    .activity-item span,
+    .recommendation-list span {
+      color: var(--gray-600);
+      font-size: 0.88rem;
+    }
+
+    .leader-progress {
+      height: 8px;
+      margin-top: 7px;
+      border-radius: 999px;
+      background: var(--gray-100);
+      overflow: hidden;
+    }
+
+    .leader-progress span {
+      display: block;
+      width: var(--width);
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--blue-600), var(--cyan-400));
+    }
+
+    .leader-value {
+      color: var(--blue-700);
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .activity-item {
+      border-bottom: 1px solid var(--gray-200);
+      padding-bottom: 12px;
+    }
+
+    .activity-list li:last-child .activity-item {
+      border-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .recommendation-card {
+      border-left: 4px solid var(--cyan-400);
+      border-radius: 14px;
+      background: #f7fbff;
+      padding: 14px 14px 14px 16px;
+    }
+
+    .recommendation-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .mini-button {
+      border: 1px solid var(--gray-300);
+      border-radius: 999px;
+      padding: 7px 10px;
+      color: var(--blue-700);
+      background: var(--white);
+      font-size: 0.8rem;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .mini-button:hover {
+      border-color: var(--blue-500);
+      background: #f0f8ff;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--gray-200);
+      border-radius: 16px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 720px;
+      background: var(--white);
+    }
+
+    th,
+    td {
+      padding: 13px 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--gray-200);
+      vertical-align: top;
+    }
+
+    th {
+      color: var(--gray-700);
+      background: var(--gray-100);
+      font-size: 0.78rem;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    td {
+      color: var(--gray-700);
+      font-size: 0.9rem;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .empty-state {
+      display: none;
+      padding: 24px;
+      text-align: center;
+      color: var(--gray-600);
+      border: 1px dashed var(--gray-300);
+      border-radius: 16px;
+      background: var(--gray-50);
+    }
+
+    .footer-note {
+      margin: 28px 0 0;
+      color: var(--gray-600);
+      font-size: 0.86rem;
+      text-align: center;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .toast {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      z-index: 40;
+      max-width: min(380px, calc(100vw - 40px));
+      padding: 14px 16px;
+      color: var(--white);
+      background: var(--navy-900);
+      border: 1px solid rgba(50, 211, 230, 0.35);
+      border-radius: 16px;
+      box-shadow: var(--shadow-md);
+      opacity: 0;
+      transform: translateY(12px);
+      pointer-events: none;
+      transition: opacity 180ms ease, transform 180ms ease;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 1180px) {
+      .app-shell {
+        grid-template-columns: 1fr;
+      }
+
+      .mobile-bar {
+        display: block;
+      }
+
+      .sidebar {
+        position: fixed;
+        inset: 0 auto 0 0;
+        z-index: 30;
+        width: min(318px, 86vw);
+        transform: translateX(-105%);
+        transition: transform 190ms ease;
+        box-shadow: var(--shadow-md);
+      }
+
+      body.sidebar-open .sidebar {
+        transform: translateX(0);
+      }
+
+      .topbar {
+        top: 65px;
+      }
+    }
+
+    @media (max-width: 980px) {
+      .hero,
+      .two-column,
+      .forecast-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .kpi-grid,
+      .three-column {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .toolbar {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .toolbar .search-wrap {
+        grid-column: 1 / -1;
+      }
+    }
+
+    @media (max-width: 680px) {
+      .topbar {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .topbar-actions {
+        justify-content: stretch;
+      }
+
+      .topbar-actions > * {
+        flex: 1 1 auto;
+      }
+
+      .hero {
+        padding: 22px;
+      }
+
+      .kpi-grid,
+      .three-column,
+      .toolbar {
+        grid-template-columns: 1fr;
+      }
+
+      .account-card {
+        grid-template-columns: 1fr;
+      }
+
+      .account-score {
+        text-align: left;
+      }
+
+      .section-heading {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .bar-row {
+        grid-template-columns: 72px minmax(0, 1fr) 58px;
+        gap: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="mobile-bar">
+    <div class="mobile-bar-inner">
+      <div class="brand" aria-label="Product identity" style="padding:0;border:0;">
+        <span class="brand-mark" aria-hidden="true">AI</span>
+        <div>
+          <p class="brand-title">Sales CRM</p>
+          <p class="brand-subtitle">Manager workspace</p>
+        </div>
+      </div>
+      <button class="menu-toggle" type="button" id="menuToggle" aria-controls="sidebar" aria-expanded="false">Menu</button>
+    </div>
+  </div>
+
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar" aria-label="Primary navigation">
+      <div class="brand" aria-label="Product identity">
+        <span class="brand-mark" aria-hidden="true">AI</span>
+        <div>
+          <p class="brand-title">Sales CRM</p>
+          <p class="brand-subtitle">Executive pipeline intelligence</p>
+        </div>
+      </div>
+
+      <p class="nav-section-title">Workspace</p>
+      <nav>
+        <ul class="nav-list">
+          <li><button class="nav-button" type="button" data-target="dashboard" aria-current="page"><span><span class="nav-icon" aria-hidden="true">D</span>Dashboard</span><span class="nav-count">4</span></button></li>
+          <li><button class="nav-button" type="button" data-target="customers"><span><span class="nav-icon" aria-hidden="true">C</span>Customers</span><span class="nav-count" id="customerNavCount">8</span></button></li>
+          <li><button class="nav-button" type="button" data-target="pipeline"><span><span class="nav-icon" aria-hidden="true">P</span>Pipeline</span><span class="nav-count">$8.7M</span></button></li>
+          <li><button class="nav-button" type="button" data-target="forecast"><span><span class="nav-icon" aria-hidden="true">F</span>Forecast</span><span class="nav-count">82%</span></button></li>
+          <li><button class="nav-button" type="button" data-target="team"><span><span class="nav-icon" aria-hidden="true">T</span>Team</span><span class="nav-count">6</span></button></li>
+          <li><button class="nav-button" type="button" data-target="ai"><span><span class="nav-icon" aria-hidden="true">AI</span>AI Guidance</span><span class="nav-count">5</span></button></li>
+        </ul>
+      </nav>
+
+      <section class="sidebar-card" aria-labelledby="sidebar-insight-title">
+        <h2 id="sidebar-insight-title">AI forecast confidence</h2>
+        <p>Model confidence is strongest for renewal expansion and late-stage enterprise opportunities.</p>
+        <div class="confidence-mini" aria-label="Forecast confidence 82 percent"><span></span></div>
+      </section>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <p class="page-kicker">Q4 commercial command center</p>
+          <h1 class="page-title">AI-powered sales CRM prototype</h1>
+        </div>
+        <div class="topbar-actions" aria-label="Global controls">
+          <label class="sr-only" for="quarterSelect">Reporting quarter</label>
+          <select class="select" id="quarterSelect">
+            <option value="q4" selected>Q4 2026</option>
+            <option value="q1">Q1 2027</option>
+            <option value="q2">Q2 2027</option>
+          </select>
+          <button class="button button-secondary" type="button" id="refreshInsights">Refresh insights</button>
+          <button class="button button-primary" type="button" data-target="ai">Review AI plan</button>
+        </div>
+      </header>
+
+      <div class="content">
+        <section class="hero" id="dashboard" aria-labelledby="hero-title">
+          <div>
+            <p class="page-kicker" style="color:#9df3ff;">Sales manager cockpit</p>
+            <h2 id="hero-title">Focus the team on the accounts most likely to move revenue this week.</h2>
+            <p>This self-contained demo uses fictional CRM data to show customer health, opportunity movement, forecast quality, team performance, recent activity, and AI-generated sales guidance in one responsive workspace.</p>
+            <div class="hero-actions">
+              <button class="button button-primary" type="button" data-target="customers">Prioritize accounts</button>
+              <button class="button button-secondary" type="button" data-target="pipeline">Inspect pipeline</button>
+            </div>
+          </div>
+          <div class="hero-insight" aria-label="Executive highlights">
+            <div class="insight-box">
+              <strong id="heroPipeline">$8.7M</strong>
+              <span>Open qualified pipeline with 31 active opportunities</span>
+            </div>
+            <div class="insight-box">
+              <strong id="heroForecast">$5.4M</strong>
+              <span>Projected quarter revenue at 82% model confidence</span>
+            </div>
+            <div class="insight-box">
+              <strong>17</strong>
+              <span>AI-recommended next actions due within five business days</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="section" aria-labelledby="kpi-title">
+          <div class="section-heading">
+            <div>
+              <h2 id="kpi-title">Sales KPIs</h2>
+              <p>Quarter-level performance indicators with trend context.</p>
+            </div>
+          </div>
+          <div class="grid kpi-grid" id="kpiGrid">
+            <article class="card kpi-card">
+              <p class="kpi-label">Booked revenue</p>
+              <p class="kpi-value" data-kpi="booked">$3.9M</p>
+              <div class="kpi-meta"><span>78% of target</span><span class="trend trend-up">▲ 12%</span></div>
+            </article>
+            <article class="card kpi-card">
+              <p class="kpi-label">Weighted pipeline</p>
+              <p class="kpi-value" data-kpi="weighted">$5.4M</p>
+              <div class="kpi-meta"><span>Coverage 2.1x</span><span class="trend trend-up">▲ 8%</span></div>
+            </article>
+            <article class="card kpi-card">
+              <p class="kpi-label">Win rate</p>
+              <p class="kpi-value" data-kpi="winrate">34%</p>
+              <div class="kpi-meta"><span>Rolling 90 days</span><span class="trend trend-flat">● Stable</span></div>
+            </article>
+            <article class="card kpi-card">
+              <p class="kpi-label">Sales cycle</p>
+              <p class="kpi-value" data-kpi="cycle">46d</p>
+              <div class="kpi-meta"><span>Median duration</span><span class="trend trend-down">▼ 5d</span></div>
+            </article>
+          </div>
+        </section>
+
+        <section class="section two-column grid" id="customers" aria-labelledby="customers-title">
+          <div class="card card-pad">
+            <div class="section-heading">
+              <div>
+                <h2 id="customers-title">Customer management</h2>
+                <p>Search and filter fictional accounts by segment, health, and relationship state.</p>
+              </div>
+              <span class="pill pill-blue" id="accountCount">8 accounts</span>
+            </div>
+
+            <div class="toolbar" role="search" aria-label="Account filters">
+              <div class="search-wrap">
+                <label class="sr-only" for="accountSearch">Search accounts</label>
+                <input class="search-input" id="accountSearch" type="search" placeholder="Search account, industry, owner, or priority">
+              </div>
+              <div>
+                <label class="sr-only" for="segmentFilter">Filter by segment</label>
+                <select class="select" id="segmentFilter">
+                  <option value="all">All segments</option>
+                  <option value="Enterprise">Enterprise</option>
+                  <option value="Mid-Market">Mid-Market</option>
+                  <option value="Strategic">Strategic</option>
+                </select>
+              </div>
+              <div>
+                <label class="sr-only" for="healthFilter">Filter by health</label>
+                <select class="select" id="healthFilter">
+                  <option value="all">All health</option>
+                  <option value="Strong">Strong</option>
+                  <option value="Watch">Watch</option>
+                  <option value="At Risk">At Risk</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="account-list" id="accountList"></div>
+            <p class="empty-state" id="accountEmpty">No accounts match the current filters. Try broadening your search.</p>
+          </div>
+
+          <aside class="card card-pad" aria-labelledby="coverage-title">
+            <h2 id="coverage-title">Relationship coverage</h2>
+            <p class="forecast-subtext">AI assessment of buying committee visibility across prioritized accounts.</p>
+            <div class="bar-chart" style="margin-top:18px;">
+              <div class="bar-row"><span>Economic</span><div class="bar-track"><div class="bar-fill" style="--width:78%;"></div></div><span>78%</span></div>
+              <div class="bar-row"><span>Technical</span><div class="bar-track"><div class="bar-fill" style="--width:64%;"></div></div><span>64%</span></div>
+              <div class="bar-row"><span>Legal</span><div class="bar-track"><div class="bar-fill" style="--width:48%;"></div></div><span>48%</span></div>
+              <div class="bar-row"><span>Finance</span><div class="bar-track"><div class="bar-fill" style="--width:59%;"></div></div><span>59%</span></div>
+            </div>
+            <section class="recommendation-card" style="margin-top:18px;" aria-labelledby="coverage-action-title">
+              <h3 id="coverage-action-title" style="margin:0 0 6px;">Coverage gap</h3>
+              <p style="margin:0;color:var(--gray-600);">Three late-stage opportunities need finance stakeholder confirmation before procurement review.</p>
+            </section>
+          </aside>
+        </section>
+
+        <section class="section" id="pipeline" aria-labelledby="pipeline-title">
+          <div class="section-heading">
+            <div>
+              <h2 id="pipeline-title">Opportunity pipeline</h2>
+              <p>Stage-based view of active opportunities, deal values, close timing, and risk flags.</p>
+            </div>
+            <button class="button button-secondary" type="button" id="sortPipeline">Sort deals by value</button>
+          </div>
+          <div class="card card-pad">
+            <div class="pipeline-board" id="pipelineBoard" aria-label="Opportunity stages"></div>
+          </div>
+        </section>
+
+        <section class="section" id="forecast" aria-labelledby="forecast-title">
+          <div class="section-heading">
+            <div>
+              <h2 id="forecast-title">Forecasting view</h2>
+              <p>Projected revenue, confidence indicators, and weighted stage contribution.</p>
+            </div>
+          </div>
+          <div class="card card-pad forecast-grid">
+            <div class="forecast-hero">
+              <p class="forecast-number" id="forecastNumber">$5.4M</p>
+              <p class="forecast-subtext" id="forecastNarrative">Projected revenue for Q4 2026 based on stage probability, historical conversion, and relationship signals.</p>
+              <div class="confidence-ring" id="confidenceRing" style="--score:82;" aria-label="Forecast confidence 82 percent"><strong id="confidenceText">82%</strong></div>
+              <p class="forecast-subtext" style="text-align:center;">Confidence increases when mutual action plans, executive sponsorship, and procurement milestones are confirmed.</p>
+            </div>
+            <div>
+              <h3 style="margin-top:0;">Weighted revenue by stage</h3>
+              <div class="bar-chart" id="forecastBars"></div>
+              <div class="table-wrap" style="margin-top:20px;">
+                <table aria-label="Forecast scenario table">
+                  <thead>
+                    <tr>
+                      <th>Scenario</th>
+                      <th>Revenue</th>
+                      <th>Confidence</th>
+                      <th>Manager note</th>
+                    </tr>
+                  </thead>
+                  <tbody id="scenarioTable"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section grid three-column" id="team" aria-labelledby="team-title">
+          <article class="card card-pad">
+            <div class="section-heading">
+              <div>
+                <h2 id="team-title">Team leaderboard</h2>
+                <p>Quota progress and pipeline creation.</p>
+              </div>
+            </div>
+            <ol class="leaderboard-list" id="leaderboardList"></ol>
+          </article>
+
+          <article class="card card-pad" aria-labelledby="activity-title">
+            <div class="section-heading">
+              <div>
+                <h2 id="activity-title">Recent activity</h2>
+                <p>Signals captured from demo CRM interactions.</p>
+              </div>
+            </div>
+            <ol class="activity-list" id="activityList"></ol>
+          </article>
+
+          <article class="card card-pad" id="ai" aria-labelledby="ai-title">
+            <div class="section-heading">
+              <div>
+                <h2 id="ai-title">AI recommendations</h2>
+                <p>Actionable guidance for the next five business days.</p>
+              </div>
+            </div>
+            <ol class="recommendation-list" id="recommendationList"></ol>
+          </article>
+        </section>
+
+        <section class="section card card-pad" aria-labelledby="governance-title">
+          <h2 id="governance-title">Prototype notes</h2>
+          <ul>
+            <li><strong>Data:</strong> All accounts, people labels, deal values, activities, and recommendations are fictional demo CRM content.</li>
+            <li><strong>Security posture:</strong> The page is self-contained and makes no network calls, imports, or external asset requests.</li>
+            <li><strong>Accessibility:</strong> Controls are keyboard-focusable, labeled for assistive technologies, and designed with high-contrast enterprise colors.</li>
+          </ul>
+        </section>
+
+        <p class="footer-note">Fictional AI Sales CRM prototype for enterprise SaaS demonstration.</p>
+      </div>
+    </main>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    (function () {
+      "use strict";
+
+      var accounts = [
+        { name: "Aster Ridge Treasury", industry: "Financial operations", owner: "Sales Lead A", segment: "Strategic", health: "Strong", value: 1240000, score: 94, priority: "Expansion", next: "Executive value review scheduled" },
+        { name: "Cobalt River Analytics", industry: "Data services", owner: "Sales Lead B", segment: "Enterprise", health: "Watch", value: 870000, score: 76, priority: "Renewal", next: "Confirm legal timeline" },
+        { name: "North Pier Capital Systems", industry: "Investment workflow", owner: "Sales Lead C", segment: "Strategic", health: "Strong", value: 1620000, score: 91, priority: "New platform", next: "Procurement package due" },
+        { name: "Summit Ledger Group", industry: "Accounting services", owner: "Sales Lead D", segment: "Mid-Market", health: "At Risk", value: 390000, score: 58, priority: "Retention", next: "Escalate service recovery plan" },
+        { name: "Blue Harbor Operations", industry: "Business process", owner: "Sales Lead E", segment: "Enterprise", health: "Strong", value: 710000, score: 88, priority: "Cross-sell", next: "Map finance stakeholder" },
+        { name: "Vertex Grove Advisors", industry: "Advisory services", owner: "Sales Lead F", segment: "Mid-Market", health: "Watch", value: 480000, score: 69, priority: "Upsell", next: "Share integration business case" },
+        { name: "Orion Vale Markets", industry: "Market infrastructure", owner: "Sales Lead A", segment: "Strategic", health: "Strong", value: 1380000, score: 89, priority: "Expansion", next: "Align on success metrics" },
+        { name: "Granite Field Services", industry: "Field operations", owner: "Sales Lead C", segment: "Enterprise", health: "Watch", value: 650000, score: 72, priority: "Migration", next: "Technical workshop requested" }
+      ];
+
+      var pipeline = [
+        { stage: "Discovery", probability: 20, deals: [
+          { account: "Vertex Grove Advisors", title: "Workflow modernization", value: 480000, close: "Jan 2027", risk: "Medium" },
+          { account: "Granite Field Services", title: "Operations insight pilot", value: 650000, close: "Feb 2027", risk: "Low" },
+          { account: "Pinecrest Revenue Co.", title: "Sales process assessment", value: 220000, close: "Dec 2026", risk: "Medium" }
+        ]},
+        { stage: "Solution Fit", probability: 45, deals: [
+          { account: "Blue Harbor Operations", title: "Cross-sell analytics module", value: 710000, close: "Dec 2026", risk: "Low" },
+          { account: "Cobalt River Analytics", title: "Renewal plus governance", value: 870000, close: "Dec 2026", risk: "Medium" },
+          { account: "Silver Basin Networks", title: "Managed data workspace", value: 540000, close: "Jan 2027", risk: "Low" }
+        ]},
+        { stage: "Negotiation", probability: 70, deals: [
+          { account: "Aster Ridge Treasury", title: "Enterprise expansion bundle", value: 1240000, close: "Nov 2026", risk: "Low" },
+          { account: "Orion Vale Markets", title: "Executive reporting suite", value: 1380000, close: "Dec 2026", risk: "Medium" },
+          { account: "Summit Ledger Group", title: "Retention recovery package", value: 390000, close: "Nov 2026", risk: "High" }
+        ]},
+        { stage: "Commit", probability: 90, deals: [
+          { account: "North Pier Capital Systems", title: "Platform consolidation", value: 1620000, close: "Nov 2026", risk: "Low" },
+          { account: "Harborline Portfolio Ops", title: "Compliance workflow add-on", value: 610000, close: "Dec 2026", risk: "Low" }
+        ]}
+      ];
+
+      var forecasts = {
+        q4: {
+          label: "Q4 2026",
+          booked: "$3.9M",
+          weighted: "$5.4M",
+          winrate: "34%",
+          cycle: "46d",
+          pipeline: "$8.7M",
+          projected: "$5.4M",
+          confidence: 82,
+          narrative: "Projected revenue for Q4 2026 based on stage probability, historical conversion, and relationship signals.",
+          bars: [
+            { name: "Commit", value: "$2.0M", width: 92 },
+            { name: "Negotiation", value: "$2.1M", width: 86 },
+            { name: "Solution", value: "$1.0M", width: 54 },
+            { name: "Discovery", value: "$0.3M", width: 22 }
+          ],
+          scenarios: [
+            ["Conservative", "$4.7M", "74%", "Assumes one negotiation delay and standard discounting."],
+            ["Likely", "$5.4M", "82%", "Requires finance stakeholder alignment on three deals."],
+            ["Upside", "$6.2M", "61%", "Depends on one discovery deal accelerating into commit."]
+          ]
+        },
+        q1: {
+          label: "Q1 2027",
+          booked: "$0.8M",
+          weighted: "$4.8M",
+          winrate: "32%",
+          cycle: "49d",
+          pipeline: "$9.4M",
+          projected: "$4.8M",
+          confidence: 76,
+          narrative: "Projected revenue for Q1 2027 with early-stage pipeline coverage and renewal timing assumptions.",
+          bars: [
+            { name: "Commit", value: "$0.9M", width: 45 },
+            { name: "Negotiation", value: "$1.7M", width: 74 },
+            { name: "Solution", value: "$1.4M", width: 62 },
+            { name: "Discovery", value: "$0.8M", width: 38 }
+          ],
+          scenarios: [
+            ["Conservative", "$4.0M", "69%", "Accounts for procurement pauses after year-end planning."],
+            ["Likely", "$4.8M", "76%", "Requires mutual action plans on two enterprise pursuits."],
+            ["Upside", "$5.9M", "57%", "Needs new platform opportunity to compress timeline."]
+          ]
+        },
+        q2: {
+          label: "Q2 2027",
+          booked: "$0.2M",
+          weighted: "$6.1M",
+          winrate: "36%",
+          cycle: "44d",
+          pipeline: "$10.8M",
+          projected: "$6.1M",
+          confidence: 71,
+          narrative: "Projected revenue for Q2 2027 weighted toward expansion plays and multi-product account plans.",
+          bars: [
+            { name: "Commit", value: "$0.6M", width: 31 },
+            { name: "Negotiation", value: "$1.9M", width: 78 },
+            { name: "Solution", value: "$2.2M", width: 88 },
+            { name: "Discovery", value: "$1.4M", width: 55 }
+          ],
+          scenarios: [
+            ["Conservative", "$5.0M", "66%", "Assumes normal enterprise buying committee expansion."],
+            ["Likely", "$6.1M", "71%", "Requires measurable proof points in two solution-fit deals."],
+            ["Upside", "$7.4M", "52%", "Needs cross-sell bundle adoption across strategic accounts."]
+          ]
+        }
+      };
+
+      var leaderboard = [
+        { name: "Sales Lead A", initials: "A", quota: 112, value: "$1.84M", detail: "4 expansion motions advanced" },
+        { name: "Sales Lead C", initials: "C", quota: 104, value: "$1.72M", detail: "2 commit-stage platform deals" },
+        { name: "Sales Lead E", initials: "E", quota: 93, value: "$1.21M", detail: "Highest relationship coverage" },
+        { name: "Sales Lead B", initials: "B", quota: 87, value: "$1.08M", detail: "Renewal risk reduced by 11 points" },
+        { name: "Sales Lead F", initials: "F", quota: 79, value: "$0.92M", detail: "New discovery momentum" },
+        { name: "Sales Lead D", initials: "D", quota: 66, value: "$0.71M", detail: "Retention plan in progress" }
+      ];
+
+      var activities = [
+        { title: "Mutual action plan updated", detail: "North Pier Capital Systems confirmed procurement and security review dates.", time: "22 minutes ago" },
+        { title: "Relationship signal improved", detail: "Aster Ridge Treasury added an executive sponsor to the opportunity workspace.", time: "1 hour ago" },
+        { title: "Risk flag created", detail: "Summit Ledger Group renewal requires service recovery proof before pricing approval.", time: "3 hours ago" },
+        { title: "Competitive note captured", detail: "Orion Vale Markets requested comparison on reporting automation and implementation timeline.", time: "Yesterday" },
+        { title: "Discovery meeting booked", detail: "Granite Field Services scheduled a technical workshop with operations leaders.", time: "Yesterday" }
+      ];
+
+      var recommendations = [
+        { title: "Move finance stakeholders into the room", detail: "Invite finance approvers for Aster Ridge Treasury, Blue Harbor Operations, and Orion Vale Markets before final pricing discussions.", action: "Create stakeholder plan" },
+        { title: "Protect at-risk renewal", detail: "Schedule an executive service recovery call for Summit Ledger Group and attach a measurable remediation timeline.", action: "Draft recovery agenda" },
+        { title: "Accelerate commit-stage deal", detail: "For North Pier Capital Systems, send a concise procurement checklist and confirm signature authority by Friday.", action: "Build close checklist" },
+        { title: "Coach next-best seller behavior", detail: "Pair Sales Lead F with Sales Lead A for expansion messaging practice on mid-market upsell motions.", action: "Schedule coaching" },
+        { title: "Tighten forecast hygiene", detail: "Require close-date validation on all opportunities above $500K where no next meeting is scheduled.", action: "Review forecast risks" }
+      ];
+
+      var elements = {
+        accountList: document.getElementById("accountList"),
+        accountSearch: document.getElementById("accountSearch"),
+        segmentFilter: document.getElementById("segmentFilter"),
+        healthFilter: document.getElementById("healthFilter"),
+        accountCount: document.getElementById("accountCount"),
+        customerNavCount: document.getElementById("customerNavCount"),
+        accountEmpty: document.getElementById("accountEmpty"),
+        pipelineBoard: document.getElementById("pipelineBoard"),
+        sortPipeline: document.getElementById("sortPipeline"),
+        quarterSelect: document.getElementById("quarterSelect"),
+        forecastNumber: document.getElementById("forecastNumber"),
+        forecastNarrative: document.getElementById("forecastNarrative"),
+        confidenceRing: document.getElementById("confidenceRing"),
+        confidenceText: document.getElementById("confidenceText"),
+        forecastBars: document.getElementById("forecastBars"),
+        scenarioTable: document.getElementById("scenarioTable"),
+        leaderboardList: document.getElementById("leaderboardList"),
+        activityList: document.getElementById("activityList"),
+        recommendationList: document.getElementById("recommendationList"),
+        refreshInsights: document.getElementById("refreshInsights"),
+        menuToggle: document.getElementById("menuToggle"),
+        toast: document.getElementById("toast"),
+        heroPipeline: document.getElementById("heroPipeline"),
+        heroForecast: document.getElementById("heroForecast")
+      };
+
+      var pipelineSorted = false;
+      var toastTimer;
+
+      function formatMoney(value) {
+        return "$" + (value / 1000000).toFixed(value >= 1000000 ? 2 : 1).replace(/\.0$/, "") + "M";
+      }
+
+      function healthClass(health) {
+        if (health === "Strong") return "pill-green";
+        if (health === "At Risk") return "pill-red";
+        return "pill-amber";
+      }
+
+      function riskClass(risk) {
+        if (risk === "Low") return "pill-green";
+        if (risk === "High") return "pill-red";
+        return "pill-amber";
+      }
+
+      function showToast(message) {
+        elements.toast.textContent = message;
+        elements.toast.classList.add("show");
+        window.clearTimeout(toastTimer);
+        toastTimer = window.setTimeout(function () {
+          elements.toast.classList.remove("show");
+        }, 2600);
+      }
+
+      function renderAccounts() {
+        var query = elements.accountSearch.value.trim().toLowerCase();
+        var segment = elements.segmentFilter.value;
+        var health = elements.healthFilter.value;
+        var filtered = accounts.filter(function (account) {
+          var searchable = [account.name, account.industry, account.owner, account.segment, account.health, account.priority, account.next].join(" ").toLowerCase();
+          var matchesQuery = !query || searchable.indexOf(query) !== -1;
+          var matchesSegment = segment === "all" || account.segment === segment;
+          var matchesHealth = health === "all" || account.health === health;
+          return matchesQuery && matchesSegment && matchesHealth;
+        });
+
+        elements.accountList.innerHTML = filtered.map(function (account) {
+          return "<article class=\"account-card\" tabindex=\"0\">" +
+            "<div>" +
+              "<h3>" + account.name + "</h3>" +
+              "<p>" + account.industry + " · Owner: " + account.owner + "</p>" +
+              "<div class=\"account-meta\">" +
+                "<span class=\"pill pill-blue\">" + account.segment + "</span>" +
+                "<span class=\"pill " + healthClass(account.health) + "\">" + account.health + "</span>" +
+                "<span class=\"pill\">" + account.priority + "</span>" +
+                "<span class=\"pill\">" + account.next + "</span>" +
+              "</div>" +
+            "</div>" +
+            "<div class=\"account-score\" aria-label=\"Account score " + account.score + "\">" +
+              "<strong>" + account.score + "</strong>" +
+              "<span>AI score</span>" +
+              "<p style=\"margin:10px 0 0;color:var(--blue-700);font-weight:900;\">" + formatMoney(account.value) + "</p>" +
+            "</div>" +
+          "</article>";
+        }).join("");
+
+        elements.accountCount.textContent = filtered.length + (filtered.length === 1 ? " account" : " accounts");
+        elements.customerNavCount.textContent = filtered.length;
+        elements.accountEmpty.style.display = filtered.length ? "none" : "block";
+      }
+
+      function renderPipeline() {
+        elements.pipelineBoard.innerHTML = pipeline.map(function (stage) {
+          var deals = stage.deals.slice();
+          if (pipelineSorted) {
+            deals.sort(function (a, b) { return b.value - a.value; });
+          }
+          var total = deals.reduce(function (sum, deal) { return sum + deal.value; }, 0);
+          return "<section class=\"stage\" aria-labelledby=\"stage-" + stage.stage.replace(/\s+/g, "-").toLowerCase() + "\">" +
+            "<div class=\"stage-header\">" +
+              "<div><h3 id=\"stage-" + stage.stage.replace(/\s+/g, "-").toLowerCase() + "\">" + stage.stage + "</h3><span>" + stage.probability + "% probability</span></div>" +
+              "<span>" + formatMoney(total) + "</span>" +
+            "</div>" +
+            "<ul class=\"deal-list\">" + deals.map(function (deal) {
+              return "<li><article class=\"deal-card\" tabindex=\"0\">" +
+                "<strong>" + deal.title + "</strong>" +
+                "<span>" + deal.account + " · Close " + deal.close + "</span>" +
+                "<div class=\"deal-footer\"><span class=\"value\">" + formatMoney(deal.value) + "</span><span class=\"pill " + riskClass(deal.risk) + "\">" + deal.risk + " risk</span></div>" +
+              "</article></li>";
+            }).join("") + "</ul>" +
+          "</section>";
+        }).join("");
+      }
+
+      function renderForecast(key) {
+        var forecast = forecasts[key];
+        elements.forecastNumber.textContent = forecast.projected;
+        elements.forecastNarrative.textContent = forecast.narrative;
+        elements.confidenceRing.style.setProperty("--score", forecast.confidence);
+        elements.confidenceRing.setAttribute("aria-label", "Forecast confidence " + forecast.confidence + " percent");
+        elements.confidenceText.textContent = forecast.confidence + "%";
+        elements.heroPipeline.textContent = forecast.pipeline;
+        elements.heroForecast.textContent = forecast.projected;
+        document.querySelector("[data-kpi='booked']").textContent = forecast.booked;
+        document.querySelector("[data-kpi='weighted']").textContent = forecast.weighted;
+        document.querySelector("[data-kpi='winrate']").textContent = forecast.winrate;
+        document.querySelector("[data-kpi='cycle']").textContent = forecast.cycle;
+
+        elements.forecastBars.innerHTML = forecast.bars.map(function (bar) {
+          return "<div class=\"bar-row\"><span>" + bar.name + "</span><div class=\"bar-track\"><div class=\"bar-fill\" style=\"--width:" + bar.width + "%;\"></div></div><span>" + bar.value + "</span></div>";
+        }).join("");
+
+        elements.scenarioTable.innerHTML = forecast.scenarios.map(function (row) {
+          return "<tr><td><strong>" + row[0] + "</strong></td><td>" + row[1] + "</td><td>" + row[2] + "</td><td>" + row[3] + "</td></tr>";
+        }).join("");
+      }
+
+      function renderLeaderboard() {
+        elements.leaderboardList.innerHTML = leaderboard.map(function (leader) {
+          return "<li><div class=\"leader-row\">" +
+            "<span class=\"avatar\" aria-hidden=\"true\">" + leader.initials + "</span>" +
+            "<div><strong>" + leader.name + "</strong><br><span>" + leader.detail + "</span><div class=\"leader-progress\" aria-label=\"Quota progress " + leader.quota + " percent\"><span style=\"--width:" + Math.min(leader.quota, 120) + "%;\"></span></div></div>" +
+            "<span class=\"leader-value\">" + leader.value + "</span>" +
+          "</div></li>";
+        }).join("");
+      }
+
+      function renderActivity() {
+        elements.activityList.innerHTML = activities.map(function (activity) {
+          return "<li><div class=\"activity-item\"><strong>" + activity.title + "</strong><br><span>" + activity.detail + "</span><br><span>" + activity.time + "</span></div></li>";
+        }).join("");
+      }
+
+      function renderRecommendations() {
+        elements.recommendationList.innerHTML = recommendations.map(function (rec, index) {
+          return "<li><article class=\"recommendation-card\">" +
+            "<strong>" + rec.title + "</strong>" +
+            "<p style=\"margin:6px 0 0;color:var(--gray-600);\">" + rec.detail + "</p>" +
+            "<div class=\"recommendation-actions\"><button class=\"mini-button\" type=\"button\" data-rec=\"" + index + "\">" + rec.action + "</button><button class=\"mini-button\" type=\"button\" data-rec-note=\"" + index + "\">Save note</button></div>" +
+          "</article></li>";
+        }).join("");
+      }
+
+      function scrollToSection(targetId) {
+        var target = document.getElementById(targetId);
+        if (!target) return;
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
+        document.querySelectorAll(".nav-button").forEach(function (button) {
+          if (button.dataset.target === targetId) {
+            button.setAttribute("aria-current", "page");
+          } else {
+            button.removeAttribute("aria-current");
+          }
+        });
+        document.body.classList.remove("sidebar-open");
+        if (elements.menuToggle) {
+          elements.menuToggle.setAttribute("aria-expanded", "false");
+        }
+      }
+
+      function attachEvents() {
+        [elements.accountSearch, elements.segmentFilter, elements.healthFilter].forEach(function (control) {
+          control.addEventListener("input", renderAccounts);
+          control.addEventListener("change", renderAccounts);
+        });
+
+        elements.sortPipeline.addEventListener("click", function () {
+          pipelineSorted = !pipelineSorted;
+          elements.sortPipeline.textContent = pipelineSorted ? "Restore stage order" : "Sort deals by value";
+          renderPipeline();
+          showToast(pipelineSorted ? "Deals sorted by value within each stage." : "Pipeline restored to original stage order.");
+        });
+
+        elements.quarterSelect.addEventListener("change", function () {
+          renderForecast(elements.quarterSelect.value);
+          showToast("Forecast updated for " + forecasts[elements.quarterSelect.value].label + ".");
+        });
+
+        elements.refreshInsights.addEventListener("click", function () {
+          showToast("Insights refreshed using fictional demo signals. No external data was requested.");
+        });
+
+        document.querySelectorAll("[data-target]").forEach(function (button) {
+          button.addEventListener("click", function () {
+            scrollToSection(button.dataset.target);
+          });
+        });
+
+        elements.recommendationList.addEventListener("click", function (event) {
+          var target = event.target;
+          if (!(target instanceof HTMLElement)) return;
+          if (target.matches("[data-rec]")) {
+            showToast("Action prepared: " + recommendations[Number(target.dataset.rec)].action + ".");
+          }
+          if (target.matches("[data-rec-note]")) {
+            showToast("Manager note saved locally for this prototype session.");
+          }
+        });
+
+        if (elements.menuToggle) {
+          elements.menuToggle.addEventListener("click", function () {
+            var isOpen = document.body.classList.toggle("sidebar-open");
+            elements.menuToggle.setAttribute("aria-expanded", String(isOpen));
+          });
+        }
+
+        document.addEventListener("keydown", function (event) {
+          if (event.key === "Escape") {
+            document.body.classList.remove("sidebar-open");
+            if (elements.menuToggle) {
+              elements.menuToggle.setAttribute("aria-expanded", "false");
+            }
+          }
+        });
+      }
+
+      renderAccounts();
+      renderPipeline();
+      renderForecast("q4");
+      renderLeaderboard();
+      renderActivity();
+      renderRecommendations();
+      attachEvents();
+    }());
+  </script>
+</body>
+</html>

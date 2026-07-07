@@ -1,0 +1,16 @@
+Experiment ID: EX-04
+Prompt Structure: Requirements Based
+Expected Output HTML File: ex-04-requirements-based.html
+Actual Workspace HTML File: br-ex-04-requirements-based.html
+
+Source Isolation Requirement:
+Generate this app only from the instructions in this prompt. Do not inspect, read, reference, copy, or rely on workspace files, prior outputs, local assets, external websites, templates, libraries, frameworks, CDNs, imports, or network calls.
+
+Prompt Used:
+Goal: Build an AI-powered Sales CRM SPA.
+
+Required features: dashboard; customer management; opportunity pipeline; forecasting; team leaderboard; activity feed; AI recommendations panel.
+
+Technical requirements: single self-contained HTML file; embedded CSS inside <style> tags; embedded JavaScript inside <script> tags; no external dependencies, libraries, frameworks, or CDNs; responsive layout; modern SaaS appearance.
+
+Output: return only the complete HTML document.

@@ -1,0 +1,626 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AI Sales CRM Command Center</title>
+  <style>
+    :root{
+      --navy:#071a33;
+      --navy-2:#0b2444;
+      --blue:#1769c2;
+      --blue-2:#0e82df;
+      --cyan:#30d5e8;
+      --cyan-soft:rgba(48,213,232,.16);
+      --white:#ffffff;
+      --gray-25:#f8fafc;
+      --gray-50:#f3f7fb;
+      --gray-100:#e7eef6;
+      --gray-200:#d3deeb;
+      --gray-300:#b6c5d8;
+      --gray-500:#667891;
+      --gray-700:#334155;
+      --green:#16a36a;
+      --amber:#d98b08;
+      --red:#d94848;
+      --purple:#725cf1;
+      --shadow:0 18px 45px rgba(7,26,51,.12);
+      --shadow-soft:0 10px 28px rgba(7,26,51,.08);
+      --radius:18px;
+      --radius-sm:12px;
+      --font:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:var(--font);
+      color:var(--gray-700);
+      background:
+        radial-gradient(circle at 80% -10%, rgba(48,213,232,.25), transparent 34rem),
+        linear-gradient(180deg,#f7fbff 0%,#eef4fa 42%,#f8fafc 100%);
+      min-height:100vh;
+    }
+    button,input,select{font:inherit}
+    button{cursor:pointer}
+    .app{display:grid;grid-template-columns:280px 1fr;min-height:100vh}
+
+    .sidebar{
+      position:sticky;top:0;height:100vh;padding:24px 18px;
+      background:linear-gradient(180deg,var(--navy) 0%,#07152a 100%);
+      color:var(--white);box-shadow:18px 0 45px rgba(7,26,51,.15);overflow:auto;
+    }
+    .brand{display:flex;gap:12px;align-items:center;margin-bottom:28px;padding:8px 8px 18px;border-bottom:1px solid rgba(255,255,255,.11)}
+    .brand-mark{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,var(--blue),var(--cyan));display:grid;place-items:center;box-shadow:0 12px 28px rgba(48,213,232,.18)}
+    .brand-mark svg{width:25px;height:25px}
+    .brand h1{font-size:1rem;line-height:1.15;margin:0;font-weight:760;letter-spacing:.01em}
+    .brand span{display:block;color:#9fb4cf;font-size:.78rem;margin-top:4px;font-weight:520}
+    .nav-title{font-size:.72rem;text-transform:uppercase;letter-spacing:.12em;color:#7f97b7;padding:0 12px;margin:18px 0 9px}
+    .nav button{width:100%;border:0;background:transparent;color:#c9d6e8;border-radius:12px;display:flex;align-items:center;gap:11px;padding:12px;margin:4px 0;text-align:left;transition:.2s ease}
+    .nav button:hover,.nav button.active{background:rgba(255,255,255,.095);color:var(--white)}
+    .nav button.active{box-shadow:inset 3px 0 0 var(--cyan)}
+    .nav svg{width:18px;height:18px;flex:0 0 auto;color:var(--cyan)}
+    .side-card{margin-top:24px;border:1px solid rgba(255,255,255,.13);background:rgba(255,255,255,.065);border-radius:18px;padding:16px}
+    .side-card h3{margin:0 0 8px;font-size:.93rem;color:#fff}
+    .side-card p{margin:0;color:#b6c7dc;font-size:.84rem;line-height:1.5}
+    .confidence{height:9px;background:rgba(255,255,255,.13);border-radius:999px;overflow:hidden;margin:14px 0 8px}
+    .confidence span{display:block;height:100%;width:86%;background:linear-gradient(90deg,var(--cyan),#84f0ff)}
+
+    main{min-width:0;padding:22px 28px 36px}
+    .topbar{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:22px}
+    .title-block h2{margin:0;color:var(--navy);font-size:clamp(1.65rem,2.8vw,2.45rem);letter-spacing:-.035em;line-height:1.05}
+    .title-block p{margin:8px 0 0;color:var(--gray-500);font-weight:530}
+    .toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+    .control{position:relative}
+    .control input,.control select{
+      border:1px solid var(--gray-200);border-radius:12px;background:#fff;color:var(--navy);
+      padding:11px 12px;min-height:43px;outline:none;box-shadow:0 1px 0 rgba(7,26,51,.03)
+    }
+    .control input{width:260px;padding-left:38px}
+    .control svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:17px;height:17px;color:var(--gray-500)}
+    .primary-btn,.ghost-btn{
+      border:0;border-radius:12px;min-height:43px;padding:0 15px;font-weight:700;display:inline-flex;align-items:center;gap:8px;transition:.2s ease
+    }
+    .primary-btn{background:linear-gradient(135deg,var(--blue),var(--blue-2));color:#fff;box-shadow:0 10px 24px rgba(23,105,194,.24)}
+    .primary-btn:hover{transform:translateY(-1px);box-shadow:0 14px 28px rgba(23,105,194,.28)}
+    .ghost-btn{background:#fff;color:var(--navy);border:1px solid var(--gray-200)}
+    .ghost-btn:hover{border-color:#afc6de;box-shadow:var(--shadow-soft)}
+
+    .hero{
+      display:grid;grid-template-columns:minmax(0,1.7fr) minmax(320px,.9fr);gap:18px;align-items:stretch;margin-bottom:18px
+    }
+    .hero-card{
+      position:relative;overflow:hidden;border-radius:24px;background:linear-gradient(135deg,var(--navy) 0%,var(--navy-2) 55%,#0d3b68 100%);color:#fff;padding:24px;box-shadow:var(--shadow)
+    }
+    .hero-card:after{content:"";position:absolute;right:-120px;top:-150px;width:360px;height:360px;border-radius:50%;background:radial-gradient(circle,rgba(48,213,232,.32),transparent 68%)}
+    .hero-grid{position:relative;z-index:1;display:grid;grid-template-columns:1.1fr .9fr;gap:18px}
+    .hero h3{font-size:1.45rem;letter-spacing:-.02em;margin:0 0 8px;color:#fff}
+    .hero p{color:#c6d6e8;line-height:1.55;margin:0;max-width:62ch}
+    .hero-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:22px}
+    .hero-stat{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:14px}
+    .hero-stat b{display:block;font-size:1.35rem;color:#fff;letter-spacing:-.03em}
+    .hero-stat span{display:block;font-size:.78rem;color:#a9bdd5;margin-top:5px}
+    .ai-orb{align-self:center;justify-self:center;width:min(220px,100%);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff 0,#82efff 8%,var(--cyan) 18%,rgba(48,213,232,.2) 42%,transparent 68%);display:grid;place-items:center;border:1px solid rgba(255,255,255,.18);box-shadow:inset 0 0 52px rgba(48,213,232,.12),0 0 55px rgba(48,213,232,.18)}
+    .ai-orb div{width:58%;height:58%;border-radius:50%;border:1px solid rgba(255,255,255,.35);display:grid;place-items:center;background:rgba(255,255,255,.06);backdrop-filter:blur(4px);font-weight:800;letter-spacing:.08em;color:#effcff}
+
+    .insight-card{border:1px solid var(--gray-200);background:#fff;border-radius:24px;padding:20px;box-shadow:var(--shadow-soft)}
+    .insight-card h3,.panel h3{margin:0;color:var(--navy);letter-spacing:-.02em}
+    .score-ring{width:142px;height:142px;margin:18px auto 12px;border-radius:50%;background:conic-gradient(var(--green) 0 84%,var(--gray-100) 84% 100%);display:grid;place-items:center;position:relative}
+    .score-ring:before{content:"";position:absolute;width:104px;height:104px;border-radius:50%;background:#fff}
+    .score-ring b{position:relative;font-size:2rem;color:var(--navy);letter-spacing:-.04em}
+    .insight-card p{color:var(--gray-500);line-height:1.5;margin:8px 0 0;text-align:center}
+
+    .metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:18px 0}
+    .metric-card{background:#fff;border:1px solid var(--gray-200);border-radius:18px;padding:17px;box-shadow:var(--shadow-soft);position:relative;overflow:hidden}
+    .metric-card:before{content:"";position:absolute;inset:0 0 auto;height:4px;background:linear-gradient(90deg,var(--blue),var(--cyan));opacity:.85}
+    .metric-label{display:flex;justify-content:space-between;gap:10px;align-items:center;color:var(--gray-500);font-size:.84rem;font-weight:650}
+    .metric-value{font-size:1.75rem;letter-spacing:-.045em;font-weight:800;color:var(--navy);margin:12px 0 6px}
+    .trend{font-size:.82rem;font-weight:760;display:inline-flex;align-items:center;gap:4px;padding:5px 8px;border-radius:999px}
+    .trend.up{background:rgba(22,163,106,.1);color:var(--green)}
+    .trend.warn{background:rgba(217,139,8,.12);color:var(--amber)}
+    .trend.down{background:rgba(217,72,72,.11);color:var(--red)}
+
+    .grid{display:grid;grid-template-columns:1.2fr .8fr;gap:18px;margin-top:18px}
+    .grid.three{grid-template-columns:1fr 1fr 1fr}
+    .panel{background:#fff;border:1px solid var(--gray-200);border-radius:22px;box-shadow:var(--shadow-soft);padding:18px;min-width:0}
+    .panel-header{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:14px}
+    .panel-header p{margin:5px 0 0;color:var(--gray-500);font-size:.88rem}
+    .tag{display:inline-flex;align-items:center;border-radius:999px;padding:6px 9px;font-size:.76rem;font-weight:780;background:var(--cyan-soft);color:#087083;border:1px solid rgba(48,213,232,.24);white-space:nowrap}
+
+    .chart-wrap{height:280px;position:relative}
+    canvas{max-width:100%}
+    .pipeline{display:grid;gap:11px}
+    .stage{border:1px solid var(--gray-100);border-radius:16px;padding:13px;background:linear-gradient(180deg,#fff,#fbfdff)}
+    .stage-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px;font-weight:760;color:var(--navy)}
+    .bar{height:10px;background:var(--gray-100);border-radius:999px;overflow:hidden}
+    .bar span{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--blue),var(--cyan));width:var(--w)}
+    .stage-meta{display:flex;justify-content:space-between;margin-top:8px;color:var(--gray-500);font-size:.82rem}
+
+    table{width:100%;border-collapse:separate;border-spacing:0;font-size:.9rem}
+    th{text-align:left;color:var(--gray-500);font-size:.76rem;text-transform:uppercase;letter-spacing:.07em;padding:11px 10px;border-bottom:1px solid var(--gray-100)}
+    td{padding:13px 10px;border-bottom:1px solid var(--gray-100);color:var(--gray-700);vertical-align:middle}
+    tr:last-child td{border-bottom:0}
+    .name{font-weight:780;color:var(--navy)}
+    .muted{color:var(--gray-500)}
+    .status{display:inline-flex;align-items:center;padding:5px 8px;border-radius:999px;font-size:.76rem;font-weight:780;white-space:nowrap}
+    .status.hot{background:rgba(217,72,72,.1);color:var(--red)}
+    .status.warm{background:rgba(217,139,8,.12);color:var(--amber)}
+    .status.health{background:rgba(22,163,106,.1);color:var(--green)}
+    .status.cool{background:rgba(23,105,194,.1);color:var(--blue)}
+
+    .team-card{display:grid;gap:13px}
+    .rep{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;border:1px solid var(--gray-100);border-radius:16px;padding:12px;background:#fff}
+    .avatar{width:40px;height:40px;border-radius:13px;display:grid;place-items:center;color:#fff;font-weight:850;background:linear-gradient(135deg,var(--blue),var(--purple))}
+    .rep b{color:var(--navy)}
+    .rep small{display:block;color:var(--gray-500);margin-top:3px}
+    .rep .pct{font-weight:850;color:var(--navy)}
+
+    .activity-list,.ai-list{display:grid;gap:12px;margin:0;padding:0;list-style:none}
+    .activity-list li,.ai-list li{display:grid;grid-template-columns:auto 1fr;gap:12px;border:1px solid var(--gray-100);border-radius:16px;padding:12px;background:linear-gradient(180deg,#fff,#fbfdff)}
+    .dot{width:11px;height:11px;border-radius:50%;background:var(--cyan);margin-top:5px;box-shadow:0 0 0 5px rgba(48,213,232,.12)}
+    .activity-list b,.ai-list b{display:block;color:var(--navy);margin-bottom:3px}
+    .activity-list span,.ai-list span{color:var(--gray-500);font-size:.86rem;line-height:1.45}
+
+    .forecast-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    .forecast-box{border-radius:16px;border:1px solid var(--gray-100);padding:14px;background:#fbfdff}
+    .forecast-box span{color:var(--gray-500);font-size:.8rem;font-weight:700}
+    .forecast-box b{display:block;color:var(--navy);font-size:1.35rem;margin-top:7px;letter-spacing:-.035em}
+    .forecast-box small{display:block;color:var(--gray-500);margin-top:5px}
+
+    .customer-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}
+    .customer-card{border:1px solid var(--gray-100);border-radius:18px;padding:15px;background:linear-gradient(180deg,#fff,#fbfdff)}
+    .customer-card h4{margin:0 0 8px;color:var(--navy);font-size:1rem}
+    .customer-card p{margin:0;color:var(--gray-500);font-size:.86rem;line-height:1.45}
+    .customer-meta{display:flex;justify-content:space-between;gap:8px;margin-top:12px;align-items:center}
+
+    .drawer{position:fixed;right:18px;bottom:18px;width:min(430px,calc(100vw - 36px));background:#fff;border:1px solid var(--gray-200);border-radius:22px;box-shadow:0 24px 70px rgba(7,26,51,.22);overflow:hidden;transform:translateY(120%);opacity:0;pointer-events:none;transition:.28s ease;z-index:10}
+    .drawer.open{transform:translateY(0);opacity:1;pointer-events:auto}
+    .drawer-head{background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff;padding:16px;display:flex;justify-content:space-between;gap:12px;align-items:center}
+    .drawer-head h3{margin:0;font-size:1rem}
+    .drawer-head button{border:0;background:rgba(255,255,255,.12);color:#fff;border-radius:10px;width:34px;height:34px}
+    .drawer-body{padding:16px;display:grid;gap:12px}
+    .drawer-body label{font-size:.8rem;color:var(--gray-500);font-weight:750}
+    .drawer-body textarea{width:100%;min-height:95px;resize:vertical;border:1px solid var(--gray-200);border-radius:14px;padding:12px;color:var(--navy);outline:none}
+    .answer{background:var(--gray-50);border:1px solid var(--gray-100);border-radius:14px;padding:12px;color:var(--gray-700);line-height:1.5;font-size:.9rem}
+
+    .mobile-toggle{display:none}
+    .screen{display:none}
+    .screen.active{display:block}
+
+    @media (max-width:1120px){
+      .app{grid-template-columns:1fr}
+      .sidebar{position:fixed;z-index:20;left:0;top:0;transform:translateX(-105%);transition:.25s ease;width:280px}
+      .sidebar.open{transform:translateX(0)}
+      main{padding:18px}
+      .mobile-toggle{display:inline-flex}
+      .hero,.grid,.grid.three{grid-template-columns:1fr}
+      .metrics{grid-template-columns:repeat(2,1fr)}
+      .hero-grid{grid-template-columns:1fr}
+      .ai-orb{display:none}
+    }
+    @media (max-width:720px){
+      .topbar{align-items:stretch;flex-direction:column}
+      .toolbar{justify-content:stretch}.toolbar>*{flex:1}.control input,.control select{width:100%}
+      .metrics,.hero-stats,.forecast-grid,.customer-grid{grid-template-columns:1fr}
+      main{padding:14px}.panel,.hero-card,.insight-card{border-radius:18px;padding:15px}
+      .table-scroll{overflow:auto}table{min-width:680px}
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar" id="sidebar" aria-label="Primary navigation">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M5 17.5 11 4l3.2 7.1L19 6.8l-5.9 13L10 13.1l-5 4.4Z" fill="white" opacity=".94"/></svg>
+        </div>
+        <div>
+          <h1>Sales Command AI</h1>
+          <span>Fictional demo CRM workspace</span>
+        </div>
+      </div>
+      <div class="nav-title">Command center</div>
+      <nav class="nav" id="nav">
+        <button class="active" data-screen="overview"><svg viewBox="0 0 24 24" fill="none"><path d="M4 13h7V4H4v9Zm0 7h7v-5H4v5Zm9 0h7v-9h-7v9Zm0-16v5h7V4h-7Z" fill="currentColor"/></svg>Overview</button>
+        <button data-screen="customers"><svg viewBox="0 0 24 24" fill="none"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-8 8a8 8 0 1 1 16 0H4Z" fill="currentColor"/></svg>Customers</button>
+        <button data-screen="opportunities"><svg viewBox="0 0 24 24" fill="none"><path d="M4 6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3H4V6Zm0 5h16v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-7Zm4 2v2h5v-2H8Z" fill="currentColor"/></svg>Opportunities</button>
+        <button data-screen="forecast"><svg viewBox="0 0 24 24" fill="none"><path d="M5 19V5h2v14H5Zm4 0v-8h2v8H9Zm4 0V8h2v11h-2Zm4 0v-5h2v5h-2Z" fill="currentColor"/></svg>Forecast</button>
+        <button data-screen="team"><svg viewBox="0 0 24 24" fill="none"><path d="M8 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Zm8 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM2 20a6 6 0 0 1 12 0H2Zm12.2 0a7.8 7.8 0 0 0-2-4.8A5 5 0 0 1 22 17v3h-7.8Z" fill="currentColor"/></svg>Team</button>
+        <button data-screen="ai"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2 14 8l6 2-6 2-2 6-2-6-6-2 6-2 2-6Zm7 13 1 3 3 1-3 1-1 3-1-3-3-1 3-1 1-3ZM5 14l1 2 2 1-2 1-1 2-1-2-2-1 2-1 1-2Z" fill="currentColor"/></svg>AI Coach</button>
+      </nav>
+      <div class="side-card">
+        <h3>AI revenue posture</h3>
+        <p>Forecast model indicates strong quarter coverage, with renewal risk concentrated in two mid-market accounts.</p>
+        <div class="confidence" aria-label="AI confidence 86 percent"><span></span></div>
+        <p><strong>86%</strong> confidence based on demo CRM signals.</p>
+      </div>
+    </aside>
+
+    <main>
+      <header class="topbar">
+        <button class="ghost-btn mobile-toggle" id="mobileMenu" aria-label="Open navigation">☰ Menu</button>
+        <div class="title-block">
+          <h2 id="pageTitle">Revenue command center</h2>
+          <p id="pageSubtitle">Monitor pipeline health, customers, performance, and AI-guided next best actions.</p>
+        </div>
+        <div class="toolbar">
+          <div class="control">
+            <svg viewBox="0 0 24 24" fill="none"><path d="m21 20-5.6-5.6A7 7 0 1 0 14 15.4L20 21l1-1ZM5 10a5 5 0 1 1 10 0A5 5 0 0 1 5 10Z" fill="currentColor"/></svg>
+            <input id="search" type="search" placeholder="Search customers or opportunities" aria-label="Search customers or opportunities" />
+          </div>
+          <div class="control">
+            <select id="segment" aria-label="Select segment">
+              <option value="all">All segments</option>
+              <option value="enterprise">Enterprise</option>
+              <option value="midmarket">Mid-market</option>
+              <option value="strategic">Strategic</option>
+            </select>
+          </div>
+          <button class="primary-btn" id="openAssistant">Ask AI Coach</button>
+        </div>
+      </header>
+
+      <section class="screen active" id="overview" aria-labelledby="overview-heading">
+        <div class="hero">
+          <section class="hero-card">
+            <div class="hero-grid">
+              <div>
+                <h3 id="overview-heading">AI-powered sales operating rhythm</h3>
+                <p>Built for a sales manager who needs clear visibility into revenue, customers, opportunities, forecast, team execution, activity, and recommended actions.</p>
+                <div class="hero-stats">
+                  <div class="hero-stat"><b id="heroRevenue">$18.7M</b><span>Weighted pipeline</span></div>
+                  <div class="hero-stat"><b id="heroWin">31%</b><span>Projected win rate</span></div>
+                  <div class="hero-stat"><b id="heroCycle">42d</b><span>Avg. sales cycle</span></div>
+                </div>
+              </div>
+              <div class="ai-orb" aria-hidden="true"><div>AI CRM</div></div>
+            </div>
+          </section>
+          <section class="insight-card">
+            <h3>Quarter readiness</h3>
+            <div class="score-ring"><b id="readinessScore">84</b></div>
+            <p>Coverage is above target. Focus coaching on late-stage proof points and executive sponsor alignment.</p>
+          </section>
+        </div>
+
+        <section class="metrics" aria-label="Key revenue metrics">
+          <article class="metric-card"><div class="metric-label">Booked revenue <span class="trend up">▲ 12.4%</span></div><div class="metric-value" id="bookedRevenue">$7.9M</div><div class="muted">Against $10.5M quarterly goal</div></article>
+          <article class="metric-card"><div class="metric-label">Open pipeline <span class="trend up">▲ 8.1%</span></div><div class="metric-value" id="openPipeline">$26.4M</div><div class="muted">3.1x coverage ratio</div></article>
+          <article class="metric-card"><div class="metric-label">At-risk renewals <span class="trend warn">● 2 accounts</span></div><div class="metric-value" id="riskRenewals">$1.6M</div><div class="muted">AI recommends sponsor outreach</div></article>
+          <article class="metric-card"><div class="metric-label">Next 30-day close <span class="trend up">▲ 5 deals</span></div><div class="metric-value" id="nextClose">$4.2M</div><div class="muted">Weighted commit forecast</div></article>
+        </section>
+
+        <div class="grid">
+          <section class="panel">
+            <div class="panel-header"><div><h3>Revenue trend</h3><p>Bookings and weighted forecast by month.</p></div><span class="tag">Live demo model</span></div>
+            <div class="chart-wrap"><canvas id="revenueChart" aria-label="Revenue trend chart"></canvas></div>
+          </section>
+          <section class="panel">
+            <div class="panel-header"><div><h3>Pipeline stages</h3><p>Value distribution across opportunity stages.</p></div><span class="tag">$26.4M total</span></div>
+            <div class="pipeline" id="pipelineStages"></div>
+          </section>
+        </div>
+
+        <div class="grid three">
+          <section class="panel">
+            <div class="panel-header"><div><h3>AI recommendations</h3><p>Prioritized next best actions.</p></div></div>
+            <ul class="ai-list" id="overviewRecommendations"></ul>
+          </section>
+          <section class="panel">
+            <div class="panel-header"><div><h3>Recent activity</h3><p>Signals from CRM touchpoints.</p></div></div>
+            <ul class="activity-list" id="activityList"></ul>
+          </section>
+          <section class="panel">
+            <div class="panel-header"><div><h3>Top performers</h3><p>Quota attainment by territory pod.</p></div></div>
+            <div class="team-card" id="miniTeam"></div>
+          </section>
+        </div>
+      </section>
+
+      <section class="screen" id="customers" aria-labelledby="customers-heading">
+        <div class="panel">
+          <div class="panel-header"><div><h3 id="customers-heading">Customer portfolio</h3><p>Fictional demo customers with health, ARR, and next action status.</p></div><span class="tag" id="customerCount">0 customers</span></div>
+          <div class="customer-grid" id="customerGrid"></div>
+        </div>
+        <div class="grid">
+          <section class="panel"><div class="panel-header"><div><h3>Customer health mix</h3><p>Portfolio distribution by relationship signal.</p></div></div><div class="chart-wrap"><canvas id="customerChart"></canvas></div></section>
+          <section class="panel"><div class="panel-header"><div><h3>Executive follow-ups</h3><p>Recommended actions for strategic coverage.</p></div></div><ul class="ai-list" id="customerActions"></ul></section>
+        </div>
+      </section>
+
+      <section class="screen" id="opportunities" aria-labelledby="opportunities-heading">
+        <section class="panel">
+          <div class="panel-header"><div><h3 id="opportunities-heading">Opportunity workspace</h3><p>Track value, stage, probability, owner pod, and AI priority.</p></div><span class="tag" id="oppCount">0 opportunities</span></div>
+          <div class="table-scroll"><table>
+            <thead><tr><th>Opportunity</th><th>Customer</th><th>Stage</th><th>Value</th><th>Prob.</th><th>Close</th><th>Priority</th></tr></thead>
+            <tbody id="oppTable"></tbody>
+          </table></div>
+        </section>
+        <div class="grid">
+          <section class="panel"><div class="panel-header"><div><h3>Deal quality</h3><p>AI-scored qualification strength by stage.</p></div></div><div class="chart-wrap"><canvas id="qualityChart"></canvas></div></section>
+          <section class="panel"><div class="panel-header"><div><h3>Stage coaching</h3><p>Focused guidance for managers.</p></div></div><ul class="ai-list" id="stageCoach"></ul></section>
+        </div>
+      </section>
+
+      <section class="screen" id="forecast" aria-labelledby="forecast-heading">
+        <section class="panel">
+          <div class="panel-header"><div><h3 id="forecast-heading">Forecast control room</h3><p>Scenario forecast with commit, likely, upside, and coverage risk.</p></div><span class="tag">Quarter view</span></div>
+          <div class="forecast-grid">
+            <div class="forecast-box"><span>Commit</span><b>$8.4M</b><small>80% confidence</small></div>
+            <div class="forecast-box"><span>Likely</span><b>$10.8M</b><small>64% confidence</small></div>
+            <div class="forecast-box"><span>Upside</span><b>$13.1M</b><small>37% confidence</small></div>
+          </div>
+        </section>
+        <div class="grid">
+          <section class="panel"><div class="panel-header"><div><h3>Forecast by month</h3><p>Commit and upside progression.</p></div></div><div class="chart-wrap"><canvas id="forecastChart"></canvas></div></section>
+          <section class="panel"><div class="panel-header"><div><h3>Forecast risks</h3><p>AI-generated watchlist.</p></div></div><ul class="ai-list" id="forecastRisks"></ul></section>
+        </div>
+      </section>
+
+      <section class="screen" id="team" aria-labelledby="team-heading">
+        <section class="panel">
+          <div class="panel-header"><div><h3 id="team-heading">Team performance</h3><p>Compare territory pods by attainment, pipeline creation, and activity quality.</p></div><span class="tag">Fictional pods</span></div>
+          <div class="team-card" id="teamList"></div>
+        </section>
+        <div class="grid">
+          <section class="panel"><div class="panel-header"><div><h3>Quota attainment</h3><p>Performance by pod.</p></div></div><div class="chart-wrap"><canvas id="teamChart"></canvas></div></section>
+          <section class="panel"><div class="panel-header"><div><h3>Coaching prompts</h3><p>Manager actions for the week.</p></div></div><ul class="ai-list" id="teamCoach"></ul></section>
+        </div>
+      </section>
+
+      <section class="screen" id="ai" aria-labelledby="ai-heading">
+        <section class="panel">
+          <div class="panel-header"><div><h3 id="ai-heading">AI sales coach</h3><p>Focused recommendations generated from the fictional demo CRM data in this app.</p></div><span class="tag">No external calls</span></div>
+          <ul class="ai-list" id="aiCenter"></ul>
+        </section>
+        <div class="grid">
+          <section class="panel"><div class="panel-header"><div><h3>Ask a question</h3><p>Use local scripted intelligence for manager-ready guidance.</p></div></div><label for="inlineQuestion" class="muted">Question</label><textarea id="inlineQuestion" style="width:100%;min-height:110px;border:1px solid var(--gray-200);border-radius:14px;padding:12px;margin:8px 0 12px;resize:vertical" placeholder="Example: Which deals need attention this week?"></textarea><button class="primary-btn" id="inlineAsk">Generate guidance</button><div class="answer" id="inlineAnswer" style="margin-top:12px">Ask about forecast, at-risk customers, team coaching, or next-best-actions.</div></section>
+          <section class="panel"><div class="panel-header"><div><h3>Activity intelligence</h3><p>Patterns identified across recent demo activity.</p></div></div><div class="chart-wrap"><canvas id="activityChart"></canvas></div></section>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <section class="drawer" id="assistantDrawer" aria-label="AI Coach panel">
+    <div class="drawer-head"><h3>AI Coach</h3><button id="closeAssistant" aria-label="Close AI Coach">×</button></div>
+    <div class="drawer-body">
+      <label for="coachQuestion">Manager question</label>
+      <textarea id="coachQuestion" placeholder="Ask: What should I do to improve this quarter's forecast?"></textarea>
+      <button class="primary-btn" id="coachAsk">Generate answer</button>
+      <div class="answer" id="coachAnswer">Ready to summarize revenue risks, customer actions, and coaching priorities using fictional demo data only.</div>
+    </div>
+  </section>
+
+  <script>
+    const data = {
+      customers:[
+        {name:"Northstar Ledger Group", segment:"enterprise", arr:2.4, health:"Healthy", status:"health", next:"Expand settlement workflow pilot", owner:"Pod A"},
+        {name:"Cobalt Harbor Services", segment:"strategic", arr:3.1, health:"Expansion", status:"cool", next:"Executive value review", owner:"Pod C"},
+        {name:"Summit Vale Financial", segment:"midmarket", arr:1.2, health:"At risk", status:"hot", next:"Resolve adoption gap", owner:"Pod B"},
+        {name:"Bluecrest Registry", segment:"enterprise", arr:1.9, health:"Stable", status:"health", next:"Renewal proposal", owner:"Pod D"},
+        {name:"Apex Stone Markets", segment:"strategic", arr:2.8, health:"Warm", status:"warm", next:"Sponsor mapping", owner:"Pod A"},
+        {name:"Veridian Trust Network", segment:"midmarket", arr:.9, health:"At risk", status:"hot", next:"Training session", owner:"Pod B"}
+      ],
+      opportunities:[
+        {name:"Omni-channel advisor rollout", customer:"Northstar Ledger Group", segment:"enterprise", stage:"Proposal", value:3.4, probability:68, close:"Jul 22", priority:"High"},
+        {name:"Regulatory reporting modernization", customer:"Cobalt Harbor Services", segment:"strategic", stage:"Negotiation", value:4.1, probability:74, close:"Aug 04", priority:"High"},
+        {name:"Data operations consolidation", customer:"Summit Vale Financial", segment:"midmarket", stage:"Discovery", value:1.1, probability:33, close:"Sep 12", priority:"Medium"},
+        {name:"Managed communications upgrade", customer:"Bluecrest Registry", segment:"enterprise", stage:"Validation", value:2.2, probability:57, close:"Aug 19", priority:"Medium"},
+        {name:"Wealth insights analytics", customer:"Apex Stone Markets", segment:"strategic", stage:"Proposal", value:3.8, probability:62, close:"Sep 02", priority:"High"},
+        {name:"Client onboarding automation", customer:"Veridian Trust Network", segment:"midmarket", stage:"Discovery", value:.8, probability:28, close:"Sep 25", priority:"Watch"},
+        {name:"Enterprise service hub", customer:"Cobalt Harbor Services", segment:"strategic", stage:"Commit", value:5.0, probability:82, close:"Jul 15", priority:"Critical"},
+        {name:"Digital mailroom migration", customer:"Bluecrest Registry", segment:"enterprise", stage:"Qualified", value:1.6, probability:45, close:"Oct 03", priority:"Medium"}
+      ],
+      stages:[
+        {stage:"Discovery", value:1.9, deals:2, pct:18},
+        {stage:"Qualified", value:1.6, deals:1, pct:24},
+        {stage:"Validation", value:2.2, deals:1, pct:34},
+        {stage:"Proposal", value:7.2, deals:2, pct:62},
+        {stage:"Negotiation", value:4.1, deals:1, pct:73},
+        {stage:"Commit", value:5.0, deals:1, pct:89}
+      ],
+      team:[
+        {pod:"Pod A", region:"Strategic Financial Services", attainment:112, pipeline:8.7, activity:91, initials:"A"},
+        {pod:"Pod B", region:"Mid-market Growth", attainment:84, pipeline:4.6, activity:76, initials:"B"},
+        {pod:"Pod C", region:"Enterprise Expansion", attainment:124, pipeline:9.1, activity:88, initials:"C"},
+        {pod:"Pod D", region:"Renewal Excellence", attainment:97, pipeline:5.4, activity:82, initials:"D"}
+      ],
+      activities:[
+        {title:"Executive meeting booked", text:"Cobalt Harbor Services accepted a value review for the enterprise service hub."},
+        {title:"Renewal risk detected", text:"Summit Vale Financial usage decreased for two consecutive cycles."},
+        {title:"Proposal advanced", text:"Northstar Ledger Group moved to procurement review with strong sponsor support."},
+        {title:"Training completed", text:"Veridian Trust Network completed enablement for three operations leads."}
+      ]
+    };
+
+    const copy = {
+      overview:{title:"Revenue command center", subtitle:"Monitor pipeline health, customers, performance, and AI-guided next best actions."},
+      customers:{title:"Customer portfolio", subtitle:"Manage account health, renewal exposure, expansion signals, and relationship actions."},
+      opportunities:{title:"Opportunity workspace", subtitle:"Track deal movement, qualification, probability, and close-plan priorities."},
+      forecast:{title:"Forecast control room", subtitle:"Compare commit, likely, and upside scenarios with risk-adjusted signals."},
+      team:{title:"Team performance", subtitle:"Compare territory pod execution and identify coaching opportunities."},
+      ai:{title:"AI sales coach", subtitle:"Receive concise recommendations from the local fictional CRM dataset."}
+    };
+
+    const fmtMoney = value => "$" + value.toFixed(value >= 10 ? 1 : 1) + "M";
+    const byId = id => document.getElementById(id);
+
+    function filtered(){
+      const q = byId("search").value.trim().toLowerCase();
+      const seg = byId("segment").value;
+      const customerMatches = data.customers.filter(c => (seg === "all" || c.segment === seg) && (!q || c.name.toLowerCase().includes(q) || c.next.toLowerCase().includes(q)));
+      const oppMatches = data.opportunities.filter(o => (seg === "all" || o.segment === seg) && (!q || o.name.toLowerCase().includes(q) || o.customer.toLowerCase().includes(q) || o.stage.toLowerCase().includes(q)));
+      return {customers:customerMatches, opportunities:oppMatches};
+    }
+
+    function setScreen(id){
+      document.querySelectorAll(".screen").forEach(s => s.classList.toggle("active", s.id === id));
+      document.querySelectorAll(".nav button").forEach(b => b.classList.toggle("active", b.dataset.screen === id));
+      byId("pageTitle").textContent = copy[id].title;
+      byId("pageSubtitle").textContent = copy[id].subtitle;
+      byId("sidebar").classList.remove("open");
+      drawAllCharts();
+    }
+
+    function renderMetrics(){
+      const f = filtered();
+      const pipeline = f.opportunities.reduce((s,o)=>s+o.value,0);
+      const weighted = f.opportunities.reduce((s,o)=>s+(o.value*o.probability/100),0);
+      const avgProb = f.opportunities.length ? Math.round(f.opportunities.reduce((s,o)=>s+o.probability,0)/f.opportunities.length) : 0;
+      const risk = f.customers.filter(c=>c.health === "At risk").reduce((s,c)=>s+c.arr,0);
+      byId("heroRevenue").textContent = fmtMoney(weighted || 18.7);
+      byId("heroWin").textContent = avgProb ? avgProb + "%" : "31%";
+      byId("bookedRevenue").textContent = f.customers.length ? fmtMoney(f.customers.reduce((s,c)=>s+c.arr,0)*.64) : "$0.0M";
+      byId("openPipeline").textContent = fmtMoney(pipeline || 0);
+      byId("riskRenewals").textContent = fmtMoney(risk || 0);
+      byId("nextClose").textContent = fmtMoney(weighted*.35 || 0);
+      byId("readinessScore").textContent = Math.max(52, Math.min(92, Math.round(70 + avgProb/4 - risk*2))) || 84;
+    }
+
+    function renderPipeline(){
+      byId("pipelineStages").innerHTML = data.stages.map(s => `<div class="stage"><div class="stage-top"><span>${s.stage}</span><span>${fmtMoney(s.value)}</span></div><div class="bar"><span style="--w:${s.pct}%"></span></div><div class="stage-meta"><span>${s.deals} deal${s.deals>1?"s":""}</span><span>${s.pct}% momentum</span></div></div>`).join("");
+    }
+
+    function renderCustomers(){
+      const f = filtered().customers;
+      byId("customerCount").textContent = f.length + " customers";
+      byId("customerGrid").innerHTML = f.map(c => `<article class="customer-card"><h4>${c.name}</h4><p>${c.segment.replace(/^./,m=>m.toUpperCase())} account · ${c.owner}</p><div class="customer-meta"><span class="status ${c.status}">${c.health}</span><strong>${fmtMoney(c.arr)} ARR</strong></div><p style="margin-top:12px"><strong>Next:</strong> ${c.next}</p></article>`).join("") || `<p class="muted">No customers match the current filters.</p>`;
+    }
+
+    function priorityClass(p){return p === "Critical" || p === "High" ? "hot" : p === "Watch" ? "warm" : "cool";}
+    function renderOpps(){
+      const f = filtered().opportunities;
+      byId("oppCount").textContent = f.length + " opportunities";
+      byId("oppTable").innerHTML = f.map(o => `<tr><td><div class="name">${o.name}</div></td><td>${o.customer}</td><td>${o.stage}</td><td><strong>${fmtMoney(o.value)}</strong></td><td>${o.probability}%</td><td>${o.close}</td><td><span class="status ${priorityClass(o.priority)}">${o.priority}</span></td></tr>`).join("") || `<tr><td colspan="7" class="muted">No opportunities match the current filters.</td></tr>`;
+    }
+
+    function renderLists(){
+      const recs = [
+        ["Protect commit deals","Confirm procurement owners for Cobalt Harbor Services and Northstar Ledger Group before the next forecast call."],
+        ["Reduce renewal exposure","Schedule adoption workshops for Summit Vale Financial and Veridian Trust Network within seven days."],
+        ["Accelerate expansion","Package a concise executive value narrative for Apex Stone Markets tied to measurable workflow savings."]
+      ];
+      byId("overviewRecommendations").innerHTML = recs.map(r => `<li><span class="dot"></span><div><b>${r[0]}</b><span>${r[1]}</span></div></li>`).join("");
+      byId("activityList").innerHTML = data.activities.map(a => `<li><span class="dot"></span><div><b>${a.title}</b><span>${a.text}</span></div></li>`).join("");
+      byId("customerActions").innerHTML = [
+        ["Segment executive coverage","Prioritize strategic and enterprise customers with open expansion value above $2M."],
+        ["Health recovery plan","Pair usage training with sponsor check-ins for at-risk mid-market accounts."],
+        ["Expansion signal","Healthy accounts with recent activity should receive outcome-based cross-sell proposals."]
+      ].map(r => `<li><span class="dot"></span><div><b>${r[0]}</b><span>${r[1]}</span></div></li>`).join("");
+      byId("stageCoach").innerHTML = [
+        ["Discovery","Require quantified pain and success metric before advancing."],
+        ["Proposal","Add decision criteria, commercial owner, and target signature date."],
+        ["Commit","Validate legal, procurement, security, and funding blockers daily."]
+      ].map(r => `<li><span class="dot"></span><div><b>${r[0]}</b><span>${r[1]}</span></div></li>`).join("");
+      byId("forecastRisks").innerHTML = [
+        ["Late-stage concentration","Two opportunities represent 45% of likely forecast; inspect close plans."],
+        ["Renewal adoption gap","At-risk renewal ARR may offset new bookings if enablement is delayed."],
+        ["Upside dependency","Upside requires one strategic proposal to move to negotiation this month."]
+      ].map(r => `<li><span class="dot"></span><div><b>${r[0]}</b><span>${r[1]}</span></div></li>`).join("");
+      byId("teamCoach").innerHTML = [
+        ["Pod B","Coach qualification discipline and revive two stalled mid-market opportunities."],
+        ["Pod C","Replicate executive mapping playbook across strategic accounts."],
+        ["Pod D","Increase renewal expansion discovery during service reviews."]
+      ].map(r => `<li><span class="dot"></span><div><b>${r[0]}</b><span>${r[1]}</span></div></li>`).join("");
+      byId("aiCenter").innerHTML = [
+        ["This week","Run a 30-minute commit inspection for every deal closing before August 15."],
+        ["Customer risk","Escalate adoption recovery for two accounts before renewal sentiment hardens."],
+        ["Team action","Shift proven executive sponsor scripts from Pod C to Pod B."],
+        ["Forecast move","Convert one proposal-stage strategic deal into negotiation to lift likely forecast above target."]
+      ].map(r => `<li><span class="dot"></span><div><b>${r[0]}</b><span>${r[1]}</span></div></li>`).join("");
+    }
+
+    function renderTeam(){
+      const html = data.team.map(t => `<div class="rep"><div class="avatar">${t.initials}</div><div><b>${t.pod}</b><small>${t.region} · ${fmtMoney(t.pipeline)} pipeline · Activity ${t.activity}</small><div class="bar" style="margin-top:8px"><span style="--w:${Math.min(t.attainment,130)/1.3}%"></span></div></div><div class="pct">${t.attainment}%</div></div>`).join("");
+      byId("teamList").innerHTML = html;
+      byId("miniTeam").innerHTML = data.team.slice().sort((a,b)=>b.attainment-a.attainment).slice(0,3).map(t => `<div class="rep"><div class="avatar">${t.initials}</div><div><b>${t.pod}</b><small>${t.region}</small></div><div class="pct">${t.attainment}%</div></div>`).join("");
+    }
+
+    function setupCanvas(canvas){
+      const ratio = window.devicePixelRatio || 1;
+      const rect = canvas.parentElement.getBoundingClientRect();
+      canvas.width = rect.width * ratio;
+      canvas.height = rect.height * ratio;
+      canvas.style.width = rect.width + "px";
+      canvas.style.height = rect.height + "px";
+      const ctx = canvas.getContext("2d");
+      ctx.setTransform(ratio,0,0,ratio,0,0);
+      return {ctx,w:rect.width,h:rect.height};
+    }
+
+    function drawLine(id, labels, seriesA, seriesB){
+      const canvas = byId(id); if(!canvas || !canvas.offsetParent) return;
+      const {ctx,w,h} = setupCanvas(canvas); ctx.clearRect(0,0,w,h);
+      const pad = {l:42,r:18,t:20,b:36};
+      const max = Math.max(...seriesA,...(seriesB||[]))*1.18;
+      ctx.strokeStyle = "#e7eef6"; ctx.lineWidth = 1;
+      for(let i=0;i<5;i++){const y=pad.t+(h-pad.t-pad.b)*i/4;ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(w-pad.r,y);ctx.stroke();}
+      ctx.fillStyle = "#667891"; ctx.font = "12px Inter, sans-serif";
+      labels.forEach((l,i)=>{const x=pad.l+(w-pad.l-pad.r)*i/(labels.length-1);ctx.fillText(l,x-12,h-12);});
+      function plot(vals,color,fill){
+        ctx.beginPath(); vals.forEach((v,i)=>{const x=pad.l+(w-pad.l-pad.r)*i/(vals.length-1);const y=h-pad.b-(h-pad.t-pad.b)*(v/max); i?ctx.lineTo(x,y):ctx.moveTo(x,y);});
+        ctx.strokeStyle=color;ctx.lineWidth=3;ctx.stroke();
+        if(fill){ctx.lineTo(w-pad.r,h-pad.b);ctx.lineTo(pad.l,h-pad.b);ctx.closePath();const g=ctx.createLinearGradient(0,pad.t,0,h-pad.b);g.addColorStop(0,fill);g.addColorStop(1,"rgba(23,105,194,0)");ctx.fillStyle=g;ctx.fill();}
+        vals.forEach((v,i)=>{const x=pad.l+(w-pad.l-pad.r)*i/(vals.length-1);const y=h-pad.b-(h-pad.t-pad.b)*(v/max);ctx.fillStyle="#fff";ctx.beginPath();ctx.arc(x,y,5,0,Math.PI*2);ctx.fill();ctx.strokeStyle=color;ctx.lineWidth=2;ctx.stroke();});
+      }
+      plot(seriesA,"#1769c2","rgba(23,105,194,.16)"); if(seriesB) plot(seriesB,"#30d5e8");
+    }
+
+    function drawBars(id, labels, vals, color="#1769c2"){
+      const canvas = byId(id); if(!canvas || !canvas.offsetParent) return;
+      const {ctx,w,h} = setupCanvas(canvas); ctx.clearRect(0,0,w,h);
+      const pad={l:40,r:16,t:18,b:46}; const max=Math.max(...vals)*1.2; const bw=(w-pad.l-pad.r)/vals.length*.55;
+      ctx.strokeStyle="#e7eef6";ctx.lineWidth=1;for(let i=0;i<5;i++){const y=pad.t+(h-pad.t-pad.b)*i/4;ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(w-pad.r,y);ctx.stroke();}
+      labels.forEach((l,i)=>{const x=pad.l+(w-pad.l-pad.r)*(i+.5)/labels.length;const barH=(h-pad.t-pad.b)*(vals[i]/max);const y=h-pad.b-barH;const g=ctx.createLinearGradient(0,y,0,h-pad.b);g.addColorStop(0,color);g.addColorStop(1,"#30d5e8");ctx.fillStyle=g;roundRect(ctx,x-bw/2,y,bw,barH,8);ctx.fill();ctx.fillStyle="#667891";ctx.font="12px Inter, sans-serif";ctx.fillText(l,x-18,h-16);ctx.fillStyle="#071a33";ctx.font="bold 12px Inter, sans-serif";ctx.fillText(vals[i]+(id==="teamChart"?"%":""),x-13,y-8);});
+    }
+
+    function drawDonut(id, items){
+      const canvas = byId(id); if(!canvas || !canvas.offsetParent) return;
+      const {ctx,w,h}=setupCanvas(canvas); ctx.clearRect(0,0,w,h);
+      const cx=w/2, cy=h/2-4, r=Math.min(w,h)*.31; let start=-Math.PI/2; const total=items.reduce((s,i)=>s+i.value,0); const colors=["#16a36a","#d98b08","#d94848","#1769c2"];
+      items.forEach((it,i)=>{const ang=it.value/total*Math.PI*2;ctx.beginPath();ctx.arc(cx,cy,r,start,start+ang);ctx.arc(cx,cy,r*.62,start+ang,start,true);ctx.closePath();ctx.fillStyle=colors[i%colors.length];ctx.fill();start+=ang;});
+      ctx.fillStyle="#071a33";ctx.font="800 24px Inter, sans-serif";ctx.textAlign="center";ctx.fillText(total,cx,cy+8);ctx.font="12px Inter, sans-serif";ctx.fillStyle="#667891";ctx.fillText("Accounts",cx,cy+28);ctx.textAlign="left";
+      items.forEach((it,i)=>{const y=h-48+i*18;ctx.fillStyle=colors[i%colors.length];ctx.fillRect(24,y-9,10,10);ctx.fillStyle="#667891";ctx.font="12px Inter, sans-serif";ctx.fillText(`${it.label}: ${it.value}`,40,y);});
+    }
+
+    function roundRect(ctx,x,y,w,h,r){
+      const rr=Math.min(r,w/2,h/2);ctx.beginPath();ctx.moveTo(x+rr,y);ctx.arcTo(x+w,y,x+w,y+h,rr);ctx.arcTo(x+w,y+h,x,y+h,rr);ctx.arcTo(x,y+h,x,y,rr);ctx.arcTo(x,y,x+w,y,rr);ctx.closePath();
+    }
+
+    function drawAllCharts(){
+      requestAnimationFrame(()=>{
+        drawLine("revenueChart",["Apr","May","Jun","Jul","Aug","Sep"],[4.8,5.6,7.9,8.4,10.8,13.1],[6.1,7.3,8.8,9.9,11.7,14.2]);
+        drawDonut("customerChart",[{label:"Healthy",value:2},{label:"Warm",value:1},{label:"At risk",value:2},{label:"Expansion",value:1}]);
+        drawBars("qualityChart",["Disc","Qual","Valid","Prop","Neg","Commit"],[58,66,72,79,83,88],"#1769c2");
+        drawLine("forecastChart",["Jul","Aug","Sep","Oct"],[8.4,9.5,10.8,11.2],[10.2,11.9,13.1,13.6]);
+        drawBars("teamChart",data.team.map(t=>t.pod),data.team.map(t=>t.attainment),"#1769c2");
+        drawBars("activityChart",["Calls","Meet","Email","Tasks"],[42,27,84,36],"#725cf1");
+      });
+    }
+
+    function coachAnswer(question){
+      const q=(question||"").toLowerCase();
+      if(q.includes("forecast") || q.includes("quarter")) return "Forecast action: inspect the two largest commit deals, document procurement blockers, and move one strategic proposal to negotiation. This protects the likely forecast and improves confidence above target.";
+      if(q.includes("risk") || q.includes("renewal") || q.includes("customer")) return "Customer action: focus on Summit Vale Financial and Veridian Trust Network. Run adoption recovery sessions, secure executive sponsors, and document renewal success criteria this week.";
+      if(q.includes("team") || q.includes("coach") || q.includes("performance")) return "Team action: use Pod C's executive mapping approach as the standard playbook, then coach Pod B on qualification discipline and next-step clarity.";
+      if(q.includes("deal") || q.includes("opportun")) return "Deal action: prioritize Cobalt Harbor Services, Northstar Ledger Group, and Apex Stone Markets. Each needs a named economic buyer, decision date, and quantified value narrative.";
+      return "Recommended manager rhythm: protect commit deals, recover two at-risk renewals, replicate the highest-performing pod playbook, and review forecast movement twice weekly.";
+    }
+
+    function bind(){
+      byId("nav").addEventListener("click",e=>{const btn=e.target.closest("button[data-screen]"); if(btn) setScreen(btn.dataset.screen);});
+      byId("mobileMenu").addEventListener("click",()=>byId("sidebar").classList.add("open"));
+      [byId("search"),byId("segment")].forEach(el=>el.addEventListener("input",()=>{renderMetrics();renderCustomers();renderOpps();drawAllCharts();}));
+      byId("openAssistant").addEventListener("click",()=>byId("assistantDrawer").classList.add("open"));
+      byId("closeAssistant").addEventListener("click",()=>byId("assistantDrawer").classList.remove("open"));
+      byId("coachAsk").addEventListener("click",()=>byId("coachAnswer").textContent=coachAnswer(byId("coachQuestion").value));
+      byId("inlineAsk").addEventListener("click",()=>byId("inlineAnswer").textContent=coachAnswer(byId("inlineQuestion").value));
+      window.addEventListener("resize",drawAllCharts);
+    }
+
+    function init(){renderMetrics();renderPipeline();renderCustomers();renderOpps();renderLists();renderTeam();bind();drawAllCharts();}
+    init();
+  </script>
+</body>
+</html>

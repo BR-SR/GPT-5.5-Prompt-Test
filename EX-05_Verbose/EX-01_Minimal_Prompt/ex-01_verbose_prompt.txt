@@ -1,0 +1,11 @@
+Experiment ID: EX-01
+Prompt Structure: Minimal Prompt
+Prompt Part: Full Prompt
+Expected Output HTML File: ex-01-minimal-precision-verbose.html
+Actual Workspace HTML File: br-ex-01-minimal-precision-verbose.html
+
+Source Isolation Requirement:
+Generate this app only from the instructions in this prompt. Do not inspect, read, reference, copy, or rely on workspace files, prior outputs, local assets, external websites, templates, libraries, frameworks, CDNs, imports, or network calls.
+
+Prompt Used:
+Build one complete self-contained HTML document for a modern SaaS AI-powered Sales CRM SPA. It must contain a dashboard with KPI cards and charts made with CSS and JavaScript only; customer management with sample accounts and search or filter behavior; an opportunity pipeline with stages, deal values, owners, and probabilities; a forecasting section with projected revenue and confidence; a team leaderboard; an activity feed; and an AI recommendations panel with actionable sales insights. CSS must be inside <style> tags and JavaScript inside <script> tags. Do not use external assets, scripts, fonts, libraries, frameworks, imports, fetch calls, or CDNs. Make the layout responsive for desktop, tablet, and mobile. Use semantic HTML, keyboard-friendly controls, readable contrast, realistic demo data, and polished modern SaaS visual design. Include light interactivity such as filtering, tab switching, pipeline updates, or recommendation actions. Return only the full HTML document.

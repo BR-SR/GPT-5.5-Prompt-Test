@@ -1,0 +1,10 @@
+Experiment ID: EX-01
+Prompt Structure: Minimal Prompt
+Expected Output HTML File: ex-01-minimal.html
+Actual Workspace HTML File: br-ex-01-minimal.html
+
+Source Isolation Requirement:
+Generate this app only from the instructions in this prompt. Do not inspect, read, reference, copy, or rely on workspace files, prior outputs, local assets, external websites, templates, libraries, frameworks, CDNs, imports, or network calls.
+
+Prompt Used:
+Build a modern responsive AI-powered Sales CRM single page app as one self-contained HTML file. Include dashboard, customers, opportunities, forecasting, leaderboard, activity feed, and AI recommendations. Use embedded CSS and JavaScript only; no external dependencies, libraries, or frameworks. Return only the complete HTML document.

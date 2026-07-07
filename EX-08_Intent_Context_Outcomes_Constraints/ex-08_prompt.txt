@@ -1,0 +1,18 @@
+Experiment ID: EX-08
+Prompt Structure: Intent → Context → Outcomes → Constraints
+Expected Output HTML File: ex-08-intent-context-outcomes-constraints.html
+Actual Workspace HTML File: br-ex-08-intent-context-outcomes-constraints.html
+
+Source Isolation Requirement:
+Generate this app only from the instructions in this prompt. Do not inspect, read, reference, copy, or rely on workspace files, prior outputs, local assets, external websites, templates, libraries, frameworks, CDNs, imports, or network calls.
+
+Prompt Used:
+Intent: Build an AI-powered Sales CRM SPA.
+
+Context: The users are sales managers and sales representatives who need a modern SaaS tool for pipeline visibility and sales prioritization.
+
+Outcomes: Include dashboard, customer management, opportunity pipeline, forecasting, team leaderboard, activity feed, and AI recommendations.
+
+Constraints: Single self-contained HTML file; CSS in <style>; JavaScript in <script>; no external dependencies, libraries, frameworks, or CDNs; responsive modern design.
+
+Return only the complete HTML document.

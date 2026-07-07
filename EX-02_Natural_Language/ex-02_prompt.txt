@@ -1,0 +1,10 @@
+Experiment ID: EX-02
+Prompt Structure: Natural Language
+Expected Output HTML File: ex-02-natural-language.html
+Actual Workspace HTML File: br-ex-02-natural-language.html
+
+Source Isolation Requirement:
+Generate this app only from the instructions in this prompt. Do not inspect, read, reference, copy, or rely on workspace files, prior outputs, local assets, external websites, templates, libraries, frameworks, CDNs, imports, or network calls.
+
+Prompt Used:
+I need a modern AI-powered Sales CRM SPA for sales teams. Please create it as a single self-contained HTML file with embedded CSS and JavaScript. It should include a dashboard, customer management, opportunity pipeline, forecasting, team leaderboard, activity feed, and AI recommendations panel. It must be responsive, polished, and use no external libraries, frameworks, or dependencies. Return only the complete HTML document.

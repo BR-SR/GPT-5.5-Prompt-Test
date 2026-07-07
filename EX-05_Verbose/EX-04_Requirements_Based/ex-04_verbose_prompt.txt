@@ -1,0 +1,32 @@
+Experiment ID: EX-04
+Prompt Structure: Requirements Based
+Prompt Part: Full Prompt
+Expected Output HTML File: ex-04-requirements-based-precision-verbose.html
+Actual Workspace HTML File: br-ex-04-requirements-based-precision-verbose.html
+
+Source Isolation Requirement:
+Generate this app only from the instructions in this prompt. Do not inspect, read, reference, copy, or rely on workspace files, prior outputs, local assets, external websites, templates, libraries, frameworks, CDNs, imports, or network calls.
+
+Prompt Used:
+Goal: Build a polished AI-powered Sales CRM SPA as one complete self-contained HTML document.
+
+Functional requirements:
+1. Dashboard with sales KPIs, revenue metrics, pipeline summary, and simple visual indicators.
+2. Customer management section with realistic sample accounts, customer status, owner, value, and search or filtering.
+3. Opportunity pipeline with multiple stages, deal names, amounts, probabilities, and owners.
+4. Forecasting section with projected revenue, confidence level, and period comparison.
+5. Team leaderboard with representative names, quota progress, revenue, and ranking.
+6. Activity feed showing recent CRM activity.
+7. AI recommendations panel with prioritized actionable insights for sales performance.
+
+Technical requirements:
+1. CSS must be embedded inside <style> tags.
+2. JavaScript must be embedded inside <script> tags.
+3. No external dependencies, frameworks, libraries, fonts, images, CDNs, imports, or network calls.
+4. The layout must be responsive for desktop, tablet, and mobile.
+5. Use semantic HTML, accessible contrast, keyboard-friendly controls, and clear focus states.
+6. Include realistic demo data and useful light interactivity.
+
+Visual requirements: modern SaaS look, clean spacing, cards, hierarchy, professional colors, and polished details.
+
+Output requirement: return only the complete HTML document.

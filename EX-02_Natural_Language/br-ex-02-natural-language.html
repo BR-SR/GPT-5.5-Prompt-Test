@@ -1,0 +1,1650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Sales CRM Dashboard</title>
+  <style>
+    :root {
+      --navy-950: #061425;
+      --navy-900: #0a1b31;
+      --navy-850: #0d243d;
+      --blue-700: #165caa;
+      --blue-600: #1f6fc9;
+      --blue-500: #2e86de;
+      --cyan-500: #1ecbe1;
+      --cyan-100: #d9fbff;
+      --gray-950: #17202b;
+      --gray-700: #536173;
+      --gray-500: #8490a0;
+      --gray-300: #d6dde6;
+      --gray-200: #e9eef5;
+      --gray-100: #f5f8fc;
+      --white: #ffffff;
+      --green: #22a06b;
+      --amber: #d99016;
+      --red: #d64b4b;
+      --shadow: 0 18px 44px rgba(10, 27, 49, 0.14);
+      --shadow-soft: 0 10px 24px rgba(10, 27, 49, 0.09);
+      --radius-xl: 24px;
+      --radius-lg: 18px;
+      --radius-md: 12px;
+      --sidebar-width: 286px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--gray-950);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(30, 203, 225, 0.16), transparent 34rem),
+        linear-gradient(145deg, #edf4fb 0%, #f7f9fc 46%, #eef4fa 100%);
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .app-shell {
+      display: grid;
+      grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      padding: 26px 20px;
+      color: var(--white);
+      background:
+        linear-gradient(180deg, rgba(10, 27, 49, 0.98), rgba(6, 20, 37, 0.98)),
+        radial-gradient(circle at 30% 0%, rgba(30, 203, 225, 0.22), transparent 18rem);
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 30px;
+    }
+
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--blue-600), var(--cyan-500));
+      color: var(--white);
+      font-weight: 800;
+      letter-spacing: -0.08em;
+      box-shadow: 0 12px 28px rgba(30, 203, 225, 0.18);
+    }
+
+    .brand-title {
+      margin: 0;
+      font-size: 1.02rem;
+      font-weight: 750;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-subtitle {
+      display: block;
+      margin-top: 2px;
+      color: rgba(255, 255, 255, 0.64);
+      font-size: 0.78rem;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+
+    .nav-label {
+      margin: 24px 10px 10px;
+      color: rgba(255, 255, 255, 0.48);
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .nav-list {
+      display: grid;
+      gap: 7px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .nav-button {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      width: 100%;
+      padding: 12px 12px;
+      color: rgba(255, 255, 255, 0.78);
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 14px;
+      text-align: left;
+      transition: 180ms ease;
+    }
+
+    .nav-button:hover,
+    .nav-button.active {
+      color: var(--white);
+      background: rgba(255, 255, 255, 0.09);
+      border-color: rgba(255, 255, 255, 0.1);
+      box-shadow: inset 3px 0 0 var(--cyan-500);
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .nav-icon {
+      display: grid;
+      place-items: center;
+      width: 30px;
+      height: 30px;
+      border-radius: 10px;
+      color: var(--cyan-100);
+      background: rgba(255, 255, 255, 0.08);
+      font-size: 0.9rem;
+    }
+
+    .nav-badge {
+      padding: 3px 8px;
+      border-radius: 999px;
+      color: var(--cyan-100);
+      background: rgba(30, 203, 225, 0.14);
+      font-size: 0.72rem;
+      font-weight: 750;
+    }
+
+    .sidebar-card {
+      margin-top: 28px;
+      padding: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 18px;
+      background: linear-gradient(145deg, rgba(46, 134, 222, 0.2), rgba(255, 255, 255, 0.06));
+    }
+
+    .sidebar-card h3 {
+      margin: 0 0 8px;
+      font-size: 0.94rem;
+    }
+
+    .sidebar-card p {
+      margin: 0 0 14px;
+      color: rgba(255, 255, 255, 0.68);
+      font-size: 0.84rem;
+      line-height: 1.45;
+    }
+
+    .mini-progress {
+      overflow: hidden;
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .mini-progress span {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--cyan-500), var(--blue-500));
+    }
+
+    .main {
+      min-width: 0;
+      padding: 24px;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      margin: -24px -24px 24px;
+      padding: 18px 24px;
+      background: rgba(247, 249, 252, 0.82);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(214, 221, 230, 0.72);
+    }
+
+    .mobile-menu {
+      display: none;
+      width: 42px;
+      height: 42px;
+      border: 1px solid var(--gray-300);
+      border-radius: 13px;
+      background: var(--white);
+      color: var(--navy-900);
+    }
+
+    .page-kicker {
+      margin: 0 0 3px;
+      color: var(--blue-700);
+      font-size: 0.76rem;
+      font-weight: 850;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .page-title {
+      margin: 0;
+      color: var(--navy-900);
+      font-size: clamp(1.5rem, 2.5vw, 2.35rem);
+      letter-spacing: -0.045em;
+      line-height: 1.08;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .search {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: min(34vw, 390px);
+      padding: 10px 12px;
+      border: 1px solid var(--gray-300);
+      border-radius: 14px;
+      background: var(--white);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .search span {
+      color: var(--gray-500);
+    }
+
+    .search input {
+      width: 100%;
+      border: 0;
+      outline: 0;
+      color: var(--gray-950);
+      background: transparent;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 42px;
+      padding: 10px 14px;
+      border-radius: 13px;
+      border: 1px solid transparent;
+      font-weight: 750;
+      transition: 180ms ease;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      color: var(--white);
+      background: linear-gradient(135deg, var(--blue-700), var(--blue-500));
+      box-shadow: 0 12px 24px rgba(31, 111, 201, 0.24);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 16px 30px rgba(31, 111, 201, 0.3);
+    }
+
+    .btn-secondary {
+      color: var(--navy-900);
+      background: var(--white);
+      border-color: var(--gray-300);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .btn-secondary:hover {
+      border-color: rgba(46, 134, 222, 0.45);
+      color: var(--blue-700);
+    }
+
+    .content-section {
+      display: none;
+      animation: fadeIn 220ms ease;
+    }
+
+    .content-section.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .grid {
+      display: grid;
+      gap: 18px;
+    }
+
+    .metric-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .two-col {
+      grid-template-columns: minmax(0, 1.45fr) minmax(320px, 0.85fr);
+      align-items: start;
+      margin-top: 18px;
+    }
+
+    .three-col {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .card {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(214, 221, 230, 0.78);
+      border-radius: var(--radius-xl);
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto;
+      height: 4px;
+      background: linear-gradient(90deg, var(--blue-700), var(--cyan-500));
+      opacity: 0;
+      transition: 180ms ease;
+    }
+
+    .card:hover::before {
+      opacity: 1;
+    }
+
+    .card-pad {
+      padding: 20px;
+    }
+
+    .metric-card {
+      min-height: 154px;
+    }
+
+    .metric-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .metric-label {
+      margin: 0;
+      color: var(--gray-700);
+      font-size: 0.82rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .metric-icon {
+      display: grid;
+      place-items: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 14px;
+      color: var(--blue-700);
+      background: #edf6ff;
+    }
+
+    .metric-value {
+      margin: 0;
+      color: var(--navy-900);
+      font-size: clamp(1.75rem, 3vw, 2.35rem);
+      font-weight: 850;
+      letter-spacing: -0.055em;
+    }
+
+    .metric-foot {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 10px;
+      color: var(--gray-700);
+      font-size: 0.86rem;
+    }
+
+    .trend {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+
+    .trend.up {
+      color: #0c7a50;
+      background: rgba(34, 160, 107, 0.11);
+    }
+
+    .trend.warn {
+      color: #9a650c;
+      background: rgba(217, 144, 22, 0.13);
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .panel-title {
+      margin: 0;
+      color: var(--navy-900);
+      font-size: 1.12rem;
+      letter-spacing: -0.02em;
+    }
+
+    .panel-subtitle {
+      margin: 5px 0 0;
+      color: var(--gray-700);
+      font-size: 0.9rem;
+      line-height: 1.45;
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--gray-300);
+      color: var(--gray-700);
+      background: var(--white);
+      font-size: 0.78rem;
+      font-weight: 750;
+    }
+
+    .pill.hot {
+      color: #0b6680;
+      border-color: rgba(30, 203, 225, 0.34);
+      background: rgba(30, 203, 225, 0.1);
+    }
+
+    .pipeline-wrap {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(190px, 1fr));
+      gap: 14px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+
+    .stage {
+      min-height: 430px;
+      padding: 14px;
+      border: 1px solid var(--gray-200);
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(245, 248, 252, 0.96), rgba(255, 255, 255, 0.82));
+    }
+
+    .stage-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .stage-title {
+      margin: 0;
+      color: var(--navy-850);
+      font-size: 0.9rem;
+      font-weight: 850;
+    }
+
+    .stage-total {
+      color: var(--gray-700);
+      font-size: 0.78rem;
+      font-weight: 750;
+    }
+
+    .deal-card {
+      margin-bottom: 12px;
+      padding: 14px;
+      border: 1px solid var(--gray-200);
+      border-radius: 16px;
+      background: var(--white);
+      box-shadow: 0 8px 18px rgba(10, 27, 49, 0.06);
+    }
+
+    .deal-card h4 {
+      margin: 0 0 8px;
+      color: var(--navy-900);
+      font-size: 0.94rem;
+    }
+
+    .deal-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 10px;
+      color: var(--gray-700);
+      font-size: 0.82rem;
+    }
+
+    .score-bar {
+      overflow: hidden;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--gray-200);
+    }
+
+    .score-bar span {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--blue-600), var(--cyan-500));
+    }
+
+    .deal-foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: 10px;
+      color: var(--gray-500);
+      font-size: 0.76rem;
+    }
+
+    .table-tools {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .field {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      border: 1px solid var(--gray-300);
+      border-radius: 13px;
+      background: var(--white);
+    }
+
+    .field input,
+    .field select {
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: var(--gray-950);
+      min-width: 160px;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--gray-200);
+      border-radius: 18px;
+    }
+
+    table {
+      width: 100%;
+      min-width: 760px;
+      border-collapse: collapse;
+      background: var(--white);
+    }
+
+    th,
+    td {
+      padding: 15px 16px;
+      border-bottom: 1px solid var(--gray-200);
+      text-align: left;
+      vertical-align: middle;
+    }
+
+    th {
+      color: var(--gray-700);
+      background: #f8fbff;
+      font-size: 0.76rem;
+      font-weight: 850;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    tbody tr {
+      transition: 160ms ease;
+    }
+
+    tbody tr:hover {
+      background: #f9fcff;
+    }
+
+    .account-cell {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .avatar {
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      width: 38px;
+      height: 38px;
+      border-radius: 13px;
+      color: var(--white);
+      background: linear-gradient(135deg, var(--navy-850), var(--blue-500));
+      font-size: 0.78rem;
+      font-weight: 850;
+    }
+
+    .account-name {
+      margin: 0;
+      color: var(--navy-900);
+      font-weight: 800;
+    }
+
+    .account-note {
+      display: block;
+      margin-top: 2px;
+      color: var(--gray-500);
+      font-size: 0.8rem;
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 9px;
+      border-radius: 999px;
+      font-size: 0.76rem;
+      font-weight: 850;
+    }
+
+    .status::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: currentColor;
+    }
+
+    .status.active {
+      color: #0c7a50;
+      background: rgba(34, 160, 107, 0.1);
+    }
+
+    .status.review {
+      color: #9a650c;
+      background: rgba(217, 144, 22, 0.13);
+    }
+
+    .status.risk {
+      color: #a83434;
+      background: rgba(214, 75, 75, 0.1);
+    }
+
+    .forecast-hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(260px, 0.55fr);
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .forecast-main {
+      color: var(--white);
+      background:
+        radial-gradient(circle at top right, rgba(30, 203, 225, 0.3), transparent 22rem),
+        linear-gradient(135deg, var(--navy-900), #12375e);
+    }
+
+    .forecast-main .panel-title,
+    .forecast-main .panel-subtitle {
+      color: var(--white);
+    }
+
+    .forecast-main .panel-subtitle {
+      opacity: 0.7;
+    }
+
+    .forecast-number {
+      margin: 30px 0 8px;
+      font-size: clamp(2.4rem, 7vw, 5.6rem);
+      font-weight: 870;
+      letter-spacing: -0.08em;
+      line-height: 0.95;
+    }
+
+    .forecast-caption {
+      margin: 0;
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .confidence-ring {
+      display: grid;
+      place-items: center;
+      width: 190px;
+      height: 190px;
+      margin: 18px auto 8px;
+      border-radius: 50%;
+      background: conic-gradient(var(--cyan-500) 0 82%, rgba(214, 221, 230, 0.7) 82% 100%);
+    }
+
+    .confidence-ring div {
+      display: grid;
+      place-items: center;
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      background: var(--white);
+      color: var(--navy-900);
+      text-align: center;
+      box-shadow: inset 0 0 0 1px var(--gray-200);
+    }
+
+    .confidence-ring strong {
+      display: block;
+      font-size: 2.1rem;
+      letter-spacing: -0.05em;
+    }
+
+    .confidence-ring span {
+      display: block;
+      color: var(--gray-700);
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .bar-chart {
+      display: grid;
+      gap: 14px;
+    }
+
+    .bar-row {
+      display: grid;
+      grid-template-columns: 90px minmax(0, 1fr) 58px;
+      gap: 12px;
+      align-items: center;
+      color: var(--gray-700);
+      font-size: 0.86rem;
+    }
+
+    .bar-track {
+      overflow: hidden;
+      height: 12px;
+      border-radius: 999px;
+      background: var(--gray-200);
+    }
+
+    .bar-fill {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--blue-700), var(--cyan-500));
+    }
+
+    .leaderboard {
+      display: grid;
+      gap: 12px;
+    }
+
+    .leader-row {
+      display: grid;
+      grid-template-columns: 42px minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+      padding: 13px;
+      border: 1px solid var(--gray-200);
+      border-radius: 16px;
+      background: var(--white);
+    }
+
+    .rank {
+      display: grid;
+      place-items: center;
+      width: 38px;
+      height: 38px;
+      border-radius: 13px;
+      color: var(--blue-700);
+      background: #edf6ff;
+      font-weight: 900;
+    }
+
+    .leader-name {
+      margin: 0 0 3px;
+      color: var(--navy-900);
+      font-weight: 850;
+    }
+
+    .leader-detail {
+      margin: 0;
+      color: var(--gray-500);
+      font-size: 0.82rem;
+    }
+
+    .leader-value {
+      color: var(--navy-900);
+      font-weight: 850;
+      text-align: right;
+    }
+
+    .activity-list,
+    .ai-list {
+      display: grid;
+      gap: 12px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .activity-item,
+    .ai-item {
+      display: grid;
+      grid-template-columns: 38px minmax(0, 1fr);
+      gap: 12px;
+      padding: 13px;
+      border: 1px solid var(--gray-200);
+      border-radius: 16px;
+      background: var(--white);
+    }
+
+    .activity-icon,
+    .ai-icon {
+      display: grid;
+      place-items: center;
+      width: 38px;
+      height: 38px;
+      border-radius: 13px;
+      color: var(--blue-700);
+      background: #edf6ff;
+    }
+
+    .ai-icon {
+      color: #0b6680;
+      background: rgba(30, 203, 225, 0.12);
+    }
+
+    .item-title {
+      margin: 0 0 4px;
+      color: var(--navy-900);
+      font-weight: 820;
+      line-height: 1.28;
+    }
+
+    .item-copy {
+      margin: 0;
+      color: var(--gray-700);
+      font-size: 0.86rem;
+      line-height: 1.45;
+    }
+
+    .item-time {
+      display: block;
+      margin-top: 7px;
+      color: var(--gray-500);
+      font-size: 0.76rem;
+      font-weight: 750;
+    }
+
+    .ai-panel {
+      color: var(--white);
+      background:
+        radial-gradient(circle at top left, rgba(30, 203, 225, 0.2), transparent 18rem),
+        linear-gradient(155deg, var(--navy-900), var(--navy-850));
+    }
+
+    .ai-panel::before {
+      opacity: 1;
+    }
+
+    .ai-panel .panel-title,
+    .ai-panel .panel-subtitle {
+      color: var(--white);
+    }
+
+    .ai-panel .panel-subtitle {
+      color: rgba(255, 255, 255, 0.68);
+    }
+
+    .ai-panel .ai-item {
+      border-color: rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.075);
+    }
+
+    .ai-panel .item-title {
+      color: var(--white);
+    }
+
+    .ai-panel .item-copy,
+    .ai-panel .item-time {
+      color: rgba(255, 255, 255, 0.68);
+    }
+
+    .assistant-box {
+      margin-top: 15px;
+      padding: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.07);
+    }
+
+    .assistant-box textarea {
+      width: 100%;
+      min-height: 80px;
+      resize: vertical;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 13px;
+      padding: 12px;
+      color: var(--white);
+      outline: 0;
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .assistant-box textarea::placeholder {
+      color: rgba(255, 255, 255, 0.48);
+    }
+
+    .assistant-response {
+      display: none;
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 13px;
+      color: var(--cyan-100);
+      background: rgba(30, 203, 225, 0.12);
+      font-size: 0.86rem;
+      line-height: 1.45;
+    }
+
+    .insight-stack {
+      display: grid;
+      gap: 12px;
+    }
+
+    .insight-card {
+      padding: 15px;
+      border: 1px solid var(--gray-200);
+      border-radius: 16px;
+      background: var(--white);
+    }
+
+    .insight-card h4 {
+      margin: 0 0 7px;
+      color: var(--navy-900);
+      font-size: 0.96rem;
+    }
+
+    .insight-card p {
+      margin: 0;
+      color: var(--gray-700);
+      font-size: 0.86rem;
+      line-height: 1.45;
+    }
+
+    .toast {
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
+      z-index: 60;
+      display: none;
+      max-width: 360px;
+      padding: 14px 16px;
+      border: 1px solid rgba(30, 203, 225, 0.32);
+      border-radius: 16px;
+      color: var(--navy-900);
+      background: rgba(255, 255, 255, 0.94);
+      box-shadow: var(--shadow);
+    }
+
+    .toast.show {
+      display: block;
+      animation: fadeIn 180ms ease;
+    }
+
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 35;
+      background: rgba(6, 20, 37, 0.42);
+    }
+
+    .overlay.show {
+      display: block;
+    }
+
+    @media (max-width: 1180px) {
+      .metric-grid,
+      .three-col {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .two-col,
+      .forecast-hero {
+        grid-template-columns: 1fr;
+      }
+
+      .search {
+        width: 280px;
+      }
+    }
+
+    @media (max-width: 860px) {
+      .app-shell {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: fixed;
+        inset: 0 auto 0 0;
+        z-index: 50;
+        width: min(86vw, 320px);
+        transform: translateX(-105%);
+        transition: 220ms ease;
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .mobile-menu {
+        display: inline-grid;
+        place-items: center;
+      }
+
+      .topbar {
+        align-items: flex-start;
+      }
+
+      .top-actions {
+        flex-wrap: wrap;
+        justify-content: flex-end;
+      }
+
+      .search {
+        order: 3;
+        width: 100%;
+        min-width: min(100%, 280px);
+      }
+
+      .main {
+        padding: 18px;
+      }
+
+      .topbar {
+        margin: -18px -18px 18px;
+        padding: 14px 18px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .metric-grid,
+      .three-col {
+        grid-template-columns: 1fr;
+      }
+
+      .topbar {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr);
+      }
+
+      .top-actions {
+        grid-column: 1 / -1;
+        justify-content: stretch;
+      }
+
+      .top-actions .btn {
+        flex: 1;
+      }
+
+      .card-pad {
+        padding: 16px;
+      }
+
+      .bar-row {
+        grid-template-columns: 74px minmax(0, 1fr) 48px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay" id="overlay" aria-hidden="true"></div>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar" aria-label="CRM navigation">
+      <div class="brand" aria-label="AI Sales CRM">
+        <div class="brand-mark">SC</div>
+        <div>
+          <p class="brand-title">Sales Command</p>
+          <span class="brand-subtitle">AI CRM Workspace</span>
+        </div>
+      </div>
+
+      <p class="nav-label">Workspace</p>
+      <ul class="nav-list">
+        <li><button class="nav-button active" data-view="dashboard"><span class="nav-left"><span class="nav-icon">◆</span><span>Dashboard</span></span><span class="nav-badge">Live</span></button></li>
+        <li><button class="nav-button" data-view="customers"><span class="nav-left"><span class="nav-icon">◉</span><span>Customers</span></span><span class="nav-badge">48</span></button></li>
+        <li><button class="nav-button" data-view="pipeline"><span class="nav-left"><span class="nav-icon">▦</span><span>Pipeline</span></span><span class="nav-badge">$8.7M</span></button></li>
+        <li><button class="nav-button" data-view="forecasting"><span class="nav-left"><span class="nav-icon">◒</span><span>Forecasting</span></span><span class="nav-badge">82%</span></button></li>
+        <li><button class="nav-button" data-view="team"><span class="nav-left"><span class="nav-icon">▲</span><span>Leaderboard</span></span><span class="nav-badge">Top 5</span></button></li>
+        <li><button class="nav-button" data-view="activity"><span class="nav-left"><span class="nav-icon">✦</span><span>Activity Feed</span></span><span class="nav-badge">24</span></button></li>
+        <li><button class="nav-button" data-view="ai"><span class="nav-left"><span class="nav-icon">✺</span><span>AI Recommendations</span></span><span class="nav-badge">9</span></button></li>
+      </ul>
+
+      <p class="nav-label">Quarter health</p>
+      <div class="sidebar-card">
+        <h3>Revenue plan pacing</h3>
+        <p>Current weighted coverage is ahead of plan with two expansion motions requiring executive attention.</p>
+        <div class="mini-progress" aria-label="Revenue plan progress"><span style="width: 72%"></span></div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <button class="mobile-menu" id="mobileMenu" aria-label="Open navigation">☰</button>
+        <div>
+          <p class="page-kicker">Enterprise sales intelligence</p>
+          <h1 class="page-title" id="pageTitle">Executive CRM Dashboard</h1>
+        </div>
+        <div class="top-actions">
+          <label class="search" aria-label="Search CRM">
+            <span>⌕</span>
+            <input id="globalSearch" type="search" placeholder="Search accounts, deals, actions" />
+          </label>
+          <button class="btn btn-secondary" id="refreshBtn">Refresh insights</button>
+          <button class="btn btn-primary" id="coachBtn">Ask AI coach</button>
+        </div>
+      </header>
+
+      <section class="content-section active" id="dashboard" aria-labelledby="dashboard-title">
+        <h2 id="dashboard-title" class="page-kicker">Dashboard</h2>
+        <div class="grid metric-grid">
+          <article class="card card-pad metric-card">
+            <div class="metric-head"><p class="metric-label">Open pipeline</p><span class="metric-icon">$</span></div>
+            <p class="metric-value">$8.7M</p>
+            <p class="metric-foot"><span class="trend up">↑ 14%</span> vs. prior quarter</p>
+          </article>
+          <article class="card card-pad metric-card">
+            <div class="metric-head"><p class="metric-label">Weighted forecast</p><span class="metric-icon">◒</span></div>
+            <p class="metric-value">$4.9M</p>
+            <p class="metric-foot"><span class="trend up">↑ 7%</span> confidence improving</p>
+          </article>
+          <article class="card card-pad metric-card">
+            <div class="metric-head"><p class="metric-label">Win rate</p><span class="metric-icon">✓</span></div>
+            <p class="metric-value">38%</p>
+            <p class="metric-foot"><span class="trend warn">→ 2%</span> procurement drag</p>
+          </article>
+          <article class="card card-pad metric-card">
+            <div class="metric-head"><p class="metric-label">AI next actions</p><span class="metric-icon">✺</span></div>
+            <p class="metric-value">27</p>
+            <p class="metric-foot"><span class="trend up">↑ 11</span> prioritized today</p>
+          </article>
+        </div>
+
+        <div class="grid two-col">
+          <section class="card card-pad">
+            <div class="panel-header">
+              <div>
+                <h3 class="panel-title">Pipeline by stage</h3>
+                <p class="panel-subtitle">AI-scored opportunities with risk and momentum signals across the active quarter.</p>
+              </div>
+              <div class="pill-row"><span class="pill hot">AI scored</span><span class="pill">Fictional demo data</span></div>
+            </div>
+            <div class="pipeline-wrap" id="dashboardPipeline"></div>
+          </section>
+
+          <section class="card card-pad ai-panel">
+            <div class="panel-header">
+              <div>
+                <h3 class="panel-title">AI recommendations</h3>
+                <p class="panel-subtitle">Suggested actions based on deal stage, engagement pattern, and forecast sensitivity.</p>
+              </div>
+            </div>
+            <ul class="ai-list" id="dashboardAiList"></ul>
+            <div class="assistant-box">
+              <textarea id="aiPrompt" placeholder="Ask for account strategy, renewal risk, or forecast guidance..."></textarea>
+              <button class="btn btn-primary" id="generatePlanBtn" style="margin-top: 10px; width: 100%;">Generate plan</button>
+              <div class="assistant-response" id="assistantResponse"></div>
+            </div>
+          </section>
+        </div>
+
+        <div class="grid three-col" style="margin-top: 18px;">
+          <section class="card card-pad">
+            <div class="panel-header"><div><h3 class="panel-title">Forecast coverage</h3><p class="panel-subtitle">Commit, best case, and upside coverage.</p></div></div>
+            <div class="bar-chart">
+              <div class="bar-row"><span>Commit</span><div class="bar-track"><span class="bar-fill" style="width: 78%"></span></div><strong>78%</strong></div>
+              <div class="bar-row"><span>Best case</span><div class="bar-track"><span class="bar-fill" style="width: 64%"></span></div><strong>64%</strong></div>
+              <div class="bar-row"><span>Upside</span><div class="bar-track"><span class="bar-fill" style="width: 42%"></span></div><strong>42%</strong></div>
+              <div class="bar-row"><span>Risk</span><div class="bar-track"><span class="bar-fill" style="width: 23%"></span></div><strong>23%</strong></div>
+            </div>
+          </section>
+          <section class="card card-pad">
+            <div class="panel-header"><div><h3 class="panel-title">Team leaderboard</h3><p class="panel-subtitle">Quarter-to-date attainment and momentum.</p></div></div>
+            <div class="leaderboard" id="dashboardLeaderboard"></div>
+          </section>
+          <section class="card card-pad">
+            <div class="panel-header"><div><h3 class="panel-title">Recent activity</h3><p class="panel-subtitle">Important touches and system signals.</p></div></div>
+            <ul class="activity-list" id="dashboardActivity"></ul>
+          </section>
+        </div>
+      </section>
+
+      <section class="content-section" id="customers" aria-labelledby="customers-title">
+        <h2 id="customers-title" class="page-kicker">Customer management</h2>
+        <section class="card card-pad">
+          <div class="panel-header">
+            <div>
+              <h3 class="panel-title">Account portfolio</h3>
+              <p class="panel-subtitle">Manage fictional accounts, segments, health, renewal timing, and AI relationship notes.</p>
+            </div>
+            <button class="btn btn-primary" id="addAccountBtn">Add demo account</button>
+          </div>
+          <div class="table-tools">
+            <label class="field">⌕ <input id="accountSearch" type="search" placeholder="Filter accounts" /></label>
+            <label class="field">Segment <select id="segmentFilter"><option value="all">All</option><option value="Enterprise">Enterprise</option><option value="Strategic">Strategic</option><option value="Growth">Growth</option></select></label>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Account</th><th>Segment</th><th>ARR</th><th>Health</th><th>Renewal</th><th>AI note</th></tr>
+              </thead>
+              <tbody id="accountsTable"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+
+      <section class="content-section" id="pipeline" aria-labelledby="pipeline-title">
+        <h2 id="pipeline-title" class="page-kicker">Opportunity pipeline</h2>
+        <section class="card card-pad">
+          <div class="panel-header">
+            <div>
+              <h3 class="panel-title">Active opportunity board</h3>
+              <p class="panel-subtitle">Opportunities are grouped by stage and ranked with AI-derived close probability.</p>
+            </div>
+            <div class="pill-row"><span class="pill hot">Weighted $4.9M</span><span class="pill">18 open deals</span></div>
+          </div>
+          <div class="pipeline-wrap" id="pipelineBoard"></div>
+        </section>
+      </section>
+
+      <section class="content-section" id="forecasting" aria-labelledby="forecasting-title">
+        <h2 id="forecasting-title" class="page-kicker">Forecasting</h2>
+        <div class="forecast-hero">
+          <section class="card card-pad forecast-main">
+            <div class="panel-header">
+              <div>
+                <h3 class="panel-title">AI forecast rollup</h3>
+                <p class="panel-subtitle">Scenario model combines stage probability, velocity, stakeholder coverage, and activity quality.</p>
+              </div>
+              <span class="pill hot">Updated now</span>
+            </div>
+            <p class="forecast-number">$4.9M</p>
+            <p class="forecast-caption">Weighted forecast against a $6.0M quarterly target, with $1.2M in credible upside.</p>
+          </section>
+          <section class="card card-pad">
+            <h3 class="panel-title">Forecast confidence</h3>
+            <div class="confidence-ring"><div><span><strong>82%</strong> confidence</span></div></div>
+            <p class="panel-subtitle" style="text-align: center;">Confidence improved after security review completion and expanded executive coverage.</p>
+          </section>
+        </div>
+        <div class="grid three-col" style="margin-top: 18px;">
+          <section class="card card-pad">
+            <h3 class="panel-title">Scenario coverage</h3>
+            <div class="bar-chart" style="margin-top: 16px;">
+              <div class="bar-row"><span>Conservative</span><div class="bar-track"><span class="bar-fill" style="width: 55%"></span></div><strong>$3.3M</strong></div>
+              <div class="bar-row"><span>Expected</span><div class="bar-track"><span class="bar-fill" style="width: 82%"></span></div><strong>$4.9M</strong></div>
+              <div class="bar-row"><span>Upside</span><div class="bar-track"><span class="bar-fill" style="width: 100%"></span></div><strong>$6.1M</strong></div>
+            </div>
+          </section>
+          <section class="card card-pad">
+            <h3 class="panel-title">Forecast risks</h3>
+            <div class="insight-stack" style="margin-top: 16px;">
+              <article class="insight-card"><h4>Procurement cycle compression</h4><p>Two late-stage renewals have compressed legal review windows. AI recommends parallel executive validation.</p></article>
+              <article class="insight-card"><h4>Single-threaded expansion</h4><p>One growth opportunity depends on a single sponsor persona. Add finance and operations stakeholders.</p></article>
+            </div>
+          </section>
+          <section class="card card-pad">
+            <h3 class="panel-title">Recommended moves</h3>
+            <div class="insight-stack" style="margin-top: 16px;">
+              <article class="insight-card"><h4>Protect commit</h4><p>Schedule mutual action plan review for all commit-stage deals above $450K.</p></article>
+              <article class="insight-card"><h4>Pull upside forward</h4><p>Offer implementation readiness workshop to accelerate two expansion opportunities.</p></article>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <section class="content-section" id="team" aria-labelledby="team-title">
+        <h2 id="team-title" class="page-kicker">Team leaderboard</h2>
+        <div class="grid two-col">
+          <section class="card card-pad">
+            <div class="panel-header"><div><h3 class="panel-title">Quarter performance</h3><p class="panel-subtitle">Fictional sales contributors ranked by attainment, quality pipeline, and activity impact.</p></div></div>
+            <div class="leaderboard" id="leaderboardFull"></div>
+          </section>
+          <section class="card card-pad">
+            <div class="panel-header"><div><h3 class="panel-title">Coaching themes</h3><p class="panel-subtitle">AI-generated manager guidance for the next team standup.</p></div></div>
+            <div class="insight-stack">
+              <article class="insight-card"><h4>Improve stage hygiene</h4><p>Require next-step date and success criteria before any opportunity advances beyond validation.</p></article>
+              <article class="insight-card"><h4>Celebrate account planning</h4><p>Top performers have broader stakeholder maps and more documented business outcomes.</p></article>
+              <article class="insight-card"><h4>Shorten idle time</h4><p>Deals with no activity in seven days are 29% less likely to close this quarter in the demo model.</p></article>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <section class="content-section" id="activity" aria-labelledby="activity-title">
+        <h2 id="activity-title" class="page-kicker">Activity feed</h2>
+        <section class="card card-pad">
+          <div class="panel-header"><div><h3 class="panel-title">Sales activity stream</h3><p class="panel-subtitle">Unified timeline for meetings, proposals, risk alerts, and AI summaries.</p></div></div>
+          <ul class="activity-list" id="activityFull"></ul>
+        </section>
+      </section>
+
+      <section class="content-section" id="ai" aria-labelledby="ai-title">
+        <h2 id="ai-title" class="page-kicker">AI recommendations panel</h2>
+        <div class="grid two-col">
+          <section class="card card-pad ai-panel">
+            <div class="panel-header"><div><h3 class="panel-title">Prioritized recommendations</h3><p class="panel-subtitle">Every suggestion is based on fictional demo data and designed for sales workflow planning.</p></div></div>
+            <ul class="ai-list" id="aiFullList"></ul>
+            <div class="assistant-box">
+              <textarea id="aiPromptFull" placeholder="Describe a selling challenge and generate a suggested plan..."></textarea>
+              <button class="btn btn-primary" id="generatePlanFullBtn" style="margin-top: 10px; width: 100%;">Generate plan</button>
+              <div class="assistant-response" id="assistantResponseFull"></div>
+            </div>
+          </section>
+          <section class="card card-pad">
+            <div class="panel-header"><div><h3 class="panel-title">AI operating principles</h3><p class="panel-subtitle">Built-in guidance for responsible, practical selling assistance.</p></div></div>
+            <div class="insight-stack">
+              <article class="insight-card"><h4>Explainable scoring</h4><p>Recommendations cite stage, engagement, timing, and stakeholder coverage instead of hidden assumptions.</p></article>
+              <article class="insight-card"><h4>Seller in control</h4><p>The assistant suggests next actions but leaves messaging, negotiation, and relationship decisions to the team.</p></article>
+              <article class="insight-card"><h4>Demo-only records</h4><p>All account, opportunity, and team examples in this SPA are fictional placeholders.</p></article>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const stages = [
+      { name: 'Prospect', deals: [
+        { account: 'Aster Ridge Group', value: '$310K', probability: 28, owner: 'AE-04', note: 'New buying committee forming' },
+        { account: 'Blue Harbor Systems', value: '$420K', probability: 32, owner: 'AE-02', note: 'Discovery completed' },
+        { account: 'Cobalt Ledger Co.', value: '$265K', probability: 24, owner: 'AE-05', note: 'Use case fit emerging' }
+      ]},
+      { name: 'Qualified', deals: [
+        { account: 'Summit Vale Finance', value: '$680K', probability: 51, owner: 'AE-01', note: 'Budget confirmed' },
+        { account: 'Pinnacle Demo Trust', value: '$540K', probability: 48, owner: 'AE-03', note: 'Technical sponsor engaged' },
+        { account: 'Northline Advisory', value: '$390K', probability: 44, owner: 'AE-02', note: 'Security review pending' }
+      ]},
+      { name: 'Solution', deals: [
+        { account: 'Fictional Capital Works', value: '$920K', probability: 63, owner: 'AE-01', note: 'Workshop requested' },
+        { account: 'Evercrest Operations', value: '$760K', probability: 59, owner: 'AE-04', note: 'ROI model active' },
+        { account: 'Meridian Sample Bank', value: '$610K', probability: 57, owner: 'AE-03', note: 'Stakeholder map broadening' }
+      ]},
+      { name: 'Proposal', deals: [
+        { account: 'Quartz River Holdings', value: '$1.1M', probability: 72, owner: 'AE-01', note: 'Commercials in review' },
+        { account: 'Silverline Portfolio', value: '$850K', probability: 68, owner: 'AE-02', note: 'Mutual action plan accepted' },
+        { account: 'Juniper Street Markets', value: '$470K', probability: 61, owner: 'AE-05', note: 'Implementation scope aligned' }
+      ]},
+      { name: 'Commit', deals: [
+        { account: 'Marble Gate Partners', value: '$1.4M', probability: 86, owner: 'AE-01', note: 'Executive sponsor aligned' },
+        { account: 'Arbor Point Services', value: '$990K', probability: 82, owner: 'AE-03', note: 'Final terms requested' },
+        { account: 'Harborstone Analytics', value: '$650K', probability: 79, owner: 'AE-02', note: 'Procurement close plan active' }
+      ]}
+    ];
+
+    let accounts = [
+      { name: 'Aster Ridge Group', initials: 'AR', segment: 'Enterprise', arr: '$1.24M', health: 'Active', renewal: 'Nov 18', note: 'Expand analytics use case with operations sponsor.' },
+      { name: 'Quartz River Holdings', initials: 'QR', segment: 'Strategic', arr: '$2.10M', health: 'Active', renewal: 'Oct 03', note: 'Executive meeting should confirm success metrics.' },
+      { name: 'Northline Advisory', initials: 'NA', segment: 'Growth', arr: '$640K', health: 'Review', renewal: 'Dec 11', note: 'Security review may affect close timing.' },
+      { name: 'Marble Gate Partners', initials: 'MG', segment: 'Strategic', arr: '$3.45M', health: 'Active', renewal: 'Sep 27', note: 'Strong expansion candidate after adoption milestone.' },
+      { name: 'Juniper Street Markets', initials: 'JS', segment: 'Enterprise', arr: '$980K', health: 'Review', renewal: 'Jan 08', note: 'Needs operations validation before proposal revision.' },
+      { name: 'Cobalt Ledger Co.', initials: 'CL', segment: 'Growth', arr: '$410K', health: 'Risk', renewal: 'Feb 16', note: 'Low activity; prompt re-engagement sequence.' }
+    ];
+
+    const leaders = [
+      { rank: 1, label: 'AE-01', detail: '142% attainment · $3.6M sourced', value: '$2.8M' },
+      { rank: 2, label: 'AE-02', detail: '118% attainment · high activity quality', value: '$2.1M' },
+      { rank: 3, label: 'AE-03', detail: '104% attainment · fastest stage velocity', value: '$1.8M' },
+      { rank: 4, label: 'AE-04', detail: '92% attainment · strong prospecting', value: '$1.3M' },
+      { rank: 5, label: 'AE-05', detail: '87% attainment · coaching focus: multi-threading', value: '$1.0M' }
+    ];
+
+    const activities = [
+      { icon: '✓', title: 'Proposal accepted for Quartz River Holdings', copy: 'Procurement received final commercial package and requested implementation timeline.', time: '12 minutes ago' },
+      { icon: '◉', title: 'Stakeholder map expanded at Marble Gate Partners', copy: 'Operations and finance personas were added to the close plan.', time: '31 minutes ago' },
+      { icon: '!', title: 'Risk alert for Cobalt Ledger Co.', copy: 'No meaningful engagement for nine business days. AI recommends an executive value recap.', time: '1 hour ago' },
+      { icon: '✦', title: 'Discovery summary completed for Blue Harbor Systems', copy: 'Key business objective: reduce manual reconciliation effort in quarterly reporting.', time: '2 hours ago' },
+      { icon: '$', title: 'Forecast category updated', copy: 'Arbor Point Services moved from best case to commit after final terms request.', time: '3 hours ago' },
+      { icon: '◒', title: 'AI forecast recalculated', copy: 'Expected forecast improved to $4.9M after two late-stage probability increases.', time: 'Today' }
+    ];
+
+    const recommendations = [
+      { icon: '1', title: 'Protect Marble Gate Partners commit', copy: 'Confirm final decision date and document legal owner before end of week.' },
+      { icon: '2', title: 'Accelerate Quartz River Holdings', copy: 'Send concise executive summary focused on measurable risk reduction and launch timing.' },
+      { icon: '3', title: 'Recover Cobalt Ledger Co. engagement', copy: 'Use a value recap and offer a 20-minute reset around the original business objective.' },
+      { icon: '4', title: 'Improve Northline Advisory confidence', copy: 'Schedule security Q&A with technical sponsor and procurement persona together.' },
+      { icon: '5', title: 'Coach AE-05 on multi-threading', copy: 'Create a stakeholder coverage plan for every opportunity above $400K.' }
+    ];
+
+    const titles = {
+      dashboard: 'Executive CRM Dashboard',
+      customers: 'Customer Management',
+      pipeline: 'Opportunity Pipeline',
+      forecasting: 'AI Forecasting',
+      team: 'Team Leaderboard',
+      activity: 'Activity Feed',
+      ai: 'AI Recommendations'
+    };
+
+    const formatter = new Intl.NumberFormat('en-US');
+
+    function stageTotal(stage) {
+      return stage.deals.reduce((sum, deal) => sum + Number(deal.value.replace(/[$KM]/g, '')) * (deal.value.includes('M') ? 1000000 : 1000), 0);
+    }
+
+    function shortMoney(value) {
+      if (value >= 1000000) return '$' + (value / 1000000).toFixed(1) + 'M';
+      return '$' + formatter.format(Math.round(value / 1000)) + 'K';
+    }
+
+    function renderPipeline(targetId, limitPerStage) {
+      const target = document.getElementById(targetId);
+      if (!target) return;
+      target.innerHTML = stages.map(stage => {
+        const deals = typeof limitPerStage === 'number' ? stage.deals.slice(0, limitPerStage) : stage.deals;
+        return `<section class="stage" aria-label="${stage.name} stage">
+          <div class="stage-header"><h3 class="stage-title">${stage.name}</h3><span class="stage-total">${shortMoney(stageTotal(stage))}</span></div>
+          ${deals.map(deal => `<article class="deal-card">
+            <h4>${deal.account}</h4>
+            <div class="deal-meta"><span>${deal.value}</span><span>${deal.probability}%</span></div>
+            <div class="score-bar" aria-label="Close probability ${deal.probability} percent"><span style="width:${deal.probability}%"></span></div>
+            <div class="deal-foot"><span>${deal.owner}</span><span>${deal.note}</span></div>
+          </article>`).join('')}
+        </section>`;
+      }).join('');
+    }
+
+    function healthClass(health) {
+      return health === 'Active' ? 'active' : health === 'Review' ? 'review' : 'risk';
+    }
+
+    function renderAccounts() {
+      const tbody = document.getElementById('accountsTable');
+      const query = document.getElementById('accountSearch').value.toLowerCase().trim();
+      const segment = document.getElementById('segmentFilter').value;
+      const filtered = accounts.filter(account => {
+        const matchesQuery = [account.name, account.segment, account.health, account.note].join(' ').toLowerCase().includes(query);
+        const matchesSegment = segment === 'all' || account.segment === segment;
+        return matchesQuery && matchesSegment;
+      });
+      tbody.innerHTML = filtered.map(account => `<tr>
+        <td><div class="account-cell"><span class="avatar">${account.initials}</span><div><p class="account-name">${account.name}</p><span class="account-note">Primary contact: buyer committee</span></div></div></td>
+        <td>${account.segment}</td>
+        <td><strong>${account.arr}</strong></td>
+        <td><span class="status ${healthClass(account.health)}">${account.health}</span></td>
+        <td>${account.renewal}</td>
+        <td>${account.note}</td>
+      </tr>`).join('') || '<tr><td colspan="6">No accounts match the current filters.</td></tr>';
+    }
+
+    function renderLeaderboard(targetId, count) {
+      const target = document.getElementById(targetId);
+      if (!target) return;
+      target.innerHTML = leaders.slice(0, count || leaders.length).map(leader => `<article class="leader-row">
+        <span class="rank">${leader.rank}</span>
+        <div><p class="leader-name">${leader.label}</p><p class="leader-detail">${leader.detail}</p></div>
+        <strong class="leader-value">${leader.value}</strong>
+      </article>`).join('');
+    }
+
+    function renderActivities(targetId, count) {
+      const target = document.getElementById(targetId);
+      if (!target) return;
+      target.innerHTML = activities.slice(0, count || activities.length).map(item => `<li class="activity-item">
+        <span class="activity-icon">${item.icon}</span>
+        <div><p class="item-title">${item.title}</p><p class="item-copy">${item.copy}</p><span class="item-time">${item.time}</span></div>
+      </li>`).join('');
+    }
+
+    function renderRecommendations(targetId, count) {
+      const target = document.getElementById(targetId);
+      if (!target) return;
+      target.innerHTML = recommendations.slice(0, count || recommendations.length).map(item => `<li class="ai-item">
+        <span class="ai-icon">${item.icon}</span>
+        <div><p class="item-title">${item.title}</p><p class="item-copy">${item.copy}</p></div>
+      </li>`).join('');
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.classList.add('show');
+      clearTimeout(showToast.timer);
+      showToast.timer = setTimeout(() => toast.classList.remove('show'), 2800);
+    }
+
+    function navigate(view) {
+      document.querySelectorAll('.content-section').forEach(section => section.classList.toggle('active', section.id === view));
+      document.querySelectorAll('.nav-button').forEach(button => button.classList.toggle('active', button.dataset.view === view));
+      document.getElementById('pageTitle').textContent = titles[view] || 'Executive CRM Dashboard';
+      document.getElementById('sidebar').classList.remove('open');
+      document.getElementById('overlay').classList.remove('show');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function generatePlan(promptId, responseId) {
+      const prompt = document.getElementById(promptId).value.trim();
+      const response = document.getElementById(responseId);
+      const focus = prompt || 'the highest-impact quarter-end opportunities';
+      response.innerHTML = `<strong>Suggested AI plan:</strong> Prioritize ${focus}. Start with a clear business outcome, confirm economic buyer alignment, document mutual next steps, and set a dated close milestone. Add a risk owner for procurement, security, and implementation readiness.`;
+      response.style.display = 'block';
+      showToast('AI selling plan generated from demo CRM context.');
+    }
+
+    document.querySelectorAll('.nav-button').forEach(button => {
+      button.addEventListener('click', () => navigate(button.dataset.view));
+    });
+
+    document.getElementById('mobileMenu').addEventListener('click', () => {
+      document.getElementById('sidebar').classList.add('open');
+      document.getElementById('overlay').classList.add('show');
+    });
+
+    document.getElementById('overlay').addEventListener('click', () => {
+      document.getElementById('sidebar').classList.remove('open');
+      document.getElementById('overlay').classList.remove('show');
+    });
+
+    document.getElementById('refreshBtn').addEventListener('click', () => {
+      showToast('Insights refreshed. Forecast confidence remains 82% in this demo workspace.');
+    });
+
+    document.getElementById('coachBtn').addEventListener('click', () => navigate('ai'));
+
+    document.getElementById('generatePlanBtn').addEventListener('click', () => generatePlan('aiPrompt', 'assistantResponse'));
+    document.getElementById('generatePlanFullBtn').addEventListener('click', () => generatePlan('aiPromptFull', 'assistantResponseFull'));
+
+    document.getElementById('accountSearch').addEventListener('input', renderAccounts);
+    document.getElementById('segmentFilter').addEventListener('change', renderAccounts);
+
+    document.getElementById('globalSearch').addEventListener('input', event => {
+      const query = event.target.value.trim().toLowerCase();
+      if (!query) return;
+      const accountMatch = accounts.some(account => account.name.toLowerCase().includes(query));
+      const dealMatch = stages.some(stage => stage.deals.some(deal => deal.account.toLowerCase().includes(query)));
+      if (accountMatch) navigate('customers');
+      if (!accountMatch && dealMatch) navigate('pipeline');
+    });
+
+    document.getElementById('addAccountBtn').addEventListener('click', () => {
+      const index = accounts.length + 1;
+      accounts = [{
+        name: `Demo Account ${index}`,
+        initials: `D${index}`.slice(0, 2),
+        segment: index % 2 === 0 ? 'Enterprise' : 'Growth',
+        arr: '$250K',
+        health: 'Active',
+        renewal: 'Mar 20',
+        note: 'New demo account added locally for planning.'
+      }, ...accounts];
+      renderAccounts();
+      showToast('Demo account added locally.');
+    });
+
+    renderPipeline('dashboardPipeline', 2);
+    renderPipeline('pipelineBoard');
+    renderAccounts();
+    renderLeaderboard('dashboardLeaderboard', 3);
+    renderLeaderboard('leaderboardFull');
+    renderActivities('dashboardActivity', 3);
+    renderActivities('activityFull');
+    renderRecommendations('dashboardAiList', 3);
+    renderRecommendations('aiFullList');
+  </script>
+</body>
+</html>

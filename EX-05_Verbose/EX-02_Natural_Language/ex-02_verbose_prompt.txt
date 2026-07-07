@@ -1,0 +1,11 @@
+Experiment ID: EX-02
+Prompt Structure: Natural Language
+Prompt Part: Full Prompt
+Expected Output HTML File: ex-02-natural-language-precision-verbose.html
+Actual Workspace HTML File: br-ex-02-natural-language-precision-verbose.html
+
+Source Isolation Requirement:
+Generate this app only from the instructions in this prompt. Do not inspect, read, reference, copy, or rely on workspace files, prior outputs, local assets, external websites, templates, libraries, frameworks, CDNs, imports, or network calls.
+
+Prompt Used:
+I need a polished modern SaaS-style AI-powered Sales CRM SPA that a sales manager could open in a browser as a working prototype. Create the entire application as one self-contained HTML document. Put all CSS inside <style> tags and all JavaScript inside <script> tags. Do not use any external libraries, frameworks, fonts, CDNs, imports, images, or network calls. The app should include a useful dashboard with sales KPIs, a customer management area with realistic sample accounts and search or filtering, an opportunity pipeline with stages and deal values, a forecasting view with projected revenue and confidence indicators, a team leaderboard, a recent activity feed, and an AI recommendations panel with actionable sales guidance. Make the design responsive across desktop, tablet, and mobile. Use semantic HTML, accessible contrast, keyboard-friendly controls, clear spacing, modern cards, and light interactivity. Return only the complete HTML document.

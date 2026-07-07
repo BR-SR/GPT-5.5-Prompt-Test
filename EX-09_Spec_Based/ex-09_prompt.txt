@@ -1,0 +1,18 @@
+Experiment ID: EX-09
+Prompt Structure: Spec-Based
+Expected Output HTML File: ex-09-spec-based.html
+Actual Workspace HTML File: br-ex-09-spec-based.html
+
+Source Isolation Requirement:
+Generate this app only from the instructions in this prompt. Do not inspect, read, reference, copy, or rely on workspace files, prior outputs, local assets, external websites, templates, libraries, frameworks, CDNs, imports, or network calls.
+
+Prompt Used:
+Specification: Create an AI-powered Sales CRM SPA.
+
+Deliverable: one self-contained HTML file.
+
+Required modules: dashboard, customer management, opportunity pipeline, forecasting, team leaderboard, activity feed, AI recommendations panel.
+
+Technical constraints: embedded CSS in <style> tags, embedded JavaScript in <script> tags, no external dependencies, no libraries, no frameworks, no CDNs, responsive layout, modern SaaS appearance.
+
+Output: complete HTML document only.

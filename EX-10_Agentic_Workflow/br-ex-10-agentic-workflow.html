@@ -1,0 +1,1839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Enterprise SalesAI CRM</title>
+  <style>
+    :root {
+      --navy-950: #061626;
+      --navy-900: #082038;
+      --navy-850: #0b2a49;
+      --blue-700: #0d5ca8;
+      --blue-600: #1372ca;
+      --blue-500: #1e8dea;
+      --cyan-400: #24d0e8;
+      --cyan-100: #d9fbff;
+      --gray-900: #17212e;
+      --gray-700: #435166;
+      --gray-500: #748197;
+      --gray-300: #d4dbe6;
+      --gray-200: #e8edf4;
+      --gray-100: #f4f7fb;
+      --white: #ffffff;
+      --green: #1e9c69;
+      --amber: #c98412;
+      --red: #c64e5b;
+      --purple: #6957d8;
+      --shadow-sm: 0 8px 20px rgba(6, 22, 38, 0.08);
+      --shadow-md: 0 16px 42px rgba(6, 22, 38, 0.13);
+      --radius-lg: 22px;
+      --radius-md: 16px;
+      --radius-sm: 10px;
+      --sidebar: 292px;
+      --topbar: 76px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--gray-900);
+      background:
+        radial-gradient(circle at top right, rgba(36, 208, 232, 0.16), transparent 34rem),
+        linear-gradient(135deg, #eef4fb 0%, #f7f9fc 48%, #edf3f9 100%);
+    }
+
+    button, input, select, textarea { font: inherit; }
+
+    button { cursor: pointer; }
+
+    .app-shell {
+      display: grid;
+      grid-template-columns: var(--sidebar) minmax(0, 1fr);
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      color: var(--white);
+      background:
+        linear-gradient(180deg, rgba(36, 208, 232, 0.12), transparent 28%),
+        linear-gradient(160deg, var(--navy-950), var(--navy-900) 48%, #0b3152);
+      padding: 28px 22px;
+      box-shadow: 12px 0 34px rgba(8, 32, 56, 0.18);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 30px;
+    }
+
+    .brand-mark {
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      background:
+        linear-gradient(135deg, var(--cyan-400), var(--blue-600));
+      display: grid;
+      place-items: center;
+      color: var(--navy-950);
+      font-weight: 900;
+      letter-spacing: -0.05em;
+      box-shadow: 0 12px 24px rgba(36, 208, 232, 0.22);
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 1.05rem;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+
+    .brand p {
+      margin: 3px 0 0;
+      color: #b8cbe1;
+      font-size: 0.78rem;
+    }
+
+    .nav-label {
+      color: #90a9c4;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin: 22px 12px 10px;
+    }
+
+    .nav-list {
+      display: grid;
+      gap: 7px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .nav-button {
+      width: 100%;
+      border: 1px solid transparent;
+      color: #d8e7f7;
+      background: transparent;
+      border-radius: 14px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      text-align: left;
+      transition: 0.2s ease;
+    }
+
+    .nav-button span:first-child {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nav-button .icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      background: rgba(255,255,255,0.08);
+      color: var(--cyan-400);
+    }
+
+    .nav-button:hover,
+    .nav-button.active {
+      background: rgba(255, 255, 255, 0.11);
+      border-color: rgba(36, 208, 232, 0.24);
+      color: var(--white);
+      box-shadow: inset 3px 0 0 var(--cyan-400);
+    }
+
+    .nav-count {
+      min-width: 24px;
+      padding: 3px 7px;
+      border-radius: 999px;
+      background: rgba(36, 208, 232, 0.16);
+      color: var(--cyan-100);
+      text-align: center;
+      font-size: 0.73rem;
+      font-weight: 700;
+    }
+
+    .sidebar-card {
+      margin-top: 28px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.07);
+      border-radius: 20px;
+      padding: 18px;
+    }
+
+    .sidebar-card h3 {
+      margin: 0 0 8px;
+      font-size: 0.92rem;
+    }
+
+    .sidebar-card p {
+      margin: 0 0 15px;
+      color: #b9cbe0;
+      font-size: 0.84rem;
+      line-height: 1.5;
+    }
+
+    .ai-pulse {
+      height: 8px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.12);
+    }
+
+    .ai-pulse::before {
+      content: "";
+      display: block;
+      width: 72%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--cyan-400), var(--blue-500));
+      animation: glow 2.5s ease-in-out infinite alternate;
+    }
+
+    @keyframes glow {
+      from { filter: brightness(0.9); transform: translateX(-6%); }
+      to { filter: brightness(1.25); transform: translateX(12%); }
+    }
+
+    .main {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      height: var(--topbar);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 18px 30px;
+      backdrop-filter: blur(18px);
+      background: rgba(247, 250, 253, 0.84);
+      border-bottom: 1px solid rgba(212, 219, 230, 0.75);
+    }
+
+    .mobile-menu {
+      display: none;
+      border: 1px solid var(--gray-300);
+      background: var(--white);
+      color: var(--navy-900);
+      border-radius: 12px;
+      width: 42px;
+      height: 42px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .page-title h2 {
+      margin: 0;
+      color: var(--navy-900);
+      font-size: clamp(1.15rem, 2vw, 1.65rem);
+      letter-spacing: -0.035em;
+    }
+
+    .page-title p {
+      margin: 4px 0 0;
+      color: var(--gray-500);
+      font-size: 0.88rem;
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 290px;
+      justify-content: flex-end;
+    }
+
+    .search-box {
+      position: relative;
+      flex: 1 1 260px;
+      max-width: 380px;
+    }
+
+    .search-box input {
+      width: 100%;
+      border: 1px solid var(--gray-300);
+      background: var(--white);
+      border-radius: 999px;
+      padding: 12px 16px 12px 42px;
+      color: var(--gray-900);
+      outline: none;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .search-box input:focus {
+      border-color: rgba(30, 141, 234, 0.7);
+      box-shadow: 0 0 0 4px rgba(30, 141, 234, 0.11), var(--shadow-sm);
+    }
+
+    .search-box::before {
+      content: "⌕";
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-53%);
+      color: var(--gray-500);
+      font-size: 1.1rem;
+    }
+
+    .primary-button, .ghost-button, .chip-button {
+      border: 0;
+      border-radius: 999px;
+      font-weight: 750;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+      white-space: nowrap;
+    }
+
+    .primary-button {
+      color: var(--white);
+      background: linear-gradient(135deg, var(--blue-700), var(--blue-500));
+      padding: 12px 18px;
+      box-shadow: 0 12px 28px rgba(19, 114, 202, 0.22);
+    }
+
+    .primary-button:hover, .ghost-button:hover, .chip-button:hover { transform: translateY(-1px); }
+
+    .ghost-button {
+      border: 1px solid var(--gray-300);
+      background: var(--white);
+      color: var(--navy-900);
+      padding: 10px 14px;
+    }
+
+    .chip-button {
+      border: 1px solid rgba(19, 114, 202, 0.18);
+      background: #eff7ff;
+      color: var(--blue-700);
+      padding: 8px 12px;
+      font-size: 0.84rem;
+    }
+
+    .chip-button.active {
+      color: var(--white);
+      background: var(--blue-700);
+    }
+
+    .content {
+      padding: 28px 30px 42px;
+      display: grid;
+      gap: 24px;
+    }
+
+    .view { display: none; }
+    .view.active { display: block; animation: fadeUp 0.25s ease both; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .grid {
+      display: grid;
+      gap: 18px;
+    }
+
+    .grid.kpis { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .grid.two { grid-template-columns: minmax(0, 1.45fr) minmax(320px, 0.8fr); }
+    .grid.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+    .card {
+      background: rgba(255,255,255,0.9);
+      border: 1px solid rgba(212, 219, 230, 0.9);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+    }
+
+    .card.pad { padding: 20px; }
+
+    .card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 20px 20px 0;
+      margin-bottom: 16px;
+    }
+
+    .card-title h3 {
+      margin: 0;
+      color: var(--navy-900);
+      font-size: 1rem;
+      letter-spacing: -0.02em;
+    }
+
+    .card-title p {
+      margin: 5px 0 0;
+      color: var(--gray-500);
+      font-size: 0.84rem;
+      line-height: 1.4;
+    }
+
+    .kpi-card {
+      position: relative;
+      min-height: 142px;
+      padding: 19px;
+      overflow: hidden;
+    }
+
+    .kpi-card::after {
+      content: "";
+      position: absolute;
+      right: -42px;
+      top: -52px;
+      width: 138px;
+      height: 138px;
+      border-radius: 999px;
+      background: radial-gradient(circle, rgba(36, 208, 232, 0.21), transparent 68%);
+    }
+
+    .kpi-label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--gray-500);
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .kpi-value {
+      margin: 16px 0 8px;
+      color: var(--navy-900);
+      font-size: clamp(1.65rem, 3vw, 2.25rem);
+      font-weight: 850;
+      letter-spacing: -0.055em;
+    }
+
+    .trend {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 8px;
+      border-radius: 999px;
+      font-size: 0.76rem;
+      font-weight: 800;
+    }
+
+    .trend.up { color: #08764e; background: #e7f8f0; }
+    .trend.down { color: #9a3541; background: #fff0f2; }
+    .trend.neutral { color: #815409; background: #fff7e6; }
+
+    .mini-spark {
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      bottom: 13px;
+      height: 24px;
+      display: flex;
+      align-items: end;
+      gap: 4px;
+      opacity: 0.7;
+    }
+
+    .mini-spark i {
+      flex: 1;
+      border-radius: 4px 4px 0 0;
+      background: linear-gradient(180deg, var(--cyan-400), rgba(30, 141, 234, 0.28));
+    }
+
+    .hero-panel {
+      position: relative;
+      min-height: 350px;
+      background:
+        linear-gradient(135deg, rgba(8, 32, 56, 0.98), rgba(13, 92, 168, 0.92)),
+        radial-gradient(circle at 85% 12%, rgba(36, 208, 232, 0.4), transparent 18rem);
+      color: var(--white);
+      border: 0;
+      overflow: hidden;
+    }
+
+    .hero-panel::before {
+      content: "";
+      position: absolute;
+      inset: -40% -30% auto auto;
+      width: 460px;
+      height: 460px;
+      border-radius: 999px;
+      background: rgba(36, 208, 232, 0.13);
+      filter: blur(2px);
+    }
+
+    .hero-content {
+      position: relative;
+      padding: 24px;
+      z-index: 1;
+    }
+
+    .hero-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      color: var(--cyan-100);
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-weight: 850;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--cyan-400);
+      box-shadow: 0 0 0 6px rgba(36, 208, 232, 0.13);
+    }
+
+    .hero-content h3 {
+      max-width: 720px;
+      margin: 0;
+      font-size: clamp(1.6rem, 3vw, 2.6rem);
+      line-height: 1.05;
+      letter-spacing: -0.055em;
+    }
+
+    .hero-content p {
+      max-width: 720px;
+      margin: 14px 0 0;
+      color: #cfe1f4;
+      line-height: 1.55;
+    }
+
+    .confidence-ring {
+      width: 112px;
+      min-width: 112px;
+      aspect-ratio: 1;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      background: conic-gradient(var(--cyan-400) 0 81%, rgba(255,255,255,0.15) 81% 100%);
+      box-shadow: inset 0 0 0 10px rgba(255,255,255,0.07);
+    }
+
+    .confidence-ring span {
+      width: 84px;
+      aspect-ratio: 1;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      background: var(--navy-900);
+      color: var(--white);
+      font-size: 1.5rem;
+      font-weight: 900;
+      letter-spacing: -0.06em;
+    }
+
+    .hero-metrics {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 25px;
+    }
+
+    .hero-metric {
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.08);
+      border-radius: 18px;
+      padding: 15px;
+    }
+
+    .hero-metric b {
+      display: block;
+      font-size: 1.45rem;
+      letter-spacing: -0.05em;
+    }
+
+    .hero-metric span {
+      color: #bad0e8;
+      font-size: 0.8rem;
+    }
+
+    .insight-list, .feed-list, .recommendation-list {
+      display: grid;
+      gap: 12px;
+      padding: 0 20px 20px;
+      margin: 0;
+      list-style: none;
+    }
+
+    .insight-list li, .feed-item, .recommendation-item {
+      border: 1px solid var(--gray-200);
+      background: #fbfdff;
+      border-radius: 16px;
+      padding: 14px;
+    }
+
+    .insight-list h4, .feed-item h4, .recommendation-item h4 {
+      margin: 0 0 6px;
+      font-size: 0.9rem;
+      color: var(--navy-900);
+    }
+
+    .insight-list p, .feed-item p, .recommendation-item p {
+      margin: 0;
+      color: var(--gray-500);
+      font-size: 0.84rem;
+      line-height: 1.45;
+    }
+
+    .split-line {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 10px;
+      color: var(--gray-500);
+      font-size: 0.78rem;
+    }
+
+    .status-pill, .stage-pill, .risk-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      width: max-content;
+      padding: 5px 9px;
+      border-radius: 999px;
+      font-size: 0.74rem;
+      font-weight: 850;
+    }
+
+    .status-pill.hot, .risk-pill.low { color: #08764e; background: #e7f8f0; }
+    .status-pill.warm, .risk-pill.medium { color: #815409; background: #fff7e6; }
+    .status-pill.watch, .risk-pill.high { color: #9a3541; background: #fff0f2; }
+    .stage-pill { color: var(--blue-700); background: #edf7ff; }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .select-field {
+      border: 1px solid var(--gray-300);
+      background: var(--white);
+      color: var(--gray-900);
+      border-radius: 999px;
+      padding: 10px 14px;
+      outline: none;
+    }
+
+    .table-card { overflow-x: auto; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 760px;
+    }
+
+    th, td {
+      padding: 14px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--gray-200);
+      vertical-align: middle;
+    }
+
+    th {
+      color: var(--gray-500);
+      font-size: 0.76rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      background: #f8fbff;
+    }
+
+    td {
+      color: var(--gray-700);
+      font-size: 0.88rem;
+    }
+
+    tr:hover td { background: #fbfdff; }
+
+    .entity-name {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      color: var(--navy-900);
+      font-weight: 850;
+    }
+
+    .avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 13px;
+      display: grid;
+      place-items: center;
+      color: var(--white);
+      font-size: 0.82rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--navy-850), var(--blue-500));
+    }
+
+    .subtext {
+      display: block;
+      margin-top: 2px;
+      color: var(--gray-500);
+      font-size: 0.78rem;
+      font-weight: 500;
+    }
+
+    .pipeline-board {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(230px, 1fr));
+      gap: 14px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+    }
+
+    .pipeline-column {
+      min-height: 420px;
+      border: 1px solid var(--gray-200);
+      border-radius: 18px;
+      background: rgba(248, 251, 255, 0.8);
+      padding: 12px;
+    }
+
+    .column-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 12px;
+      color: var(--navy-900);
+      font-weight: 900;
+      letter-spacing: -0.02em;
+    }
+
+    .column-head small {
+      color: var(--gray-500);
+      font-weight: 750;
+    }
+
+    .deal-card {
+      display: grid;
+      gap: 10px;
+      border: 1px solid var(--gray-200);
+      border-radius: 16px;
+      background: var(--white);
+      padding: 13px;
+      margin-bottom: 11px;
+      box-shadow: 0 8px 18px rgba(6,22,38,0.05);
+      transition: transform 0.18s ease, border-color 0.18s ease;
+    }
+
+    .deal-card:hover { transform: translateY(-2px); border-color: rgba(30, 141, 234, 0.35); }
+
+    .deal-card h4 {
+      margin: 0;
+      color: var(--navy-900);
+      font-size: 0.92rem;
+    }
+
+    .deal-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      color: var(--gray-500);
+      font-size: 0.78rem;
+    }
+
+    .probability {
+      height: 8px;
+      border-radius: 999px;
+      background: var(--gray-200);
+      overflow: hidden;
+    }
+
+    .probability span {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--blue-600), var(--cyan-400));
+    }
+
+    .chart-wrap {
+      padding: 0 20px 20px;
+    }
+
+    .bar-chart {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      align-items: end;
+      gap: 14px;
+      height: 278px;
+      padding: 16px;
+      border-radius: 18px;
+      background: linear-gradient(180deg, #fbfdff, #f4f8fd);
+      border: 1px solid var(--gray-200);
+    }
+
+    .bar-group {
+      display: grid;
+      grid-template-rows: 1fr auto;
+      gap: 10px;
+      height: 100%;
+      min-width: 0;
+    }
+
+    .bar-pair {
+      display: flex;
+      align-items: end;
+      justify-content: center;
+      gap: 6px;
+      height: 100%;
+    }
+
+    .bar {
+      width: min(34px, 42%);
+      min-height: 18px;
+      border-radius: 9px 9px 3px 3px;
+      position: relative;
+    }
+
+    .bar.target { background: linear-gradient(180deg, #b9c8da, #dce4ef); }
+    .bar.commit { background: linear-gradient(180deg, var(--blue-500), var(--blue-700)); }
+    .bar.best { background: linear-gradient(180deg, var(--cyan-400), #86edf8); }
+
+    .bar:hover::after {
+      content: attr(data-label);
+      position: absolute;
+      left: 50%;
+      bottom: calc(100% + 8px);
+      transform: translateX(-50%);
+      white-space: nowrap;
+      padding: 6px 8px;
+      border-radius: 8px;
+      color: var(--white);
+      background: var(--navy-900);
+      font-size: 0.72rem;
+      z-index: 3;
+    }
+
+    .bar-label {
+      text-align: center;
+      color: var(--gray-500);
+      font-size: 0.76rem;
+      font-weight: 800;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+      margin-top: 12px;
+      color: var(--gray-500);
+      font-size: 0.8rem;
+    }
+
+    .legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .legend i {
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
+      display: inline-block;
+    }
+
+    .leader-list {
+      display: grid;
+      gap: 12px;
+      padding: 0 20px 20px;
+      margin: 0;
+      list-style: none;
+    }
+
+    .leader-row {
+      display: grid;
+      grid-template-columns: 42px 1fr auto;
+      align-items: center;
+      gap: 12px;
+      border: 1px solid var(--gray-200);
+      background: #fbfdff;
+      border-radius: 16px;
+      padding: 12px;
+    }
+
+    .rank {
+      width: 34px;
+      height: 34px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      color: var(--navy-900);
+      background: #eaf6ff;
+      font-weight: 900;
+    }
+
+    .leader-row h4 {
+      margin: 0;
+      color: var(--navy-900);
+      font-size: 0.92rem;
+    }
+
+    .leader-row p {
+      margin: 3px 0 0;
+      color: var(--gray-500);
+      font-size: 0.78rem;
+    }
+
+    .score {
+      text-align: right;
+      color: var(--navy-900);
+      font-weight: 900;
+    }
+
+    .score span {
+      display: block;
+      color: var(--gray-500);
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+
+    .feed-item {
+      display: grid;
+      grid-template-columns: 38px 1fr;
+      gap: 12px;
+      align-items: start;
+    }
+
+    .feed-dot {
+      width: 38px;
+      height: 38px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: #eaf6ff;
+      color: var(--blue-700);
+      font-weight: 900;
+    }
+
+    .recommendation-item {
+      display: grid;
+      gap: 10px;
+    }
+
+    .rec-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .impact-meter {
+      height: 9px;
+      border-radius: 999px;
+      background: var(--gray-200);
+      overflow: hidden;
+    }
+
+    .impact-meter span {
+      display: block;
+      height: 100%;
+      background: linear-gradient(90deg, var(--blue-600), var(--cyan-400));
+      border-radius: inherit;
+    }
+
+    .drawer-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(6, 22, 38, 0.45);
+      z-index: 80;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      z-index: 90;
+      width: min(520px, 100vw);
+      height: 100vh;
+      background: var(--white);
+      box-shadow: -28px 0 60px rgba(6,22,38,0.25);
+      transform: translateX(105%);
+      transition: transform 0.24s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    body.drawer-open .drawer-backdrop { opacity: 1; pointer-events: auto; }
+    body.drawer-open .drawer { transform: translateX(0); }
+
+    .drawer-header {
+      padding: 22px;
+      border-bottom: 1px solid var(--gray-200);
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: start;
+    }
+
+    .drawer-header h3 {
+      margin: 0;
+      color: var(--navy-900);
+      font-size: 1.35rem;
+      letter-spacing: -0.04em;
+    }
+
+    .drawer-header p { margin: 5px 0 0; color: var(--gray-500); }
+
+    .icon-button {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      border: 1px solid var(--gray-300);
+      background: var(--white);
+      color: var(--navy-900);
+      font-weight: 900;
+    }
+
+    .drawer-body {
+      overflow-y: auto;
+      padding: 22px;
+      display: grid;
+      gap: 16px;
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .detail-box {
+      border: 1px solid var(--gray-200);
+      border-radius: 14px;
+      background: #fbfdff;
+      padding: 13px;
+    }
+
+    .detail-box span {
+      display: block;
+      color: var(--gray-500);
+      font-size: 0.75rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+    }
+
+    .detail-box b {
+      display: block;
+      margin-top: 5px;
+      color: var(--navy-900);
+      font-size: 1rem;
+    }
+
+    .note-box {
+      border-left: 4px solid var(--cyan-400);
+      background: #f1fbff;
+      border-radius: 14px;
+      padding: 14px;
+      color: var(--gray-700);
+      line-height: 1.55;
+    }
+
+    .empty-state {
+      display: none;
+      border: 1px dashed var(--gray-300);
+      border-radius: 18px;
+      padding: 28px;
+      text-align: center;
+      color: var(--gray-500);
+      background: rgba(255,255,255,0.6);
+    }
+
+    .empty-state.active { display: block; }
+
+    .footer-note {
+      color: var(--gray-500);
+      text-align: center;
+      font-size: 0.78rem;
+      margin-top: 6px;
+    }
+
+    @media (max-width: 1180px) {
+      .grid.kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .grid.two { grid-template-columns: 1fr; }
+      .grid.three { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .topbar-actions { min-width: 0; }
+    }
+
+    @media (max-width: 860px) {
+      :root { --sidebar: 0px; }
+      .app-shell { grid-template-columns: 1fr; }
+      .sidebar {
+        position: fixed;
+        z-index: 70;
+        width: 286px;
+        transform: translateX(-105%);
+        transition: transform 0.22s ease;
+      }
+      body.sidebar-open .sidebar { transform: translateX(0); }
+      .mobile-menu { display: inline-flex; }
+      .topbar { padding: 14px 16px; height: auto; align-items: flex-start; }
+      .topbar-actions { width: 100%; justify-content: stretch; }
+      .topbar { flex-wrap: wrap; }
+      .search-box { max-width: none; }
+      .content { padding: 20px 16px 34px; }
+      .hero-top { flex-direction: column; }
+      .hero-metrics { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 640px) {
+      .grid.kpis, .grid.three, .detail-grid { grid-template-columns: 1fr; }
+      .topbar-actions { flex-wrap: wrap; }
+      .primary-button { width: 100%; }
+      .search-box { flex-basis: 100%; }
+      .bar-chart { gap: 8px; padding: 10px; overflow-x: auto; }
+      .bar-group { min-width: 62px; }
+      .card-header { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <div class="drawer-backdrop" id="drawerBackdrop" aria-hidden="true"></div>
+  <aside class="drawer" id="detailDrawer" aria-labelledby="drawerTitle" aria-hidden="true">
+    <div class="drawer-header">
+      <div>
+        <h3 id="drawerTitle">Record details</h3>
+        <p id="drawerSubtitle">AI-enriched relationship profile</p>
+      </div>
+      <button class="icon-button" id="closeDrawer" aria-label="Close detail panel">×</button>
+    </div>
+    <div class="drawer-body" id="drawerBody"></div>
+  </aside>
+
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar" aria-label="Primary navigation">
+      <div class="brand" aria-label="Enterprise SalesAI CRM">
+        <div class="brand-mark">AI</div>
+        <div>
+          <h1>Enterprise SalesAI</h1>
+          <p>Executive CRM console</p>
+        </div>
+      </div>
+
+      <div class="nav-label">Workspace</div>
+      <ul class="nav-list" id="navList">
+        <li><button class="nav-button active" data-view="dashboard"><span><span class="icon">◆</span>Dashboard</span><span class="nav-count">4</span></button></li>
+        <li><button class="nav-button" data-view="customers"><span><span class="icon">◎</span>Customers</span><span class="nav-count" id="customerCount">0</span></button></li>
+        <li><button class="nav-button" data-view="pipeline"><span><span class="icon">▥</span>Pipeline</span><span class="nav-count" id="pipelineCount">0</span></button></li>
+        <li><button class="nav-button" data-view="forecasting"><span><span class="icon">↗</span>Forecasting</span><span class="nav-count">Q3</span></button></li>
+        <li><button class="nav-button" data-view="leaderboard"><span><span class="icon">★</span>Leaderboard</span><span class="nav-count">8</span></button></li>
+        <li><button class="nav-button" data-view="activity"><span><span class="icon">◷</span>Activity Feed</span><span class="nav-count" id="activityCount">0</span></button></li>
+        <li><button class="nav-button" data-view="recommendations"><span><span class="icon">✦</span>AI Recommendations</span><span class="nav-count" id="recCount">0</span></button></li>
+      </ul>
+
+      <div class="sidebar-card">
+        <h3>AI readiness monitor</h3>
+        <p>Opportunity intelligence, risk signals, and account whitespace analysis are refreshed from local demo data.</p>
+        <div class="ai-pulse" aria-label="AI readiness indicator"></div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <button class="mobile-menu" id="mobileMenu" aria-label="Open navigation">☰</button>
+        <div class="page-title">
+          <h2 id="pageHeading">Sales command center</h2>
+          <p id="pageSubheading">Fictional AI-powered CRM snapshot for enterprise revenue teams.</p>
+        </div>
+        <div class="topbar-actions">
+          <div class="search-box">
+            <input id="globalSearch" type="search" placeholder="Search accounts, deals, insights" aria-label="Search CRM data" />
+          </div>
+          <button class="primary-button" id="aiBriefingButton">Generate AI Briefing</button>
+        </div>
+      </header>
+
+      <section class="content">
+        <section class="view active" id="dashboard" aria-labelledby="dashboard-title">
+          <div class="grid kpis" id="kpiGrid" aria-label="Key performance indicators"></div>
+          <div class="grid two">
+            <article class="card hero-panel">
+              <div class="hero-content">
+                <div class="hero-top">
+                  <div>
+                    <div class="eyebrow">AI revenue brief</div>
+                    <h3 id="heroHeadline">Pipeline quality is improving with high-confidence expansion demand.</h3>
+                    <p id="heroSummary">Model signals show stronger executive engagement, shorter proposal cycles, and service expansion interest across priority financial-services accounts.</p>
+                  </div>
+                  <div class="confidence-ring" aria-label="Forecast confidence 81 percent"><span>81%</span></div>
+                </div>
+                <div class="hero-metrics">
+                  <div class="hero-metric"><b id="heroCommit">$0</b><span>Weighted commit</span></div>
+                  <div class="hero-metric"><b id="heroCoverage">0.0x</b><span>Target coverage</span></div>
+                  <div class="hero-metric"><b id="heroRisk">0</b><span>Deals needing attention</span></div>
+                </div>
+              </div>
+            </article>
+
+            <article class="card">
+              <div class="card-header">
+                <div class="card-title">
+                  <h3>Priority insights</h3>
+                  <p>Automated guidance for near-term action.</p>
+                </div>
+              </div>
+              <ul class="insight-list" id="insightList"></ul>
+            </article>
+          </div>
+
+          <div class="grid two">
+            <article class="card">
+              <div class="card-header">
+                <div class="card-title">
+                  <h3>Forecast trend</h3>
+                  <p>Target, commit, and best-case scenarios by month.</p>
+                </div>
+                <button class="ghost-button" data-view-jump="forecasting">Open forecast</button>
+              </div>
+              <div class="chart-wrap"><div class="bar-chart" id="dashboardChart"></div><div class="legend" id="dashboardLegend"></div></div>
+            </article>
+
+            <article class="card">
+              <div class="card-header">
+                <div class="card-title">
+                  <h3>Latest activity</h3>
+                  <p>Signals from demo calls, meetings, and CRM updates.</p>
+                </div>
+                <button class="ghost-button" data-view-jump="activity">View all</button>
+              </div>
+              <ul class="feed-list" id="dashboardFeed"></ul>
+            </article>
+          </div>
+        </section>
+
+        <section class="view" id="customers" aria-labelledby="customers-title">
+          <div class="toolbar">
+            <div>
+              <h2 id="customers-title">Customers</h2>
+              <p class="subtext">Fictional relationship profiles with engagement, health, and growth signals.</p>
+            </div>
+            <div class="filter-group" aria-label="Customer segment filters">
+              <button class="chip-button active" data-customer-filter="all">All</button>
+              <button class="chip-button" data-customer-filter="Strategic">Strategic</button>
+              <button class="chip-button" data-customer-filter="Growth">Growth</button>
+              <button class="chip-button" data-customer-filter="Renewal">Renewal</button>
+            </div>
+          </div>
+          <article class="card table-card">
+            <table>
+              <thead>
+                <tr><th>Account</th><th>Segment</th><th>Health</th><th>ARR</th><th>AI next action</th><th>Owner</th></tr>
+              </thead>
+              <tbody id="customerTable"></tbody>
+            </table>
+          </article>
+          <div class="empty-state" id="customerEmpty">No customers match the current filter or search.</div>
+        </section>
+
+        <section class="view" id="pipeline" aria-labelledby="pipeline-title">
+          <div class="toolbar">
+            <div>
+              <h2 id="pipeline-title">Opportunity pipeline</h2>
+              <p class="subtext">Stage view with probability, close timing, and AI risk tags.</p>
+            </div>
+            <div class="filter-group">
+              <select class="select-field" id="riskFilter" aria-label="Filter opportunities by risk">
+                <option value="all">All risk levels</option>
+                <option value="Low">Low risk</option>
+                <option value="Medium">Medium risk</option>
+                <option value="High">High risk</option>
+              </select>
+              <select class="select-field" id="quarterFilter" aria-label="Filter opportunities by quarter">
+                <option value="all">All close quarters</option>
+                <option value="Q3">Q3 close</option>
+                <option value="Q4">Q4 close</option>
+              </select>
+            </div>
+          </div>
+          <div class="pipeline-board" id="pipelineBoard"></div>
+          <div class="empty-state" id="pipelineEmpty">No opportunities match the selected criteria.</div>
+        </section>
+
+        <section class="view" id="forecasting" aria-labelledby="forecasting-title">
+          <div class="grid kpis" id="forecastKpis"></div>
+          <article class="card">
+            <div class="card-header">
+              <div class="card-title">
+                <h3 id="forecasting-title">Forecasting</h3>
+                <p>Scenario analysis using demo pipeline probabilities and monthly targets.</p>
+              </div>
+              <div class="filter-group">
+                <button class="chip-button active" data-scenario="commit">Commit</button>
+                <button class="chip-button" data-scenario="best">Best case</button>
+                <button class="chip-button" data-scenario="target">Target</button>
+              </div>
+            </div>
+            <div class="chart-wrap"><div class="bar-chart" id="forecastChart"></div><div class="legend" id="forecastLegend"></div></div>
+          </article>
+          <div class="grid three" id="forecastCards"></div>
+        </section>
+
+        <section class="view" id="leaderboard" aria-labelledby="leaderboard-title">
+          <div class="toolbar">
+            <div>
+              <h2 id="leaderboard-title">Leaderboard</h2>
+              <p class="subtext">Fictional sales pods ranked by attainment, pipeline quality, and client momentum.</p>
+            </div>
+            <div class="filter-group">
+              <button class="chip-button active" data-leader-metric="attainment">Attainment</button>
+              <button class="chip-button" data-leader-metric="pipeline">Pipeline</button>
+              <button class="chip-button" data-leader-metric="aiScore">AI score</button>
+            </div>
+          </div>
+          <div class="grid two">
+            <article class="card">
+              <div class="card-header">
+                <div class="card-title"><h3>Top performers</h3><p>Ranked by selected metric.</p></div>
+              </div>
+              <ul class="leader-list" id="leaderList"></ul>
+            </article>
+            <article class="card">
+              <div class="card-header">
+                <div class="card-title"><h3>Coaching opportunities</h3><p>AI suggestions to raise performance quality.</p></div>
+              </div>
+              <ul class="recommendation-list" id="coachingList"></ul>
+            </article>
+          </div>
+        </section>
+
+        <section class="view" id="activity" aria-labelledby="activity-title">
+          <div class="toolbar">
+            <div>
+              <h2 id="activity-title">Activity feed</h2>
+              <p class="subtext">Recent CRM updates, engagement moments, and AI-detected intent.</p>
+            </div>
+            <div class="filter-group">
+              <button class="chip-button active" data-activity-type="all">All</button>
+              <button class="chip-button" data-activity-type="Meeting">Meetings</button>
+              <button class="chip-button" data-activity-type="Email">Email</button>
+              <button class="chip-button" data-activity-type="Signal">Signals</button>
+            </div>
+          </div>
+          <article class="card">
+            <div class="card-header">
+              <div class="card-title"><h3>Timeline</h3><p>Sorted by recency and relationship impact.</p></div>
+            </div>
+            <ul class="feed-list" id="activityFeed"></ul>
+          </article>
+          <div class="empty-state" id="activityEmpty">No activities match the current search or type filter.</div>
+        </section>
+
+        <section class="view" id="recommendations" aria-labelledby="recommendations-title">
+          <div class="toolbar">
+            <div>
+              <h2 id="recommendations-title">AI recommendations</h2>
+              <p class="subtext">Actionable, explainable recommendations generated from fictional demo CRM data.</p>
+            </div>
+            <div class="filter-group">
+              <button class="chip-button active" data-rec-priority="all">All</button>
+              <button class="chip-button" data-rec-priority="High">High priority</button>
+              <button class="chip-button" data-rec-priority="Medium">Medium priority</button>
+              <button class="chip-button" data-rec-priority="Low">Low priority</button>
+            </div>
+          </div>
+          <div class="grid two">
+            <article class="card">
+              <div class="card-header">
+                <div class="card-title"><h3>Recommended actions</h3><p>Prioritized by impact, urgency, and confidence.</p></div>
+              </div>
+              <ul class="recommendation-list" id="recommendationList"></ul>
+            </article>
+            <article class="card pad">
+              <div class="card-title"><h3>Recommendation quality</h3><p>Governance-ready explanation summary.</p></div>
+              <div class="detail-grid" style="margin-top:16px">
+                <div class="detail-box"><span>Avg confidence</span><b id="avgConfidence">0%</b></div>
+                <div class="detail-box"><span>Projected lift</span><b id="projectedLift">$0</b></div>
+                <div class="detail-box"><span>High priority</span><b id="highPriorityCount">0</b></div>
+                <div class="detail-box"><span>Accounts covered</span><b id="accountsCovered">0</b></div>
+              </div>
+              <div class="note-box" style="margin-top:16px">All recommendations in this demonstration are generated locally from fictional CRM data in this file. They are intended to illustrate user experience, prioritization, and explainability patterns.</div>
+            </article>
+          </div>
+          <div class="empty-state" id="recommendationEmpty">No recommendations match the current filter or search.</div>
+        </section>
+
+        <p class="footer-note">Demo SPA using fictional CRM data only. No external libraries, assets, imports, or network calls.</p>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const demo = {
+      customers: [
+        { id: 1, name: 'Meridian Trust Group', segment: 'Strategic', health: 92, arr: 4.8, owner: 'Pod Atlas', region: 'North America', industry: 'Wealth operations', action: 'Schedule executive value review', status: 'Hot', summary: 'Strong adoption across service teams with interest in workflow automation expansion.' },
+        { id: 2, name: 'Northstar Clearing Co.', segment: 'Strategic', health: 81, arr: 3.6, owner: 'Pod Orion', region: 'North America', industry: 'Capital markets', action: 'Align compliance stakeholders', status: 'Warm', summary: 'Procurement is active and technical validation is complete; legal review remains open.' },
+        { id: 3, name: 'Apex Harbor Financial', segment: 'Growth', health: 74, arr: 2.2, owner: 'Pod Nova', region: 'EMEA', industry: 'Asset servicing', action: 'Share migration roadmap', status: 'Warm', summary: 'Operational leaders requested a staged roadmap and measurable transition outcomes.' },
+        { id: 4, name: 'Verdant Capital Services', segment: 'Growth', health: 88, arr: 1.9, owner: 'Pod Zenith', region: 'North America', industry: 'Retirement platforms', action: 'Propose analytics pilot', status: 'Hot', summary: 'Analytics usage has increased and sponsor team is requesting a pilot proposal.' },
+        { id: 5, name: 'Sterling Grid Advisors', segment: 'Renewal', health: 63, arr: 1.4, owner: 'Pod Atlas', region: 'APAC', industry: 'Advisor networks', action: 'Resolve adoption blockers', status: 'Watch', summary: 'Renewal risk has risen due to limited enablement attendance and delayed data mapping.' },
+        { id: 6, name: 'Arcstone Markets', segment: 'Strategic', health: 86, arr: 5.1, owner: 'Pod Orion', region: 'EMEA', industry: 'Trading infrastructure', action: 'Expand governance workshop', status: 'Hot', summary: 'Board-level transformation program is creating whitespace across reporting services.' },
+        { id: 7, name: 'Lumina Exchange Services', segment: 'Growth', health: 69, arr: 1.7, owner: 'Pod Nova', region: 'North America', industry: 'Data distribution', action: 'Confirm economic buyer', status: 'Warm', summary: 'Technical champions are engaged, but budget authority has not been fully confirmed.' },
+        { id: 8, name: 'Beacon Mutual Platforms', segment: 'Renewal', health: 78, arr: 2.8, owner: 'Pod Zenith', region: 'North America', industry: 'Insurance operations', action: 'Quantify service savings', status: 'Warm', summary: 'Renewal outlook is stable if value case is refreshed before the steering meeting.' }
+      ],
+      opportunities: [
+        { id: 101, account: 'Meridian Trust Group', name: 'Client communications expansion', stage: 'Qualify', value: 1.2, probability: 38, quarter: 'Q3', risk: 'Medium', close: 'Aug 18', owner: 'Pod Atlas', next: 'Confirm stakeholder map' },
+        { id: 102, account: 'Verdant Capital Services', name: 'Analytics pilot conversion', stage: 'Qualify', value: 0.7, probability: 44, quarter: 'Q3', risk: 'Low', close: 'Sep 05', owner: 'Pod Zenith', next: 'Send pilot success criteria' },
+        { id: 103, account: 'Apex Harbor Financial', name: 'Migration services bundle', stage: 'Discover', value: 1.6, probability: 52, quarter: 'Q4', risk: 'Medium', close: 'Oct 22', owner: 'Pod Nova', next: 'Review transition timeline' },
+        { id: 104, account: 'Lumina Exchange Services', name: 'Data quality modernization', stage: 'Discover', value: 1.1, probability: 47, quarter: 'Q4', risk: 'High', close: 'Nov 12', owner: 'Pod Nova', next: 'Identify economic buyer' },
+        { id: 105, account: 'Northstar Clearing Co.', name: 'Regulatory workflow suite', stage: 'Propose', value: 2.4, probability: 66, quarter: 'Q3', risk: 'Medium', close: 'Sep 19', owner: 'Pod Orion', next: 'Legal terms workshop' },
+        { id: 106, account: 'Beacon Mutual Platforms', name: 'Service center automation', stage: 'Propose', value: 1.3, probability: 62, quarter: 'Q3', risk: 'Low', close: 'Sep 27', owner: 'Pod Zenith', next: 'Refresh ROI model' },
+        { id: 107, account: 'Arcstone Markets', name: 'Governance reporting platform', stage: 'Negotiate', value: 3.8, probability: 78, quarter: 'Q3', risk: 'Low', close: 'Aug 30', owner: 'Pod Orion', next: 'Executive approval meeting' },
+        { id: 108, account: 'Sterling Grid Advisors', name: 'Advisor enablement renewal', stage: 'Negotiate', value: 1.0, probability: 58, quarter: 'Q4', risk: 'High', close: 'Oct 07', owner: 'Pod Atlas', next: 'Remediation plan review' },
+        { id: 109, account: 'Meridian Trust Group', name: 'Managed services uplift', stage: 'Commit', value: 2.2, probability: 86, quarter: 'Q3', risk: 'Low', close: 'Aug 11', owner: 'Pod Atlas', next: 'Finalize order form' },
+        { id: 110, account: 'Arcstone Markets', name: 'Enterprise data hub', stage: 'Commit', value: 2.9, probability: 82, quarter: 'Q4', risk: 'Medium', close: 'Nov 03', owner: 'Pod Orion', next: 'Confirm deployment capacity' }
+      ],
+      forecast: [
+        { month: 'Jul', target: 2.8, commit: 2.1, best: 3.0 },
+        { month: 'Aug', target: 3.4, commit: 3.0, best: 4.2 },
+        { month: 'Sep', target: 4.1, commit: 3.6, best: 4.9 },
+        { month: 'Oct', target: 3.6, commit: 2.7, best: 4.4 },
+        { month: 'Nov', target: 4.4, commit: 3.1, best: 5.3 },
+        { month: 'Dec', target: 5.0, commit: 3.8, best: 6.1 }
+      ],
+      leaders: [
+        { pod: 'Pod Orion', region: 'Enterprise East', attainment: 118, pipeline: 14.2, aiScore: 94, note: 'Strong executive alignment and clean late-stage hygiene.' },
+        { pod: 'Pod Atlas', region: 'Strategic North', attainment: 109, pipeline: 11.7, aiScore: 89, note: 'High commit quality with two renewal risks to manage.' },
+        { pod: 'Pod Zenith', region: 'Growth Central', attainment: 103, pipeline: 8.4, aiScore: 86, note: 'Conversion rate is improving after focused ROI workshops.' },
+        { pod: 'Pod Nova', region: 'Expansion West', attainment: 96, pipeline: 9.8, aiScore: 82, note: 'Needs stronger economic buyer confirmation in discovery.' },
+        { pod: 'Pod Vega', region: 'Select Accounts', attainment: 91, pipeline: 7.9, aiScore: 78, note: 'Activity volume is healthy; proposal cycle speed is lagging.' },
+        { pod: 'Pod Solstice', region: 'Renewal Desk', attainment: 88, pipeline: 6.4, aiScore: 76, note: 'Renewal recovery plans should be pulled forward.' }
+      ],
+      activities: [
+        { type: 'Meeting', account: 'Arcstone Markets', title: 'Executive approval meeting completed', time: '12 min ago', impact: 'High', detail: 'Transformation sponsor confirmed governance scope and asked for final deployment timing.' },
+        { type: 'Signal', account: 'Meridian Trust Group', title: 'Expansion intent increased', time: '34 min ago', impact: 'High', detail: 'Multiple product leaders reviewed managed services value model within the same week.' },
+        { type: 'Email', account: 'Northstar Clearing Co.', title: 'Legal redline package returned', time: '1 hr ago', impact: 'Medium', detail: 'Terms feedback was received with limited commercial friction and two security questions.' },
+        { type: 'Signal', account: 'Sterling Grid Advisors', title: 'Adoption risk detected', time: '2 hrs ago', impact: 'High', detail: 'Enablement participation fell below the renewal health threshold for the second period.' },
+        { type: 'Meeting', account: 'Beacon Mutual Platforms', title: 'ROI workshop scheduled', time: 'Yesterday', impact: 'Medium', detail: 'Operations sponsor accepted a savings review before renewal committee.' },
+        { type: 'Email', account: 'Lumina Exchange Services', title: 'Budget owner requested', time: 'Yesterday', impact: 'Medium', detail: 'Champion asked for help framing the modernization initiative for finance leadership.' },
+        { type: 'Meeting', account: 'Verdant Capital Services', title: 'Analytics pilot checkpoint', time: '2 days ago', impact: 'High', detail: 'Sponsor confirmed pilot goals and requested a commercial path for broader deployment.' }
+      ],
+      recommendations: [
+        { priority: 'High', account: 'Sterling Grid Advisors', title: 'Launch renewal recovery motion', action: 'Book a 45-minute adoption remediation workshop with service leadership and share a quantified success plan.', confidence: 87, lift: 0.6, reason: 'Health score dropped below threshold while renewal value remains material.' },
+        { priority: 'High', account: 'Arcstone Markets', title: 'Protect enterprise data hub timeline', action: 'Validate delivery capacity before procurement finalization to reduce implementation risk.', confidence: 84, lift: 1.1, reason: 'Late-stage deal has strong probability but medium risk due to deployment assumptions.' },
+        { priority: 'Medium', account: 'Lumina Exchange Services', title: 'Secure economic buyer', action: 'Send a finance-ready business case and request budget-owner attendance at the next meeting.', confidence: 79, lift: 0.8, reason: 'Discovery engagement is positive but authority is unclear.' },
+        { priority: 'Medium', account: 'Northstar Clearing Co.', title: 'Accelerate legal review', action: 'Host a focused legal and security workshop to close the two open review questions.', confidence: 76, lift: 0.9, reason: 'Proposal is strong, but time-to-close depends on terms resolution.' },
+        { priority: 'Low', account: 'Verdant Capital Services', title: 'Package analytics pilot proof', action: 'Create a one-page pilot scorecard for sponsor sharing and internal approval.', confidence: 72, lift: 0.4, reason: 'Pilot conversion is likely if value metrics are clear.' },
+        { priority: 'Low', account: 'Beacon Mutual Platforms', title: 'Refresh service savings story', action: 'Prepare a conservative savings model for the renewal committee.', confidence: 69, lift: 0.3, reason: 'Renewal outlook is stable but value reinforcement can improve terms.' }
+      ]
+    };
+
+    const state = {
+      activeView: 'dashboard',
+      search: '',
+      customerFilter: 'all',
+      riskFilter: 'all',
+      quarterFilter: 'all',
+      scenario: 'commit',
+      leaderMetric: 'attainment',
+      activityType: 'all',
+      recPriority: 'all'
+    };
+
+    const views = {
+      dashboard: { title: 'Sales command center', subtitle: 'Fictional AI-powered CRM snapshot for enterprise revenue teams.' },
+      customers: { title: 'Customer intelligence', subtitle: 'Relationship health, account context, and recommended next actions.' },
+      pipeline: { title: 'Opportunity pipeline', subtitle: 'Stage-based revenue motion with probability and risk signals.' },
+      forecasting: { title: 'Forecasting cockpit', subtitle: 'Target, commit, and best-case scenario management.' },
+      leaderboard: { title: 'Performance leaderboard', subtitle: 'Sales pod attainment with AI-driven coaching prompts.' },
+      activity: { title: 'Activity feed', subtitle: 'Recent meetings, signals, and account communications.' },
+      recommendations: { title: 'AI recommendations', subtitle: 'Explainable revenue actions prioritized by likely impact.' }
+    };
+
+    const money = value => '$' + value.toFixed(1) + 'M';
+    const pct = value => value + '%';
+    const initials = name => name.split(' ').map(part => part[0]).join('').slice(0, 2).toUpperCase();
+    const byId = id => document.getElementById(id);
+    const matchSearch = text => String(text).toLowerCase().includes(state.search.toLowerCase().trim());
+
+    function setHTML(id, html) { byId(id).innerHTML = html; }
+
+    function navTo(view) {
+      state.activeView = view;
+      document.querySelectorAll('.view').forEach(el => el.classList.toggle('active', el.id === view));
+      document.querySelectorAll('.nav-button').forEach(btn => btn.classList.toggle('active', btn.dataset.view === view));
+      byId('pageHeading').textContent = views[view].title;
+      byId('pageSubheading').textContent = views[view].subtitle;
+      document.body.classList.remove('sidebar-open');
+      render();
+    }
+
+    function totals() {
+      const pipeline = demo.opportunities.reduce((sum, opp) => sum + opp.value, 0);
+      const weighted = demo.opportunities.reduce((sum, opp) => sum + opp.value * opp.probability / 100, 0);
+      const commit = demo.opportunities.filter(opp => opp.stage === 'Commit' || opp.probability >= 75).reduce((sum, opp) => sum + opp.value * opp.probability / 100, 0);
+      const atRisk = demo.opportunities.filter(opp => opp.risk === 'High').length;
+      const target = demo.forecast.reduce((sum, row) => sum + row.target, 0);
+      return { pipeline, weighted, commit, atRisk, target, coverage: pipeline / target };
+    }
+
+    function renderKpis() {
+      const t = totals();
+      const avgHealth = Math.round(demo.customers.reduce((sum, c) => sum + c.health, 0) / demo.customers.length);
+      const kpis = [
+        { label: 'Open pipeline', value: money(t.pipeline), trend: '+12.4% QoQ', type: 'up', bars: [35,48,42,55,71,68,78] },
+        { label: 'Weighted forecast', value: money(t.weighted), trend: '+8.7% vs plan', type: 'up', bars: [32,40,46,50,58,63,74] },
+        { label: 'Avg account health', value: pct(avgHealth), trend: 'Stable', type: 'neutral', bars: [76,78,75,79,81,80,82] },
+        { label: 'Risk watchlist', value: String(t.atRisk), trend: '2 urgent', type: 'down', bars: [70,66,60,54,49,47,44] }
+      ];
+      setHTML('kpiGrid', kpis.map(k => `
+        <article class="card kpi-card">
+          <div class="kpi-label"><span>${k.label}</span><span class="trend ${k.type}">${k.trend}</span></div>
+          <div class="kpi-value">${k.value}</div>
+          <div class="mini-spark" aria-hidden="true">${k.bars.map(h => `<i style="height:${h}%"></i>`).join('')}</div>
+        </article>`).join(''));
+      setHTML('forecastKpis', [
+        { label: 'Commit', value: money(demo.forecast.reduce((s, r) => s + r.commit, 0)), trend: '+7.2%', type: 'up', bars: [42,52,61,48,56,68] },
+        { label: 'Best case', value: money(demo.forecast.reduce((s, r) => s + r.best, 0)), trend: '+15.1%', type: 'up', bars: [45,57,66,60,72,82] },
+        { label: 'Plan target', value: money(t.target), trend: 'Baseline', type: 'neutral', bars: [46,52,63,54,68,75] },
+        { label: 'Coverage', value: t.coverage.toFixed(1) + 'x', trend: 'Healthy', type: 'up', bars: [35,45,50,56,67,70] }
+      ].map(k => `
+        <article class="card kpi-card">
+          <div class="kpi-label"><span>${k.label}</span><span class="trend ${k.type}">${k.trend}</span></div>
+          <div class="kpi-value">${k.value}</div>
+          <div class="mini-spark" aria-hidden="true">${k.bars.map(h => `<i style="height:${h}%"></i>`).join('')}</div>
+        </article>`).join(''));
+      byId('heroCommit').textContent = money(t.weighted);
+      byId('heroCoverage').textContent = t.coverage.toFixed(1) + 'x';
+      byId('heroRisk').textContent = String(t.atRisk);
+    }
+
+    function renderInsights() {
+      const insights = [
+        { title: 'Executive engagement surged', body: 'Three strategic accounts show senior-level activity in the last 48 hours.', tag: 'Momentum' },
+        { title: 'Renewal risk requires action', body: 'Sterling Grid Advisors needs an adoption recovery plan before committee review.', tag: 'Risk' },
+        { title: 'Whitespace detected', body: 'Arcstone Markets and Meridian Trust Group indicate demand for managed data services.', tag: 'Growth' }
+      ];
+      setHTML('insightList', insights.map(item => `
+        <li><h4>${item.title}</h4><p>${item.body}</p><div class="split-line"><span>${item.tag}</span><span class="stage-pill">AI signal</span></div></li>`).join(''));
+    }
+
+    function renderCustomers() {
+      const rows = demo.customers.filter(c => (state.customerFilter === 'all' || c.segment === state.customerFilter) &&
+        [c.name, c.segment, c.owner, c.region, c.industry, c.action, c.status].some(matchSearch));
+      setHTML('customerTable', rows.map(c => `
+        <tr data-customer-id="${c.id}" tabindex="0">
+          <td><div class="entity-name"><span class="avatar">${initials(c.name)}</span><span>${c.name}<span class="subtext">${c.industry} • ${c.region}</span></span></div></td>
+          <td>${c.segment}</td>
+          <td><span class="status-pill ${c.status.toLowerCase()}">${c.health}% health</span></td>
+          <td>${money(c.arr)}</td>
+          <td>${c.action}</td>
+          <td>${c.owner}</td>
+        </tr>`).join(''));
+      byId('customerEmpty').classList.toggle('active', rows.length === 0);
+      document.querySelectorAll('[data-customer-id]').forEach(row => {
+        row.addEventListener('click', () => openCustomer(Number(row.dataset.customerId)));
+        row.addEventListener('keydown', e => { if (e.key === 'Enter') openCustomer(Number(row.dataset.customerId)); });
+      });
+    }
+
+    function filteredOpportunities() {
+      return demo.opportunities.filter(opp =>
+        (state.riskFilter === 'all' || opp.risk === state.riskFilter) &&
+        (state.quarterFilter === 'all' || opp.quarter === state.quarterFilter) &&
+        [opp.account, opp.name, opp.stage, opp.risk, opp.owner, opp.next].some(matchSearch)
+      );
+    }
+
+    function renderPipeline() {
+      const stages = ['Qualify', 'Discover', 'Propose', 'Negotiate', 'Commit'];
+      const filtered = filteredOpportunities();
+      setHTML('pipelineBoard', stages.map(stage => {
+        const deals = filtered.filter(opp => opp.stage === stage);
+        const sum = deals.reduce((s, d) => s + d.value, 0);
+        return `<section class="pipeline-column" aria-label="${stage} opportunities">
+          <div class="column-head"><span>${stage}</span><small>${deals.length} • ${money(sum)}</small></div>
+          ${deals.map(opp => `
+            <article class="deal-card" data-opportunity-id="${opp.id}" tabindex="0">
+              <div class="deal-meta"><span class="risk-pill ${opp.risk.toLowerCase()}">${opp.risk} risk</span><span>${opp.quarter}</span></div>
+              <h4>${opp.name}</h4>
+              <div class="deal-meta"><span>${opp.account}</span><strong>${money(opp.value)}</strong></div>
+              <div class="probability" aria-label="Probability ${opp.probability} percent"><span style="width:${opp.probability}%"></span></div>
+              <div class="deal-meta"><span>${opp.probability}% probability</span><span>${opp.close}</span></div>
+            </article>`).join('')}
+        </section>`;
+      }).join(''));
+      byId('pipelineEmpty').classList.toggle('active', filtered.length === 0);
+      document.querySelectorAll('[data-opportunity-id]').forEach(card => {
+        card.addEventListener('click', () => openOpportunity(Number(card.dataset.opportunityId)));
+        card.addEventListener('keydown', e => { if (e.key === 'Enter') openOpportunity(Number(card.dataset.opportunityId)); });
+      });
+    }
+
+    function renderChart(containerId, legendId, mode = 'all') {
+      const max = Math.max(...demo.forecast.flatMap(r => [r.target, r.commit, r.best]));
+      setHTML(containerId, demo.forecast.map(row => {
+        const bars = mode === 'all' ? ['target', 'commit', 'best'] : [mode];
+        return `<div class="bar-group">
+          <div class="bar-pair">${bars.map(key => `<div class="bar ${key}" style="height:${Math.max(12, row[key] / max * 100)}%" data-label="${key}: ${money(row[key])}"></div>`).join('')}</div>
+          <div class="bar-label">${row.month}</div>
+        </div>`;
+      }).join(''));
+      const labels = mode === 'all' ? ['target', 'commit', 'best'] : [mode];
+      const names = { target: 'Target', commit: 'Commit', best: 'Best case' };
+      setHTML(legendId, labels.map(key => `<span><i class="bar ${key}"></i>${names[key]}</span>`).join(''));
+    }
+
+    function renderForecastCards() {
+      const scenarioLabels = {
+        commit: ['Commit outlook', 'Weighted by realistic close probability and current stage hygiene.'],
+        best: ['Best-case upside', 'Includes expansion opportunities with strong engagement but open validation steps.'],
+        target: ['Plan benchmark', 'Conservative monthly plan used to track coverage and pacing.']
+      };
+      const cards = demo.forecast.slice(3).map(row => {
+        const value = row[state.scenario];
+        const variance = value - row.target;
+        const type = variance >= 0 ? 'up' : 'down';
+        return `<article class="card pad">
+          <span class="stage-pill">${row.month}</span>
+          <h3 style="margin:14px 0 6px;color:var(--navy-900)">${money(value)}</h3>
+          <p style="margin:0;color:var(--gray-500);line-height:1.45">${scenarioLabels[state.scenario][1]}</p>
+          <div class="split-line"><span>${scenarioLabels[state.scenario][0]}</span><span class="trend ${type}">${variance >= 0 ? '+' : ''}${money(variance)} vs target</span></div>
+        </article>`;
+      });
+      setHTML('forecastCards', cards.join(''));
+    }
+
+    function renderLeaderboard() {
+      const metric = state.leaderMetric;
+      const sorted = [...demo.leaders].sort((a, b) => b[metric] - a[metric]);
+      const suffix = metric === 'pipeline' ? 'M' : '%';
+      setHTML('leaderList', sorted.map((leader, index) => `
+        <li class="leader-row">
+          <span class="rank">${index + 1}</span>
+          <div><h4>${leader.pod}</h4><p>${leader.region} • ${leader.note}</p></div>
+          <div class="score">${metric === 'pipeline' ? '$' + leader[metric].toFixed(1) : leader[metric]}${suffix}<span>${metric.replace('aiScore','AI score')}</span></div>
+        </li>`).join(''));
+      const coaching = [
+        { title: 'Improve late-stage hygiene', body: 'Require close-plan updates for deals above $1M within 14 days of target close.', confidence: 83, priority: 'High' },
+        { title: 'Raise economic buyer coverage', body: 'Coach discovery teams to confirm budget authority before proposal creation.', confidence: 78, priority: 'Medium' },
+        { title: 'Standardize ROI workshops', body: 'Use a single value-model format to improve proposal velocity across pods.', confidence: 74, priority: 'Medium' }
+      ];
+      setHTML('coachingList', coaching.map(recCard).join(''));
+    }
+
+    function renderActivity() {
+      const rows = demo.activities.filter(a => (state.activityType === 'all' || a.type === state.activityType) &&
+        [a.type, a.account, a.title, a.detail, a.impact].some(matchSearch));
+      const html = rows.map(activityCard).join('');
+      setHTML('activityFeed', html);
+      setHTML('dashboardFeed', demo.activities.slice(0, 4).map(activityCard).join(''));
+      byId('activityEmpty').classList.toggle('active', rows.length === 0);
+    }
+
+    function activityCard(a) {
+      const icon = a.type === 'Meeting' ? 'M' : a.type === 'Email' ? 'E' : 'S';
+      return `<li class="feed-item">
+        <span class="feed-dot">${icon}</span>
+        <div><h4>${a.title}</h4><p>${a.account} • ${a.detail}</p><div class="split-line"><span>${a.time}</span><span class="status-pill ${a.impact === 'High' ? 'hot' : 'warm'}">${a.impact} impact</span></div></div>
+      </li>`;
+    }
+
+    function recCard(r) {
+      const priorityClass = r.priority === 'High' ? 'watch' : r.priority === 'Medium' ? 'warm' : 'hot';
+      return `<li class="recommendation-item">
+        <div class="rec-meta"><span class="status-pill ${priorityClass}">${r.priority} priority</span><span>${r.confidence}% confidence</span></div>
+        <h4>${r.title}</h4>
+        <p>${r.account ? r.account + ' • ' : ''}${r.action || r.body}</p>
+        <div class="impact-meter" aria-label="Confidence ${r.confidence} percent"><span style="width:${r.confidence}%"></span></div>
+        ${r.reason ? `<p><strong>Why:</strong> ${r.reason}</p>` : ''}
+      </li>`;
+    }
+
+    function renderRecommendations() {
+      const rows = demo.recommendations.filter(r => (state.recPriority === 'all' || r.priority === state.recPriority) &&
+        [r.priority, r.account, r.title, r.action, r.reason].some(matchSearch));
+      setHTML('recommendationList', rows.map(recCard).join(''));
+      byId('recommendationEmpty').classList.toggle('active', rows.length === 0);
+      const avg = Math.round(demo.recommendations.reduce((s, r) => s + r.confidence, 0) / demo.recommendations.length);
+      byId('avgConfidence').textContent = avg + '%';
+      byId('projectedLift').textContent = money(demo.recommendations.reduce((s, r) => s + r.lift, 0));
+      byId('highPriorityCount').textContent = demo.recommendations.filter(r => r.priority === 'High').length;
+      byId('accountsCovered').textContent = new Set(demo.recommendations.map(r => r.account)).size;
+    }
+
+    function openCustomer(id) {
+      const c = demo.customers.find(item => item.id === id);
+      const related = demo.opportunities.filter(o => o.account === c.name);
+      byId('drawerTitle').textContent = c.name;
+      byId('drawerSubtitle').textContent = c.segment + ' account • ' + c.region;
+      setHTML('drawerBody', `
+        <div class="detail-grid">
+          <div class="detail-box"><span>Health</span><b>${c.health}%</b></div>
+          <div class="detail-box"><span>ARR</span><b>${money(c.arr)}</b></div>
+          <div class="detail-box"><span>Owner</span><b>${c.owner}</b></div>
+          <div class="detail-box"><span>Status</span><b>${c.status}</b></div>
+        </div>
+        <div class="note-box">${c.summary}</div>
+        <article class="card pad"><h3 style="margin-top:0;color:var(--navy-900)">AI next best action</h3><p style="color:var(--gray-700);line-height:1.55">${c.action}. Prioritize a crisp business outcome, confirm the decision process, and capture the next milestone in the CRM.</p></article>
+        <article class="card pad"><h3 style="margin-top:0;color:var(--navy-900)">Related opportunities</h3>${related.length ? related.map(o => `<p><strong>${o.name}</strong><br><span class="subtext">${money(o.value)} • ${o.stage} • ${o.probability}% probability</span></p>`).join('') : '<p>No active opportunities.</p>'}</article>
+      `);
+      openDrawer();
+    }
+
+    function openOpportunity(id) {
+      const o = demo.opportunities.find(item => item.id === id);
+      byId('drawerTitle').textContent = o.name;
+      byId('drawerSubtitle').textContent = o.account + ' • ' + o.stage;
+      setHTML('drawerBody', `
+        <div class="detail-grid">
+          <div class="detail-box"><span>Value</span><b>${money(o.value)}</b></div>
+          <div class="detail-box"><span>Probability</span><b>${o.probability}%</b></div>
+          <div class="detail-box"><span>Close date</span><b>${o.close}</b></div>
+          <div class="detail-box"><span>Risk</span><b>${o.risk}</b></div>
+        </div>
+        <div class="note-box">Next step: ${o.next}. The AI signal recommends keeping stakeholders aligned and updating mutual action plan evidence.</div>
+        <article class="card pad"><h3 style="margin-top:0;color:var(--navy-900)">Deal health</h3><div class="impact-meter"><span style="width:${o.probability}%"></span></div><p style="color:var(--gray-500)">${o.owner} owns this ${o.quarter} opportunity in ${o.stage} stage.</p></article>
+      `);
+      openDrawer();
+    }
+
+    function openBriefing() {
+      const t = totals();
+      byId('drawerTitle').textContent = 'AI executive briefing';
+      byId('drawerSubtitle').textContent = 'Generated locally from fictional demo CRM data';
+      const highRecs = demo.recommendations.filter(r => r.priority === 'High');
+      setHTML('drawerBody', `
+        <div class="detail-grid">
+          <div class="detail-box"><span>Total pipeline</span><b>${money(t.pipeline)}</b></div>
+          <div class="detail-box"><span>Weighted forecast</span><b>${money(t.weighted)}</b></div>
+          <div class="detail-box"><span>Coverage</span><b>${t.coverage.toFixed(1)}x</b></div>
+          <div class="detail-box"><span>High risk deals</span><b>${t.atRisk}</b></div>
+        </div>
+        <div class="note-box">Summary: pipeline coverage is healthy, commit quality is improving, and the highest value action is to protect late-stage deployment assumptions while remediating renewal adoption risk.</div>
+        <article class="card pad"><h3 style="margin-top:0;color:var(--navy-900)">Top actions</h3>${highRecs.map(r => `<p><strong>${r.title}</strong><br><span class="subtext">${r.account} • ${r.action}</span></p>`).join('')}</article>
+      `);
+      openDrawer();
+    }
+
+    function openDrawer() {
+      document.body.classList.add('drawer-open');
+      byId('detailDrawer').setAttribute('aria-hidden', 'false');
+    }
+
+    function closeDrawer() {
+      document.body.classList.remove('drawer-open');
+      byId('detailDrawer').setAttribute('aria-hidden', 'true');
+    }
+
+    function renderCounts() {
+      byId('customerCount').textContent = demo.customers.length;
+      byId('pipelineCount').textContent = demo.opportunities.length;
+      byId('activityCount').textContent = demo.activities.length;
+      byId('recCount').textContent = demo.recommendations.length;
+    }
+
+    function render() {
+      renderCounts();
+      renderKpis();
+      renderInsights();
+      renderCustomers();
+      renderPipeline();
+      renderChart('dashboardChart', 'dashboardLegend', 'all');
+      renderChart('forecastChart', 'forecastLegend', state.scenario);
+      renderForecastCards();
+      renderLeaderboard();
+      renderActivity();
+      renderRecommendations();
+    }
+
+    document.querySelectorAll('.nav-button').forEach(btn => btn.addEventListener('click', () => navTo(btn.dataset.view)));
+    document.querySelectorAll('[data-view-jump]').forEach(btn => btn.addEventListener('click', () => navTo(btn.dataset.viewJump)));
+    byId('globalSearch').addEventListener('input', e => { state.search = e.target.value; render(); });
+    byId('mobileMenu').addEventListener('click', () => document.body.classList.toggle('sidebar-open'));
+    byId('aiBriefingButton').addEventListener('click', openBriefing);
+    byId('closeDrawer').addEventListener('click', closeDrawer);
+    byId('drawerBackdrop').addEventListener('click', closeDrawer);
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeDrawer(); document.body.classList.remove('sidebar-open'); } });
+
+    document.querySelectorAll('[data-customer-filter]').forEach(btn => btn.addEventListener('click', () => {
+      state.customerFilter = btn.dataset.customerFilter;
+      document.querySelectorAll('[data-customer-filter]').forEach(b => b.classList.toggle('active', b === btn));
+      renderCustomers();
+    }));
+
+    byId('riskFilter').addEventListener('change', e => { state.riskFilter = e.target.value; renderPipeline(); });
+    byId('quarterFilter').addEventListener('change', e => { state.quarterFilter = e.target.value; renderPipeline(); });
+
+    document.querySelectorAll('[data-scenario]').forEach(btn => btn.addEventListener('click', () => {
+      state.scenario = btn.dataset.scenario;
+      document.querySelectorAll('[data-scenario]').forEach(b => b.classList.toggle('active', b === btn));
+      renderChart('forecastChart', 'forecastLegend', state.scenario);
+      renderForecastCards();
+    }));
+
+    document.querySelectorAll('[data-leader-metric]').forEach(btn => btn.addEventListener('click', () => {
+      state.leaderMetric = btn.dataset.leaderMetric;
+      document.querySelectorAll('[data-leader-metric]').forEach(b => b.classList.toggle('active', b === btn));
+      renderLeaderboard();
+    }));
+
+    document.querySelectorAll('[data-activity-type]').forEach(btn => btn.addEventListener('click', () => {
+      state.activityType = btn.dataset.activityType;
+      document.querySelectorAll('[data-activity-type]').forEach(b => b.classList.toggle('active', b === btn));
+      renderActivity();
+    }));
+
+    document.querySelectorAll('[data-rec-priority]').forEach(btn => btn.addEventListener('click', () => {
+      state.recPriority = btn.dataset.recPriority;
+      document.querySelectorAll('[data-rec-priority]').forEach(b => b.classList.toggle('active', b === btn));
+      renderRecommendations();
+    }));
+
+    render();
+  </script>
+</body>
+</html>

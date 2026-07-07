@@ -1,0 +1,10 @@
+Experiment ID: EX-10
+Prompt Structure: Agentic Workflow
+Expected Output HTML File: ex-10-agentic-workflow.html
+Actual Workspace HTML File: br-ex-10-agentic-workflow.html
+
+Source Isolation Requirement:
+Generate this app only from the instructions in this prompt. Do not inspect, read, reference, copy, or rely on workspace files, prior outputs, local assets, external websites, templates, libraries, frameworks, CDNs, imports, or network calls.
+
+Prompt Used:
+Internally plan the information architecture, layout, data model, interactions, and responsive behavior for an AI-powered Sales CRM SPA. Then generate the final result as one self-contained HTML file with embedded CSS and JavaScript only. Include dashboard, customers, opportunity pipeline, forecasting, leaderboard, activity feed, and AI recommendations. Use no external dependencies. Do not show your plan. Return only the complete HTML document.

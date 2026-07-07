@@ -1,0 +1,15 @@
+Experiment ID: EX-07
+Prompt Structure: Outcome Based
+Prompt Part: Full Prompt
+Expected Output HTML File: ex-07-outcome-based-precision-verbose.html
+Actual Workspace HTML File: br-ex-07-outcome-based-precision-verbose.html
+
+Source Isolation Requirement:
+Generate this app only from the instructions in this prompt. Do not inspect, read, reference, copy, or rely on workspace files, prior outputs, local assets, external websites, templates, libraries, frameworks, CDNs, imports, or network calls.
+
+Prompt Used:
+The desired outcome is a polished browser-ready AI-powered Sales CRM SPA that helps a sales organization make faster and better revenue decisions. The app should make it easy to understand current performance, inspect customer accounts, prioritize opportunities, forecast revenue, recognize top performers, monitor recent activity, and act on AI-generated recommendations.
+
+Build one complete self-contained HTML document. Use embedded CSS inside <style> tags and embedded JavaScript inside <script> tags. Do not use external dependencies, frameworks, libraries, fonts, CDNs, imports, remote images, or network calls.
+
+The application must include a dashboard, customer management, opportunity pipeline, forecasting, team leaderboard, activity feed, and AI recommendations panel. Use realistic demo CRM data. Provide light interactions such as filtering customers, changing pipeline views, selecting records, or acknowledging recommendations. Make the interface responsive across desktop, tablet, and mobile. Use modern SaaS visual design, semantic HTML, accessible contrast, keyboard-friendly controls, and clear information hierarchy. Return only the complete HTML document.

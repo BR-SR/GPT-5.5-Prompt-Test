@@ -1,0 +1,10 @@
+Experiment ID: EX-07
+Prompt Structure: Outcome Based
+Expected Output HTML File: ex-07-outcome-based.html
+Actual Workspace HTML File: br-ex-07-outcome-based.html
+
+Source Isolation Requirement:
+Generate this app only from the instructions in this prompt. Do not inspect, read, reference, copy, or rely on workspace files, prior outputs, local assets, external websites, templates, libraries, frameworks, CDNs, imports, or network calls.
+
+Prompt Used:
+Create an AI-powered Sales CRM SPA that helps sales teams understand performance, manage customers, prioritize opportunities, forecast revenue, compare team results, track activity, and act on AI recommendations. Deliver it as a modern responsive single-file HTML app with embedded CSS and JavaScript only, no external dependencies. Return only the complete HTML document.
