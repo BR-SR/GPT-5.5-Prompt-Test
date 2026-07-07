@@ -2,8 +2,6 @@
 
 A benchmarking repo comparing different prompt engineering styles (minimal, natural language, role-based, requirements-based, jobs-to-be-done, outcome-based, intent/context/outcomes/constraints, spec-based, and agentic workflow) against a shared design/build reference (`br-` = "baseline reference" HTML output), each scored against a standardized rubric.
 
-Because GitHub does not render raw `.html` files, all previews below use [htmlpreview.github.io](https://htmlpreview.github.io/).
-
 ## How This Repo Is Organized
 
 Each prompt style has its own folder containing three files:
